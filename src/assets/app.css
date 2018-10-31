@@ -1,0 +1,69 @@
+.animationload {
+  background-color: #fff;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+}
+.osahanloading {
+  animation: 1.5s linear 0s normal none infinite running osahanloading;
+  background: #fed37f none repeat scroll 0 0;
+  border-radius: 50px;
+  height: 50px;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
+  position: absolute;
+  top: 50%;
+  width: 50px;
+}
+.osahanloading::after {
+  animation: 1.5s linear 0s normal none infinite running osahanloading_after;
+  border-color: #85d6de transparent;
+  border-radius: 80px;
+  border-style: solid;
+  border-width: 10px;
+  content: "";
+  height: 80px;
+  left: -15px;
+  position: absolute;
+  top: -15px;
+  width: 80px;
+}
+@keyframes osahanloading {
+0% {
+  transform: rotate(0deg);
+}
+50% {
+  background: #85d6de none repeat scroll 0 0;
+  transform: rotate(180deg);
+}
+100% {
+  transform: rotate(360deg);
+}
+}
+
+/* Show it is fixed to the top */
+body {
+  padding-top: 4.5rem;
+}
+
+.componentKey{
+  background-color: lightgrey;
+}
+
+.component:nth-child(even){background-color: #f2f2f2;}
+
+.component:hover {background-color: #ddd;}
+
+div.centre {
+  position:absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px; /* Cette valeur doit être la moitié négative de la valeur du width */
+  margin-top: -100px; /* Cette valeur doit être la moitié négative de la valeur du height */
+}
