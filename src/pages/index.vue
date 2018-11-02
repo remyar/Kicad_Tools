@@ -13,7 +13,8 @@
 <script>
 
 
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex';
+const remote = require('electron').remote;
 
 export default {
     computed:{
@@ -31,6 +32,13 @@ export default {
         {
             this.$store.dispatch('eagle_file/open');
         }
+    },
+    mounted(){
+        let argList = remote.process.argv.join(' ');
+        let arg = argList.match( /\<([\s\S]*?)\>/gi)[0].replace("<" , "").replace(">" ,"").trim();
+
+        if ( arg.length > 0 )
+            this.$store.dispatch('kicad_file/open' , arg);
     }
 }
 </script>

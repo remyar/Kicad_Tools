@@ -1,6 +1,6 @@
 {
   "name": "Kicad_Tools",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A lot of tools for Kicad",
   "main": "./main.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "author": "ARNAUDIN Rémy",
   "build": {
-    "win":{
+    "win": {
       "icon": "res/icons/kicad_tools.ico"
     }
   },

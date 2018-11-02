@@ -21,26 +21,38 @@ const getters = {
 
 // actions
 const actions = {
-    open({ commit , _state }){
+    open({ commit , _state } , file ){
 
-        dialog.showOpenDialog({       
-            properties: ['openFile'],
-            filters : [{name : "Kicad Project" , extensions : ["pro"] }]
-        }, function (files) {
-            if (files !== undefined) {
-                files.map((f , idx ) => {
-                    files[idx] = f.replace(".pro" , ".sch");
-                });
-
-                kicad_file.open(files).then((file)=>{
-                    commit({type: 'ok' ,  file});  
-                    navigation.forwardTo("/bom");
-                }).catch((err) => {
-                    commit({type: 'fail'  }); 
-                    this.dispatch('modal/push', { title : 'Erreur' , string : err.message  })
-                })
-            }
-        });
+        if ( file == undefined){
+            dialog.showOpenDialog({       
+                properties: ['openFile'],
+                filters : [
+                    {name : "Kicad Project" , extensions : ["pro"] },
+                    {name : "Kicad xml" , extensions : ["xml"] },
+                ]
+            }, function (files) {
+                if (files !== undefined) {
+                    kicad_file.open(files).then((file)=>{
+                        commit({type: 'ok' ,  file});  
+                        navigation.forwardTo("/bom");
+                    }).catch((err) => {
+                        commit({type: 'fail'  }); 
+                        this.dispatch('modal/push', { title : 'Erreur' , string : err.message  })
+                    })
+                }
+            });
+        }
+        else
+        {
+            //-- ouverture d'un fichier via arg
+            kicad_file.open([file]).then((file)=>{
+                commit({type: 'ok' ,  file});  
+                navigation.forwardTo("/bom");
+            }).catch((err) => {
+                commit({type: 'fail'  }); 
+                this.dispatch('modal/push', { title : 'Erreur' , string : err.message  })
+            })
+        }
     }
 }
 
