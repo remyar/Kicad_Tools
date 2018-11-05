@@ -22,6 +22,13 @@
                 <div class="col">
                     Référence fabricant
                 </div>
+
+                <div class="col">
+                    Prix Unitaire
+                </div>
+                <div class="col">
+                    Prix Total
+                </div>
 <!--
                 <div class="col">
                     Ref Digikey
@@ -60,7 +67,12 @@
                 <div class="col">
                     {{ value.mfrnum }}
                 </div>
-
+                <div class="col">
+                    {{ value.unitPrice }}
+                </div>
+                <div class="col">
+                    {{ value.totalPrice }}
+                </div>
 <!--
                 <div class="col">
                     <a :href="'https://www.digikey.fr/products/fr?keywords=' + value.digikey " v-show="value.digikey" >digikey</a>

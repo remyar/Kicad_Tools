@@ -19,7 +19,6 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import mySymbol from '../components/mySymbol.vue'
-const {dialog} = require('electron').remote;
 
 export default {
     computed:{

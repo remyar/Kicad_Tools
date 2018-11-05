@@ -1,0 +1,16 @@
+{ 
+    "index" : {
+        "generateKicadBom" : "Générer Kicad BOM",
+        "convertEaglelbrToLibKicad" : ".lbr Eagle en .lib Kicad",
+        "convertKicadPCBToFootprint" : "Kicad Pcb en Footprint"
+    },
+    "navbar" : {
+        "menu" : "Menu",
+        "generateBOM" : "Créer BOM",
+        "eagleLibConverter" : "Convertisseur Lib Eagle",
+        "kicadPcbToFootprint" : "Kicad PCB en Footprint"
+    },
+    "bom" : {
+        "resistance" : "Résistance(s)"
+    }
+}

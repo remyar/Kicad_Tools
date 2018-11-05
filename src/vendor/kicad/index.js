@@ -1,5 +1,7 @@
 import readFile from '../file';
 import xml2js from 'xml2js';
+import price from './price';
+const {i} = require('electron').remote;
 
 let parser = new xml2js.Parser();
 
@@ -19,6 +21,7 @@ function _getTypeWithRef(ref){
         if ( ref.startsWith('R') )
         {
             type = "Resistance(s)";
+            //type = this.app.i18n.t('bom.resistance');
         }
         if ( ref.startsWith('C') )
         {
@@ -115,8 +118,32 @@ const openXmlFile = ( file ) => {
             })
         })
         return fileList.components;
-    }).then((components) => { 
+    }).then((components) => {
 
+        let promises = [];
+        fileList.components.map((compo , idx ) =>  {
+            if ( compo.mfrnum != undefined){
+                let p = price.get(compo.mfrnum).then((dataResult) => {
+
+                    dataResult.Parts.MouserPart.map((MouserPart) => {
+                        if ( MouserPart.ManufacturerPartNumber == compo.mfrnum )
+                        {
+                            fileList.components[idx].unitPrice = MouserPart.PriceBreaks.Pricebreaks[0].Price;
+                        }
+                    });
+
+                }).catch((err) => {
+                    new Error ( err );
+                })
+                promises.push( p );
+            }
+                
+        })
+
+        return Promise.all(promises);
+    }).then(() => { 
+
+        let components = fileList.components;
         let bom = {};
         components.map(component => {
             if ( bom[component.type] == undefined )
@@ -133,6 +160,7 @@ const openXmlFile = ( file ) => {
             bom[component.type][component.val].digikey = component.digikey;
             bom[component.type][component.val].mouser = component.mouser;
             bom[component.type][component.val].mfrnum = component.mfrnum;
+            bom[component.type][component.val].unitPrice = component.unitPrice;
             
         });
 
@@ -152,6 +180,17 @@ const openXmlFile = ( file ) => {
                 for ( let ref in objRefs)
                     refs.push(ref);
    
+                let unitPrice = undefined;
+                let unit = undefined;
+                let priceByRef = "";
+                if ( bom[key][key2].unitPrice ){
+                    bom[key][key2].unitPrice = bom[key][key2].unitPrice.replace(',','.')
+                    unitPrice = bom[key][key2].unitPrice.split(' ')[0].replace(',','.');
+                    unit = bom[key][key2].unitPrice.split(' ')[1];
+
+                    priceByRef = parseFloat(parseInt(refs.length) * parseFloat(unitPrice)).toFixed(3).toString() + " " + unit;
+                }
+
                 listTemp.push({ 
                     val : key2 ,
                     nbRefs : refs.length ,
@@ -161,6 +200,8 @@ const openXmlFile = ( file ) => {
                     digikey : bom[key][key2].digikey,
                     mouser : bom[key][key2].mouser,
                     mfrnum : bom[key][key2].mfrnum,
+                    unitPrice : bom[key][key2].unitPrice,
+                    totalPrice : priceByRef ,
                 });               
             }
 
@@ -176,7 +217,7 @@ const openXmlFile = ( file ) => {
         return fileList.bom;
     }).then((bom) => {
 
-        return bom
+        return bom;
     }).catch(( err ) => {
 
         if ( err == undefined)
@@ -186,6 +227,11 @@ const openXmlFile = ( file ) => {
 
         throw new Error(err.message);
     })
+
+}
+
+
+const openPcbFile = (file) => {
 
 }
 
@@ -202,6 +248,10 @@ const open = ( file ) => {
     else if ( file[0].endsWith(".xml") )
     {
         return openXmlFile(file[0]);
+    }
+    else if ( file[0].endsWith(".kicad_pcb") )
+    {
+        return openPcbFile(file[0]);
     }
 }
 /*
