@@ -46,6 +46,7 @@ export default {
         if ( fileList && fileList.length > 0 )
             arg = fileList[0].replace("<" , "").replace(">" ,"").trim();
 
+        //arg = "D:/_DEV_/DEV_SLOT/Davic/Puce-auto/PUCE/PUCE.xml"
         if ( arg.length > 0 )
             this.$store.dispatch('kicad_file/open' , arg);
     }

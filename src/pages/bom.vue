@@ -11,11 +11,11 @@
                 <div class="col-md-2">
                    Valeur
                 </div>
-
+<!--
                 <div class="col text-truncate">
                     Empreinte
                 </div>
-
+-->
                 <div class="col-md-1">
                     Quantité
                 </div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="row component" v-for="value in values" :key="value.val">
-                <div class="col">
+                <div class="col-md-2">
                     <span v-for="ref in value.refs " :key="ref">
                         {{ ref }}
                     </span>
@@ -55,11 +55,11 @@
                 <div class="col-md-2">
                     {{ value.val }}
                 </div>
-
+<!--
                 <div class="col text-truncate">
                     {{ value.footprint }}
                 </div>
-
+-->
                 <div class="col-md-1 text-center">
                     {{ value.nbRefs }}
                 </div>
@@ -85,7 +85,14 @@
             </div>
             <br>
         </div>
-           
+        <br>
+
+        <div class="row">
+            <div class="col-md-3">
+        <button type="button" class="form-control btn btn-primary" @click="printPDF">{{ $t("save.asPDF") }}</button>
+                </div>
+        </div>
+<br><br>
     </main>
 
 </template>
@@ -96,8 +103,14 @@ import { mapGetters, mapState } from 'vuex'
 export default {
     computed:{
         ...mapGetters('kicad_file' , {
-            components : 'components'
+            components : 'components',
+            project : 'project'
         })
+    },
+    methods : {
+        printPDF : function(ev){
+            this.$store.dispatch('export_pdf/save', { components : this.components , project : this.project} );
+        }
     },
     components : {
     }

@@ -12,5 +12,8 @@
     },
     "bom" : {
         "resistance" : "Resistor(s)"
+    },    
+    "save" : {
+        "asPDF" : "Export as PDF"
     }
 }

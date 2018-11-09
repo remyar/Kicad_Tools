@@ -12,5 +12,8 @@
     },
     "bom" : {
         "resistance" : "Résistance(s)"
+    },
+    "save" : {
+        "asPDF" : "Exporter en PDF"
     }
 }

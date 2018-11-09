@@ -37,7 +37,8 @@ const get = ( component )=> {
 
     return new Promise((resolve , reject ) => {
 
-        
+        //resolve({});
+
         soap.createClient(url,  function(err, client){
             if ( err ) reject(err);
 

@@ -7,6 +7,7 @@
       <router-view></router-view>
 
       <Modal />
+      <Preloader />
   </div>
 
 </template>
@@ -14,6 +15,7 @@
 <script>
 import NavBar from './components/navbar.vue';
 import Modal from './components/modal.vue';
+import Preloader from './components/preloader.vue';
 
 export default {
     computed:{
@@ -21,7 +23,8 @@ export default {
     },
     components : {
         NavBar,
-        Modal
+        Modal,
+        Preloader
     }
 }
 </script>
