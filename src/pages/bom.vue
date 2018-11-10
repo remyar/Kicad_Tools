@@ -4,40 +4,31 @@
         <br>
 
         <div class="row">
+            <div class="col-md-2">
+                {{ $t("bom.Identification") }}
+                
+            </div>
+
+            <div class="col-md-2">
+                {{ $t("bom.Value") }}
+            </div>
+
+            <div class="col-md-1 text-center">
+                {{ $t("bom.Quantity") }}   
+            </div>
+
             <div class="col">
-                Identification
+                {{ $t("bom.MfrNum") }}   
             </div>
 
-                <div class="col-md-2">
-                   Valeur
-                </div>
-<!--
-                <div class="col text-truncate">
-                    Empreinte
-                </div>
--->
-                <div class="col-md-1">
-                    Quantité
-                </div>
-                <div class="col">
-                    Référence fabricant
-                </div>
-
-                <div class="col">
-                    Prix Unitaire
-                </div>
-                <div class="col">
-                    Prix Total
-                </div>
-<!--
-                <div class="col">
-                    Ref Digikey
-                </div>
-                <div class="col">
-                    Ref Mouser
-                </div>
--->
+            <div class="col">
+                {{ $t("bom.UnitPrice") }}   
             </div>
+
+            <div class="col">
+                {{ $t("bom.TotalPrice") }}   
+            </div>
+        </div>
 
         <div v-for="(values, key) in components" :key="key">
             <div class="row">
@@ -55,11 +46,7 @@
                 <div class="col-md-2">
                     {{ value.val }}
                 </div>
-<!--
-                <div class="col text-truncate">
-                    {{ value.footprint }}
-                </div>
--->
+
                 <div class="col-md-1 text-center">
                     {{ value.nbRefs }}
                 </div>

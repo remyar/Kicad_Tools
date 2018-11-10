@@ -1,7 +1,7 @@
 import readFile from '../file';
 import xml2js from 'xml2js';
 import price from './price';
-const {i} = require('electron').remote;
+import Vue from 'vue';
 
 let parser = new xml2js.Parser();
 
@@ -16,33 +16,27 @@ let fileList = {
 
 function _getTypeWithRef(ref){
     let type = undefined;
+    let refs =[
+        { start : "R", ref : "R" },
+        { start : "C", ref : "C" },
+        { start : "D", ref : "D" },
+        { start : "U", ref : "U" },
+        { start : "IC", ref : "U" },
+        { start : "Q", ref : "Q" },
+        { start : "T", ref : "Q" },
+        { start : "J", ref : "J" },
+        { start : "P", ref : "J" },
+    ];
+
     if ( ref != undefined )
     {
-        if ( ref.startsWith('R') )
-        {
-            type = "Resistance(s)";
-            //type = this.app.i18n.t('bom.resistance');
-        }
-        if ( ref.startsWith('C') )
-        {
-            type = "Condensateur(s)";
-        }
-        if ( ref.startsWith('D') )
-        {
-            type = "Diode(s)";
-        }
-        if ( ref.startsWith('U') || ref.startsWith('IC') )
-        {
-            type = "Circuit Intégré(s)";
-        }
-        if ( ref.startsWith('Q') || ref.startsWith('T') )
-        {
-            type = "Transistor(s)";
-        }
-        if ( ref.startsWith('J') || ref.startsWith('P'))
-        {
-            type = "Connecteur(s)";
-        }
+        refs.map((r)=> {
+
+            if ( ref.startsWith(r.start) ) {
+                type = Vue.i18n.translate('bom.' + r.ref );
+            }
+            
+        })
     }
     return type;
 }
@@ -55,7 +49,7 @@ const openProFile = ( proFile ) => {
         if (  check(fileContent) == true )
             return fileContent;
         else
-            throw new Error("Ceci n'est pas un projet Kicad");
+            throw new Error(Vue.i18n.translate('msg.error.notKicadProject'));
 
     }).then((fileContent) => {
 
@@ -83,7 +77,7 @@ const openXmlFile = ( file ) => {
         if (  check(text) == true )
             return text;
         else
-            throw new Error("Ceci n'est pas un projet Kicad");
+            throw new Error(Vue.i18n.translate('msg.error.notKicadProject'));
 
     }).then((text) => {
 
@@ -222,7 +216,7 @@ const openXmlFile = ( file ) => {
 
         if ( err == undefined)
         {
-            err = { message : "Une erreur est survenue a l'ouverture du fichier" }
+            err = { message : Vue.i18n.translate('msg.error.errorOpeningFile')  }
         }
 
         throw new Error(err.message);
@@ -254,166 +248,7 @@ const open = ( file ) => {
         return openPcbFile(file[0]);
     }
 }
-/*
-const open = ( file ) => {
 
-    fileList.schematics = [];
-    fileList.components = [];
-    fileList.bom = {};
-    return readFile.read(file).then((result) => {
-
-        return result;
-
-    }).then((text) => {
-
-        if (  check(text) == true )
-            return text;
-        else
-            throw new Error("Ceci n'est pas un projet Kicad");
-
-    }).then((text) => {
-        fileList.schematics = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\t/g, '\n').trim().split("\n");
-        return text;
-    }).then((text) => { 
-        let componentListRaw = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split("$EndDescr")[1].split('$EndComp');
-        componentListRaw.map((rawComp ) => {
-            let rowCompTab = rawComp.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\t/g, '\n').trim().split("\n");
-            let compObj = {};
-            rowCompTab.map(( lcomp ) => {
-                lcomp = lcomp.replace(/"/g, '');
-
-                if ( lcomp.includes("F 0") )
-                {
-                    compObj.ref = lcomp.split(" ")[2];
-
-                    if ( compObj.ref.includes("#") == true )
-                        compObj.ref = undefined;
-
-                    if ( compObj.ref != undefined )
-                    {
-                        if ( compObj.ref.startsWith('R') )
-                        {
-                            compObj.type = "Resistance(s)";
-                        }
-                        if ( compObj.ref.startsWith('C') )
-                        {
-                            compObj.type = "Condensateur(s)";
-                        }
-                        if ( compObj.ref.startsWith('D') )
-                        {
-                            compObj.type = "Diode(s)";
-                        }
-                        if ( compObj.ref.startsWith('U') || compObj.ref.startsWith('IC') )
-                        {
-                            compObj.type = "Circuit Intégré(s)";
-                        }
-                        if ( compObj.ref.startsWith('Q') || compObj.ref.startsWith('T') )
-                        {
-                            compObj.type = "Transistor(s)";
-                        }
-                        if ( compObj.ref.startsWith('J') || compObj.ref.startsWith('P'))
-                        {
-                            compObj.type = "Connecteur(s)";
-                        }
-                    }
-                }
-                if ( lcomp.includes("F 1") )
-                {
-                    compObj.val = lcomp.split(" ")[2];
-                }
-                if ( lcomp.includes("F 2") )
-                {
-                    compObj.footprint = lcomp.split(" ")[2];
-                }
-                if ( lcomp.toLowerCase().includes("mfr. no") ){
-                    compObj.mfrnum = lcomp.split(" ")[2];
-                }
-                if ( lcomp.toLowerCase().includes("digikey") ){
-                    compObj.digikey = lcomp.split(" ")[2];
-                }
-                if ( lcomp.toLowerCase().includes("mouser") ){
-                    compObj.mouser = lcomp.split(" ")[2];
-                }
-            });
-
-            if ( compObj.ref )
-                fileList.components.push(compObj);
-        });
-
-        return fileList.components;
-    }).then((components) => { 
-
-        let bom = {};
-        components.map(component => {
-            if ( bom[component.type] == undefined )
-                bom[component.type] = {};
-
-            if (bom[component.type][component.val] == undefined )
-                bom[component.type][component.val] = {};
-
-            if (bom[component.type][component.val].refs == undefined )
-                bom[component.type][component.val].refs = [];
-
-            bom[component.type][component.val].refs.push(component.ref);
-            bom[component.type][component.val].footprint = component.footprint;
-            bom[component.type][component.val].digikey = component.digikey;
-            bom[component.type][component.val].mouser = component.mouser;
-            bom[component.type][component.val].mfrnum = component.mfrnum;
-            
-        });
-
-        let listTemp = [];
-        for ( let key in bom)
-        {
-            for ( let key2 in bom[key]){
-
-                let objRefs = {};
-                let refs = [];
-                bom[key][key2].refs.map((ref , idx ) => {
-                    if (objRefs[ref] == undefined ){
-                        objRefs[ref] = true;
-                    }
-                }) 
-                
-                for ( let ref in objRefs)
-                    refs.push(ref);
-   
-                listTemp.push({ 
-                    val : key2 ,
-                    nbRefs : refs.length ,
-                    refs :  refs ,
-                    type : key ,
-                    footprint : bom[key][key2].footprint ,
-                    digikey : bom[key][key2].digikey,
-                    mouser : bom[key][key2].mouser,
-                    mfrnum : bom[key][key2].mfrnum,
-                });               
-            }
-
-        }
-
-        listTemp.map((comp) => {
-            if ( fileList.bom[comp.type] == undefined )
-                fileList.bom[comp.type] = [];
-
-            fileList.bom[comp.type].push(comp);
-        });
-
-        return fileList.bom;
-    }).then((bom) => {
-
-        return bom
-    }).catch(( err ) => {
-
-        if ( err == undefined)
-        {
-            err = { message : "Une erreur est survenue a l'ouverture du fichier" }
-        }
-
-        throw new Error(err.message);
-    })
-}
-*/
 const check = ( fileContent) => {
 
     return fileContent.toLowerCase().includes("eeschema");

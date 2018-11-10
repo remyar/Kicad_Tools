@@ -1,34 +1,3 @@
-
-/*import axios from 'axios';
-
-const get = ( component )=> {
-
-    var url = "http://octopart.com/api/v3/parts/match";
-    url += "?apikey=91662e8c";
-    url += "&callback=?";
-
-    var queries = [
-        {
-            'mpn': component ,
-        },         
-    ]; 
-
-    var args = {
-        queries: JSON.stringify(queries)
-    };
-
-
-    let promises = [];
-
-    return axios.get(url,{params : args}).then((response) => {
-
-        let str = response.data.substr(2);
-        str=str.substr(0 , str.length-1 );
-        return JSON.parse(str).results;
-    }) 
-}
-*/
-
 import soap, { createClient } from 'soap';
 import { resolve } from 'url';
 

@@ -9,11 +9,11 @@ import bomPage from './pages/bom.vue';
 import eagleSymbolPage from './pages/eagleLib.vue';
 import convertPcbToFootprint from './pages/convertPcbToFootprint.vue'
 import VueRouter from 'vue-router';
-import VueI18n from 'vue-i18n'
+import VuexI18n from 'vuex-i18n';
 
 const app = require('electron').remote.app;
 
-Vue.use(VueI18n);
+Vue.use(VuexI18n.plugin, store);
 Vue.use(VueRouter);
 
 // 2. Define some routes
@@ -37,26 +37,19 @@ const router = new VueRouter({
   routes // short for `routes: routes`
 })
 
-let messages = {};
 const langue = ['fr' , 'en'];
 
 langue.map((lang ) => {
 
   let l = require('./i18n/' + lang + '.json');
 
-  messages[lang] = {};
-  messages[lang] = Object.assign({}, l);
+  Vue.i18n.add(lang, Object.assign({}, l));
 
 });
 
-console.log(app.getLocale());
-
-// Create VueI18n instance with options
-const i18n = new VueI18n({
-  locale: app.getLocale() , // set locale
-  fallbackLocale: 'en',
-  messages , // set locale messages
-})
+// set the start locale to use
+Vue.i18n.set(app.getLocale());
+Vue.i18n.set('en');
 
 
 // 4. Create and mount the root instance.
@@ -66,6 +59,5 @@ new Vue({
   el: '#app',
   store,
   router,
-  i18n ,
   render : h => h ( App )
 })

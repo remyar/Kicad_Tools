@@ -11,9 +11,26 @@
         "kicadPcbToFootprint" : "Kicad PCB en Footprint"
     },
     "bom" : {
-        "resistance" : "Résistance(s)"
+        "R" : "Résistance(s)",
+        "C" : "Condensateur(s)",
+        "D" : "Diode(s)",
+        "U" : "Circuit Intégré(s)",
+        "Q" : "Transistor(s)",
+        "J" : "Connecteur(s)",
+        "Identification" : "Identification",
+        "Value" : "Valeur",
+        "Quantity" : "Quantité",
+        "MfrNum" : "Référence fabricant",
+        "UnitPrice" :"Prix Unit.",
+        "TotalPrice" : "Prix Tot."
     },
     "save" : {
         "asPDF" : "Exporter en PDF"
+    },
+    "msg" : {
+        "error" : {
+            "notKicadProject" : "Ceci n'est pas un projet Kicad",
+            "errorOpeningFile" : "Une erreur est survenue a l'ouverture du fichier"
+        }
     }
 }
