@@ -1,0 +1,71 @@
+{
+    "name": "kicadtools",
+    "version": "0.1.0",
+    "description": "A lot of tools for Kicad",
+    "main": "./main.js",
+    "scripts": {
+        "start": "electron main.js",
+        "webpack": "webpack --progress",
+        "dist": "electron-builder"
+    },
+    "author": "ARNAUDIN Rémy",
+    "build": {
+        "asar": false,
+        "directories": {
+            "output": "build"
+        },
+        "publish": [{
+            "owner": "WesterosCraftCode",
+            "repo": "ElectronLauncher",
+            "provider": "github"
+            
+        }],
+        "win": {
+            "icon": "res/icons/kicad_tools.ico",
+            "files": [
+                "!builds/*",
+                "!webpack*",
+                "!src/*",
+                "!node_modules/*",
+                "!.vscode/*"
+            ]
+        }
+    },
+    "dependencies": {
+        "electron-fetch": "^1.3.0",
+        "electron-updater": "^4.1.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.5.4",
+        "@babel/plugin-proposal-class-properties": "^7.5.0",
+        "@babel/plugin-transform-async-to-generator": "^7.5.0",
+        "@babel/plugin-transform-regenerator": "7.4.5",
+        "@babel/polyfill": "^7.4.4",
+        "@babel/preset-env": "^7.5.4",
+        "@babel/preset-react": "^7.0.0",
+        "@material-ui/core": "^4.2.0",
+        "@material-ui/icons": "^4.2.1",
+        "babel-loader": "^8.0.6",
+        "connected-react-router": "^6.5.2",
+        "css-loader": "^3.0.0",
+        "electron-builder": "^21.0.15",
+        "electron": "5.0.6",
+        "electron-reload": "^1.4.0",
+        "file-loader": "^4.0.0",
+        "html-webpack-plugin": "^3.2.0",
+        "jspdf": "^1.5.3",
+        "jspdf-autotable": "^3.1.2",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-intl": "^2.9.0",
+        "react-redux": "^7.1.0",
+        "react-router-dom": "^5.0.1",
+        "redux": "^4.0.4",
+        "redux-saga": "^1.0.5",
+        "style-loader": "^0.23.1",
+        "typeface-roboto": "0.0.54",
+        "webpack": "^4.35.3",
+        "webpack-cli": "^3.3.5",
+        "xml2js": "^0.4.19"
+    }
+}
