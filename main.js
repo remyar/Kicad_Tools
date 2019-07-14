@@ -7,7 +7,7 @@ var pjson = require('./package.json');
 const app = electron.app
 
 // Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const BrowserWindow = electron.BrowserWindow;
 
 //require('electron-reload')(__dirname);
 
@@ -22,8 +22,13 @@ function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 1024, height: 768 , webPreferences: {
         nodeIntegration: true
-    }})
+    } ,
+        toolbar: false,
+        skipTaskbar: true,
+    })
 
+    mainWindow.setMenu(null);
+    
     mainWindow.maximize();
 
     // and load the index.html of the app.

@@ -1,6 +1,6 @@
 {
     "name": "kicadtools",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A lot of tools for Kicad",
     "main": "./main.js",
     "scripts": {
@@ -22,6 +22,7 @@
         }],
         "win": {
             "icon": "res/icons/kicad_tools.ico",
+            "publish":[{"provider": "generic", "url": "https://github.com/remyar/Kicad_Tools/"}],
             "files": [
                 "!builds/*",
                 "!webpack*",
