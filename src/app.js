@@ -18,8 +18,29 @@ class App extends React.Component {
         this.state = { 
             drawer : {
                 open : false,
-            }
+            },
+            snackBar : [],
         }
+    }
+
+    static getDerivedStateFromProps(props, state){
+        if ( props.enqueueSnackbar != undefined ){
+            props.snackBar.map((msg)=>{
+                let found = false;
+                state.snackBar.map((snck)=>{
+                    if ( snck.time == msg.time ){
+                        found = true;
+                    }
+                });
+
+                if ( found == false ){
+                    state.snackBar.push(msg);
+                    props.enqueueSnackbar('Successfully fetched the data.');
+                }
+            })
+            
+        }
+        return state;
     }
 
     _openDrawer(){
@@ -58,8 +79,19 @@ function mapStateToProps(state){
             autoDisplayProress = true;
         }
     }
+
+    let snackBar = [];
+    for ( let key in state ){
+        let s = state[key];
+
+        if ( s.snackBar != undefined ){
+            snackBar.push(s.snackBar);
+        }
+    }
+
     return {
-        progress : { data : { display : autoDisplayProress } }
+        progress : { data : { display : autoDisplayProress } },
+        snackBar : snackBar,
     }
 }
 

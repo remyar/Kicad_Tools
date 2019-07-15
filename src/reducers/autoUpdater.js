@@ -1,4 +1,4 @@
-import autoUpdater from '../actions/autoUpdater';
+import { AUTOUPDATER_UPDATE_AVAILABLE , AUTOUPDATER_START_UPDATE , AUTOUPDATER_UPDATE_SUCESS} from '../actions/autoUpdater';
 
 const initialState = {
     data: [],
@@ -7,26 +7,28 @@ const initialState = {
 }
 
 export default function dataReducer (state = initialState, action) {
+    console.log(action.type);
     switch (action.type) {
-        case ( autoUpdater.AUTOUPDATER_UPDATE_AVAILABLE ):{
+        case ( AUTOUPDATER_UPDATE_AVAILABLE ):{
             return {
                 ...state,
-                data: [],
+                data: action.data,
                 isLoading: false
             }
         }
-        case ( autoUpdater.AUTOUPDATER_START_UPDATE  ):{
+        case ( AUTOUPDATER_START_UPDATE  ):{
             return {
                 ...state,
                 isLoading: false,
                 data: action.data
             }
         }
-        case ( autoUpdater.AUTOUPDATER_UPDATE_SUCESS ):{
+        case ( AUTOUPDATER_UPDATE_SUCESS ):{
             return {
                 ...state,
                 isLoading: false,
-                error : action.data
+                snackBar: action.data,
+                time : new Date().getTime()
             }
         }
         default:

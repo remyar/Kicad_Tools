@@ -52,7 +52,7 @@ autoUpdater(store.dispatch, store.getState);
 sagaMiddleware.run(sagas)
 
 // store as GLOBAL
-//window.__redux__ = store;
+window.__redux__ = store;
 
 ReactDOM.render(
     <Provider store={store}>

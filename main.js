@@ -24,8 +24,8 @@ function createWindow () {
     mainWindow = new BrowserWindow({width: 1024, height: 768 , webPreferences: {
         nodeIntegration: true
     } ,
-        toolbar: false,
-        skipTaskbar: true,
+        //toolbar: false,
+        //skipTaskbar: true,
     })
 
     mainWindow.setMenu(null);
