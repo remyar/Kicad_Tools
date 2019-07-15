@@ -9,6 +9,8 @@ import ProgressBar from './components/ProgressBar';
 import HomePage from './pages/home';
 import BomPage from './pages/bom'
 
+import { withSnackbar } from 'notistack';
+
 class App extends React.Component {
 
     constructor(props){
@@ -61,4 +63,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(withSnackbar(App));

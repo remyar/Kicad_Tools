@@ -7,6 +7,7 @@ import {MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { routerMiddleware , ConnectedRouter } from 'connected-react-router';
 import { createHashHistory   } from 'history';
 import { IntlProvider, addLocaleData } from 'react-intl';
+import { SnackbarProvider } from 'notistack';
 
 import 'typeface-roboto';
 
@@ -28,6 +29,8 @@ import it from 'react-intl/locale-data/it';
 // Our translated strings
 import localeData from './locales/data.json';
 
+import autoUpdater from './actions/autoUpdater';
+
 addLocaleData([...en, ...es, ...fr, ...it]);
 
 // Define user's language. Different browsers have the user locale defined
@@ -44,6 +47,8 @@ const languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
 const messages = localeData[languageWithoutRegionCode] || localeData[language] || localeData.en;
 
 let store = createStore( reducers(history) , applyMiddleware(sagaMiddleware , routerMiddleware(history)) );
+autoUpdater(store.dispatch, store.getState);
+
 sagaMiddleware.run(sagas)
 
 // store as GLOBAL
@@ -54,7 +59,9 @@ ReactDOM.render(
         <IntlProvider locale={language} messages={messages}>
             <MuiThemeProvider theme={myTheme}>
                 <ConnectedRouter history={history}>
-                    <App />
+                    <SnackbarProvider maxSnack={3} >
+                        <App />
+                    </SnackbarProvider>
                 </ConnectedRouter>
             </MuiThemeProvider>
         </IntlProvider>
