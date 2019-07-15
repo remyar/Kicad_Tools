@@ -93,7 +93,10 @@ autoUpdater.on('error', (ev, err) => {
 });
 
 autoUpdater.on('download-progress', (ev, progressObj) => {
-    console.log('Download progress...');
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    console.log(log_message);
 });
 
 autoUpdater.on('update-downloaded', (ev, info) => {
