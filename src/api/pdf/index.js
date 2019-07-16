@@ -5,6 +5,9 @@ import robotoFont from './roboto_regular';
 import robotoBoldFont from './roboto_bold';
 import kicadImg from './kicad_img';
 
+import Translate from '../../locales/translate';
+
+
 function exportBom( bom ){
     return new Promise((resolve , reject) => {
         let pdf = new jsPDF('p' , 'pt');
@@ -18,12 +21,12 @@ function exportBom( bom ){
         // Returns a new array each time to avoid pointer issues
         function _getColumns () {
             return [
-                {title: 'bom.Identification' , dataKey: "ref"},
-                {title: 'bom.Value', dataKey: "value"},
-                {title: 'bom.Quantity', dataKey: "qty"},
-                {title: 'bom.MfrNum', dataKey: "mfrnum"},
-                {title: 'bom.UnitPrice', dataKey: "price"},
-                {title: 'bom.TotalPrice', dataKey: "priceTot"}
+                {title: Translate.getMessages({id : 'bom.ident' }) , dataKey: "ref"},
+                {title: 'bom.value', dataKey: "value"},
+                {title: 'bom.quantity', dataKey: "qty"},
+                {title: 'bom.mfrnum', dataKey: "mfrnum"},
+                {title: 'bom.punit', dataKey: "price"},
+                {title: 'bom.ptotal', dataKey: "priceTot"}
             ];
         };
     

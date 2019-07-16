@@ -1,6 +1,6 @@
 import '@babel/polyfill'
 import Action from '../actions';
-import { AUTOUPDATER_UPDATE_SUCESS , AUTOUPDATER_START_UPDATE } from '../actions/autoUpdater';
+import { AUTOUPDATER_START_UPDATE } from '../actions/autoUpdater';
 import { put, takeEvery } from 'redux-saga/effects'
 import KicadBom from './kicad_bom';
 import ExportBom from './export_bom';

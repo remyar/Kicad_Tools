@@ -11,11 +11,16 @@
         "bom.ident" : "Identification",
         "bom.value" : "Valeur",
         "bom.quantity" : "Quantité",
-        "bom.mfrnum" : "Ref Frabriquant",
+        "bom.mfrnum" : "Ref Fabriquant",
         "bom.punit" : "Prix Unitaire",
         "bom.ptotal" : "Prix Total",
 
-        "progress.title" : "Chargement ..."
+        "progress.title" : "Chargement ...",
+
+        "update.available" : "Mise a jours disponible",
+        "update.download" : "Téléchargement en cours",
+        "update.downloaded" : "Mise a jours téléchargée",
+        "update.apply" : "Quitter l'application pour appliquer la mise a jour"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -33,6 +38,11 @@
         "bom.punit" : "Unit Price",
         "bom.ptotal" : "Total Price",
 
-        "progress.title" : "Loading ..."
+        "progress.title" : "Loading ...",
+
+        "update.available" : "Update available",
+        "update.download" : "Download in progress",
+        "update.downloaded" : "Update downloaded",
+        "update.apply" : "Quit for apply update"
     }
 }

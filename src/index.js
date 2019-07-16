@@ -9,6 +9,8 @@ import { createHashHistory   } from 'history';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { SnackbarProvider } from 'notistack';
 
+import translate from './locales/translate';
+
 import 'typeface-roboto';
 
 import reducers from './reducers';
@@ -27,24 +29,11 @@ import es from 'react-intl/locale-data/es';
 import fr from 'react-intl/locale-data/fr';
 import it from 'react-intl/locale-data/it';
 // Our translated strings
-import localeData from './locales/data.json';
+//import localeData from './locales/data.json';
 
 import autoUpdater from './actions/autoUpdater';
 
 addLocaleData([...en, ...es, ...fr, ...it]);
-
-// Define user's language. Different browsers have the user locale defined
-// on different fields on the `navigator` object, so we make sure to account
-// for these different by checking all of them
-const language = (navigator.languages && navigator.languages[0]) ||
-                     navigator.language ||
-                     navigator.userLanguage;
- 
-// Split locales with a region code
-const languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
- 
-// Try full locale, try locale without region code, fallback to 'en'
-const messages = localeData[languageWithoutRegionCode] || localeData[language] || localeData.en;
 
 let store = createStore( reducers(history) , applyMiddleware(sagaMiddleware , routerMiddleware(history)) );
 autoUpdater(store.dispatch, store.getState);
@@ -56,7 +45,7 @@ window.__redux__ = store;
 
 ReactDOM.render(
     <Provider store={store}>
-        <IntlProvider locale={language} messages={messages}>
+        <IntlProvider locale={translate.getLanguage()} messages={translate.getMessages()}>
             <MuiThemeProvider theme={myTheme}>
                 <ConnectedRouter history={history}>
                     <SnackbarProvider maxSnack={3} >

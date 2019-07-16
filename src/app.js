@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router';
 import { connect } from 'react-redux'
+import {injectIntl} from 'react-intl';
 
 import AppBar from './components/AppBar';
 import Drawer from './components/Drawer';
@@ -35,6 +36,13 @@ class App extends React.Component {
 
                 if ( found == false ){
                     state.snackBar.push(snk);
+                    let message = props.intl.formatMessage({id : snk.message});
+                    if ( snk.messageSup != undefined){
+                        message += snk.messageSup.toString();
+                    }
+
+                    snk.message = message;
+
                     props.enqueueSnackbar(snk.message , snk);
                 }
             })
@@ -95,4 +103,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps)(withSnackbar(App));
+export default connect(mapStateToProps)(withSnackbar(injectIntl(App)));

@@ -76,6 +76,8 @@ app.on('activate', function () {
 //autoUpdater.checkForUpdatesAndNotify()
 autoUpdater.currentVersion = pjson.version
 
+let eventTab =[];
+
 autoUpdater.on('checking-for-update', () => {
     console.log('Checking for update...');
 });
@@ -83,6 +85,14 @@ autoUpdater.on('checking-for-update', () => {
 autoUpdater.on('update-available', (info) => {
     console.log('Update available.');
     console.log(info);
+
+    eventTab =[
+        { percent : 0 , isSend : false },
+        { percent : 25 , isSend : false },
+        { percent : 50 , isSend : false },
+        { percent : 75 , isSend : false },
+        { percent : 100 , isSend : false },
+    ];
 
     if ( mainWindow != undefined ){
         mainWindow.webContents.send('update-available', info);
@@ -104,16 +114,25 @@ autoUpdater.on('download-progress', (progressObj) => {
     console.log(log_message);
 
     if ( mainWindow != undefined ){
-        mainWindow.webContents.send('download-progress', progressObj);
+
+        let val = parseInt(progressObj.percent.toString());
+
+        eventTab.map((e , idx)=>{
+            if ( val >= e.percent && e.isSend == false ){
+                mainWindow.webContents.send('download-progress', progressObj);
+                eventTab[idx].isSend = true;
+            }
+        })
     }
 });
 
 autoUpdater.on('update-downloaded', (info) => {
     console.log('Update downloaded; will install in 30 seconds');
     console.log(info);
-    setTimeout(()=>{
-        if ( mainWindow != undefined ){
-            mainWindow.webContents.send('update-downloaded', info);
-        }
-    } , 30000);
+    if ( mainWindow != undefined ){
+        mainWindow.webContents.send('update-downloaded', info);
+        setTimeout(()=>{
+            mainWindow.webContents.send('update-quitForApply', info);
+        },2000)
+    }
 });
