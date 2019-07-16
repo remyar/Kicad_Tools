@@ -1,5 +1,4 @@
 const electron = require('electron');
-//const fetch = require('electron-fetch').default;
 const { autoUpdater } = require("electron-updater");
 let ipc = electron.ipcMain;
 var pjson = require('./package.json');
@@ -110,10 +109,11 @@ autoUpdater.on('download-progress', (progressObj) => {
 });
 
 autoUpdater.on('update-downloaded', (info) => {
-    console.log('Update downloaded; will install in 5 seconds');
+    console.log('Update downloaded; will install in 30 seconds');
     console.log(info);
-
-    if ( mainWindow != undefined ){
-        mainWindow.webContents.send('update-downloaded', info);
-    }
+    setTimeout(()=>{
+        if ( mainWindow != undefined ){
+            mainWindow.webContents.send('update-downloaded', info);
+        }
+    } , 30000);
 });

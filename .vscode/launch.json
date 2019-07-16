@@ -39,7 +39,7 @@
                 "webpack-internal:///*": "${workspaceRoot}/*",
                 "webpack-internal://*": "${workspaceRoot}/*"
             },
-            //"preLaunchTask": "npm: webpack"
+            "preLaunchTask": "npm: webpack"
         },
     ]
 }

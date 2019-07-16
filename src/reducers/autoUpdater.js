@@ -24,10 +24,16 @@ export default function dataReducer (state = initialState, action) {
             }
         }
         case ( AUTOUPDATER_UPDATE_SUCESS ):{
+
+            let snackBarObj = {};
+
+            snackBarObj.message = "Download Update Success";
+            snackBarObj.variant = 'success';
+            snackBarObj.preventDuplicate = true;
             return {
                 ...state,
                 isLoading: false,
-                snackBar: action.data,
+                snackBar: snackBarObj,
                 time : new Date().getTime()
             }
         }

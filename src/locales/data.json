@@ -13,7 +13,9 @@
         "bom.quantity" : "Quantité",
         "bom.mfrnum" : "Ref Frabriquant",
         "bom.punit" : "Prix Unitaire",
-        "bom.ptotal" : "Prix Total"
+        "bom.ptotal" : "Prix Total",
+
+        "progress.title" : "Chargement ..."
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -29,6 +31,8 @@
         "bom.quantity" : "Quantity",
         "bom.mfrnum" : "Manufacturer Ref",
         "bom.punit" : "Unit Price",
-        "bom.ptotal" : "Total Price"
+        "bom.ptotal" : "Total Price",
+
+        "progress.title" : "Loading ..."
     }
 }

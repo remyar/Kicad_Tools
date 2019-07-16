@@ -9,7 +9,7 @@ export default function (dispatch, getState) {
 
     electron.ipcRenderer.on('update-available', (event , message) => {
         console.log(message)
-        dispatch({type : AUTOUPDATER_UPDATE_AVAILABLE , message });
+        dispatch({type : AUTOUPDATER_UPDATE_AVAILABLE , data : message });
     });
 
     electron.ipcRenderer.on('download-progress', (event , message) => {
@@ -20,6 +20,6 @@ export default function (dispatch, getState) {
     
     electron.ipcRenderer.on('update-downloaded', (event , message) => {
         console.log(message)
-        dispatch({type : AUTOUPDATER_UPDATE_SUCESS , message });
+        dispatch({type : AUTOUPDATER_UPDATE_SUCESS , data : message });
     });
 }

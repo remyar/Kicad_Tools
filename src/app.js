@@ -19,23 +19,23 @@ class App extends React.Component {
             drawer : {
                 open : false,
             },
-            snackBar : [],
+            snackBar : []
         }
     }
 
     static getDerivedStateFromProps(props, state){
         if ( props.enqueueSnackbar != undefined ){
-            props.snackBar.map((msg)=>{
+            props.snackBar.map((snk)=>{
                 let found = false;
                 state.snackBar.map((snck)=>{
-                    if ( snck.time == msg.time ){
+                    if ( snck.time == snk.time ){
                         found = true;
                     }
                 });
 
                 if ( found == false ){
-                    state.snackBar.push(msg);
-                    props.enqueueSnackbar('Successfully fetched the data.');
+                    state.snackBar.push(snk);
+                    props.enqueueSnackbar(snk.message , snk);
                 }
             })
             
