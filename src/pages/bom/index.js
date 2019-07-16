@@ -77,7 +77,20 @@ class BomPage extends React.Component {
                         <TableRow style={{height : '30px' }}>
                             <CustomTableCell>
                             <Grid container spacing={24}>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={4}>
+                                        {intl.formatMessage({id : 'bom.ident'})}
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        {intl.formatMessage({id : 'bom.value'})}
+                                    </Grid>
+                                    <Grid item xs={1}>
+                                        {intl.formatMessage({id : 'bom.quantity'})}
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        {intl.formatMessage({id : 'bom.mfrnum'})}
+                                    </Grid>
+
+                                   {/*  <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.ident'})}
                                     </Grid>
                                     <Grid item xs={2}>
@@ -89,12 +102,12 @@ class BomPage extends React.Component {
                                     <Grid item xs={3}>
                                         {intl.formatMessage({id : 'bom.mfrnum'})}
                                     </Grid>
-                                    <Grid item xs={2}>
+                                   <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.punit'})}
                                     </Grid>
                                     <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.ptotal'})}
-                                    </Grid>
+    </Grid>*/}
                                 </Grid>
                             </CustomTableCell>
                         </TableRow>
@@ -121,7 +134,20 @@ class BomPage extends React.Component {
                                     return  <TableRow className={classes.row} key={row.type + '_value_' + idx}>
                                         <CustomTableCell component="th" scope="row">
                                             <Grid container spacing={24}>
-                                                <Grid item xs={2}>
+                                                <Grid item xs={4}>
+                                                    {row.refs.join(' ,')}
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    {row.val}
+                                                </Grid>
+                                                <Grid item xs={1}>
+                                                    {row.nbRefs}
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                    {row.mfrnum}
+                                                </Grid>
+
+                                         {/*       <Grid item xs={2}>
                                                     {row.refs.join(' ,')}
                                                 </Grid>
                                                 <Grid item xs={2}>
@@ -138,7 +164,7 @@ class BomPage extends React.Component {
                                                 </Grid>
                                                 <Grid item xs={2}>
                                                     {row.totalPrice}
-                                                </Grid>
+                                </Grid>*/}
                                             </Grid>
                                         </CustomTableCell>
                                     </TableRow>
