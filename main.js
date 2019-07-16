@@ -1,6 +1,6 @@
 const electron = require('electron');
-//const fetch = require('electron-fetch').default;
 const { autoUpdater } = require("electron-updater");
+let ipc = electron.ipcMain;
 var pjson = require('./package.json');
 
 // Module to control application life.
@@ -23,8 +23,8 @@ function createWindow () {
     mainWindow = new BrowserWindow({width: 1024, height: 768 , webPreferences: {
         nodeIntegration: true
     } ,
-        toolbar: false,
-        skipTaskbar: true,
+        //toolbar: false,
+        //skipTaskbar: true,
     })
 
     mainWindow.setMenu(null);
@@ -80,8 +80,13 @@ autoUpdater.on('checking-for-update', () => {
     console.log('Checking for update...');
 });
 
-autoUpdater.on('update-available', (ev, info) => {
+autoUpdater.on('update-available', (info) => {
     console.log('Update available.');
+    console.log(info);
+
+    if ( mainWindow != undefined ){
+        mainWindow.webContents.send('update-available', info);
+    }
 });
 
 autoUpdater.on('update-not-available', (ev, info) => {
@@ -92,10 +97,23 @@ autoUpdater.on('error', (ev, err) => {
     console.log('Error in auto-updater.');
 });
 
-autoUpdater.on('download-progress', (ev, progressObj) => {
-    console.log('Download progress...');
+autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    console.log(log_message);
+
+    if ( mainWindow != undefined ){
+        mainWindow.webContents.send('download-progress', progressObj);
+    }
 });
 
-autoUpdater.on('update-downloaded', (ev, info) => {
-    console.log('Update downloaded; will install in 5 seconds');
+autoUpdater.on('update-downloaded', (info) => {
+    console.log('Update downloaded; will install in 30 seconds');
+    console.log(info);
+    setTimeout(()=>{
+        if ( mainWindow != undefined ){
+            mainWindow.webContents.send('update-downloaded', info);
+        }
+    } , 30000);
 });

@@ -11,6 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Home from '@material-ui/icons/Home';
+import Memory from '@material-ui/icons/Memory';
 
 const styles = {
     drawerStyle : {
@@ -49,7 +50,7 @@ class MyDrawer extends React.Component {
                     <Link to="/bom" className={classes.noStyle}>
                         <ListItem button >
                             <ListItemIcon>
-                                <AccountCircle />
+                                <Memory />
                             </ListItemIcon>
 
                             <ListItemText primary={intl.formatMessage({id : 'nav.generate.bom'})}  secondary={intl.formatMessage({id : 'nav.generate.bom.desc'})}  />

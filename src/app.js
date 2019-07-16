@@ -9,6 +9,8 @@ import ProgressBar from './components/ProgressBar';
 import HomePage from './pages/home';
 import BomPage from './pages/bom'
 
+import { withSnackbar } from 'notistack';
+
 class App extends React.Component {
 
     constructor(props){
@@ -16,8 +18,29 @@ class App extends React.Component {
         this.state = { 
             drawer : {
                 open : false,
-            }
+            },
+            snackBar : []
         }
+    }
+
+    static getDerivedStateFromProps(props, state){
+        if ( props.enqueueSnackbar != undefined ){
+            props.snackBar.map((snk)=>{
+                let found = false;
+                state.snackBar.map((snck)=>{
+                    if ( snck.time == snk.time ){
+                        found = true;
+                    }
+                });
+
+                if ( found == false ){
+                    state.snackBar.push(snk);
+                    props.enqueueSnackbar(snk.message , snk);
+                }
+            })
+            
+        }
+        return state;
     }
 
     _openDrawer(){
@@ -56,9 +79,20 @@ function mapStateToProps(state){
             autoDisplayProress = true;
         }
     }
+
+    let snackBar = [];
+    for ( let key in state ){
+        let s = state[key];
+
+        if ( s.snackBar != undefined ){
+            snackBar.push(s.snackBar);
+        }
+    }
+
     return {
-        progress : { data : { display : autoDisplayProress } }
+        progress : { data : { display : autoDisplayProress } },
+        snackBar : snackBar,
     }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(withSnackbar(App));
