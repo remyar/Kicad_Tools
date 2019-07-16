@@ -21,12 +21,12 @@ function exportBom( bom ){
         // Returns a new array each time to avoid pointer issues
         function _getColumns () {
             return [
-                {title: Translate.getMessages({id : 'bom.ident' }) , dataKey: "ref"},
-                {title: 'bom.value', dataKey: "value"},
-                {title: 'bom.quantity', dataKey: "qty"},
-                {title: 'bom.mfrnum', dataKey: "mfrnum"},
-                {title: 'bom.punit', dataKey: "price"},
-                {title: 'bom.ptotal', dataKey: "priceTot"}
+                {title: Translate.formatMessage({id : 'bom.ident' }) , dataKey: "ref"},
+                {title: Translate.formatMessage({id : 'bom.value' }) , dataKey: "value"},
+                {title: Translate.formatMessage({id : 'bom.quantity'}), dataKey: "qty"},
+                {title: Translate.formatMessage({id : 'bom.mfrnum'}), dataKey: "mfrnum"},
+                /*{title: Translate.formatMessage({id : 'bom.punit'}), dataKey: "price"},
+                {title: Translate.formatMessage({id : 'bom.ptotal'}), dataKey: "priceTot"}*/
             ];
         };
     
@@ -54,8 +54,8 @@ function exportBom( bom ){
                 c.qty = comp.nbRefs;
                 TotalParts += comp.nbRefs;
                 c.mfrnum = comp.mfrnum;
-                c.price = comp.unitPrice;
-                c.priceTot = comp.totalPrice;
+                //c.price = comp.unitPrice;
+                //c.priceTot = comp.totalPrice;
                 rows.push(c);
             });
             

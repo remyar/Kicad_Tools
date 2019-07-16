@@ -6,6 +6,12 @@ function formatMessage (obj){
 
     if ( obj.id != undefined ){
         returnText = obj.id;
+
+        let msg = getMessages()[returnText];
+
+        if ( msg != undefined ){
+            returnText = msg;
+        }
     }
 
     return returnText;
