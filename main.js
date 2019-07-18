@@ -3,7 +3,7 @@ const { autoUpdater } = require("electron-updater");
 let ipc = electron.ipcMain;
 var pjson = require('./package.json');
 var logger = require('electron-logger');
-logger.setOutput({file:"./tmp.log"});
+logger.setOutput({file:"./../../kicadtools/log.log"});
 autoUpdater.logger = logger;
 // Module to control application life.
 const app = electron.app
