@@ -6,6 +6,9 @@
         "nav.home" : "Accueil",
         "nav.home.desc" : "Revenir a l'accueil",
 
+        "nav.settings" : "Paranétres",
+        "nav.settings.desc" : "Paranétres de l'application",
+
         "bom.load" : "Charger BOM",
         "bom.export.pdf" : "Exporter en PDF",
         "bom.ident" : "Identification",
@@ -29,6 +32,9 @@
 
         "nav.home" : "Home",
         "nav.home.desc" : "Got to home",
+
+        "nav.settings" : "Settings",
+        "nav.settings.desc" : "Application's settings",
 
         "bom.load" : "Open BOM",
         "bom.export.pdf" : "Export to PDF",

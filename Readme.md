@@ -11,7 +11,7 @@ ARNAUDIN Rémy
 ### Project Information
 - Repository: [github.com](https://github.com/remyar/Kicad_Tools.git)
 
-- Forum: [kiCad.info](https://forum.kicad.info/t/kicad-tools-my-bom-plugin-and-other)
+- Forum: [kiCad.info](https://forum.kicad.info/t/kicad-tools-reborn)
 
 -  Coding Standard
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
