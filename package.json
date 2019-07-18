@@ -1,6 +1,6 @@
 {
     "name": "kicadtools",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "A lot of tools for Kicad",
     "main": "./main.js",
     "scripts": {
@@ -25,8 +25,9 @@
             "icon": "res/icons/kicad_tools.ico",
             "publish": [
                 {
-                    "provider": "generic",
-                    "url": "https://github.com/remyar/Kicad_Tools/"
+                    "provider": "github",
+                    "repo": "Kicad_Tools",
+                    "owner": "remyar"
                 }
             ],
             "artifactName": "${name}-Setup-${version}.${ext}",
@@ -34,12 +35,15 @@
                 "!builds/*",
                 "!webpack*",
                 "!src/*",
+                "!*.log",
                 "!node_modules/*",
+                "!dev-app-update.yml",
                 "!.vscode/*"
             ]
         }
     },
     "dependencies": {
+        "electron-logger": "0.0.3",
         "electron-updater": "^4.1.2"
     },
     "devDependencies": {

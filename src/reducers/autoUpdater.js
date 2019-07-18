@@ -1,4 +1,4 @@
-import { AUTOUPDATER_UPDATE_AVAILABLE , AUTOUPDATER_START_UPDATE , AUTOUPDATER_UPDATE_SUCESS , AUTOUPDATER_EXIT_FOR_UPDATE} from '../actions/autoUpdater';
+import { AUTOUPDATER_UPDATE_AVAILABLE , AUTOUPDATER_START_UPDATE , AUTOUPDATER_UPDATE_SUCESS , AUTOUPDATER_EXIT_FOR_UPDATE , AUTOUPDATER_UPDATE_ERROR} from '../actions/autoUpdater';
 
 const initialState = {
     data: [],
@@ -52,6 +52,18 @@ export default function dataReducer (state = initialState, action) {
 
             snackBarObj.message = "update.apply";
             snackBarObj.variant = 'warning';
+            snackBarObj.time = new Date().getTime();
+            return {
+                ...state,
+                isLoading: false,
+                snackBar: snackBarObj
+            }
+        }
+        case ( AUTOUPDATER_UPDATE_ERROR ):{
+            let snackBarObj = {};
+
+            snackBarObj.message = "update.error";
+            snackBarObj.variant = 'error';
             snackBarObj.time = new Date().getTime();
             return {
                 ...state,

@@ -28,4 +28,9 @@ export default function (dispatch, getState) {
         console.log(message)
         dispatch({type : AUTOUPDATER_EXIT_FOR_UPDATE , data : message });
     });
+
+    electron.ipcRenderer.on('update-error', (event , message) => {
+        console.log(message)
+        dispatch({type : AUTOUPDATER_UPDATE_ERROR , data : message });
+    });
 }

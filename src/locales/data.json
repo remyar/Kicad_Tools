@@ -20,7 +20,8 @@
         "update.available" : "Mise a jours disponible",
         "update.download" : "Téléchargement en cours",
         "update.downloaded" : "Mise a jours téléchargée",
-        "update.apply" : "Quitter l'application pour appliquer la mise a jour"
+        "update.apply" : "Quitter l'application pour appliquer la mise a jour",
+        "update.error" : "Erreur lors de la mise a jours"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -43,6 +44,7 @@
         "update.available" : "Update available",
         "update.download" : "Download in progress",
         "update.downloaded" : "Update downloaded",
-        "update.apply" : "Quit for apply update"
+        "update.apply" : "Quit for apply update",
+        "update.error" : "Update error"
     }
 }

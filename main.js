@@ -2,7 +2,9 @@ const electron = require('electron');
 const { autoUpdater } = require("electron-updater");
 let ipc = electron.ipcMain;
 var pjson = require('./package.json');
-
+var logger = require('electron-logger');
+logger.setOutput({file:"./../../kicadtools/log.log"});
+autoUpdater.logger = logger;
 // Module to control application life.
 const app = electron.app
 
@@ -79,12 +81,12 @@ autoUpdater.currentVersion = pjson.version
 let eventTab =[];
 
 autoUpdater.on('checking-for-update', () => {
-    console.log('Checking for update...');
+    logger.info('Checking for update...');
 });
 
 autoUpdater.on('update-available', (info) => {
-    console.log('Update available.');
-    console.log(info);
+    logger.info('Update available.');
+    logger.info(JSON.stringify(info));
 
     eventTab =[
         { percent : 0 , isSend : false },
@@ -100,18 +102,23 @@ autoUpdater.on('update-available', (info) => {
 });
 
 autoUpdater.on('update-not-available', (ev, info) => {
-    console.log('Update not available.');
+    logger.info('Update not available.');
 });
 
-autoUpdater.on('error', (ev, err) => {
-    console.log('Error in auto-updater.');
+autoUpdater.on('error', (err) => {
+    logger.info('Error in auto-updater.');
+    logger.info(JSON.stringify(err));
+
+    if ( mainWindow != undefined ){
+        mainWindow.webContents.send('update-error', err);
+    }
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
     let log_message = "Download speed: " + progressObj.bytesPerSecond;
     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-    console.log(log_message);
+    logger.info(log_message);
 
     if ( mainWindow != undefined ){
 
@@ -122,17 +129,18 @@ autoUpdater.on('download-progress', (progressObj) => {
                 mainWindow.webContents.send('download-progress', progressObj);
                 eventTab[idx].isSend = true;
             }
-        })
+        });
     }
 });
 
 autoUpdater.on('update-downloaded', (info) => {
-    console.log('Update downloaded; will install in 30 seconds');
-    console.log(info);
+    logger.info('Update downloaded; will install in 30 seconds');
+    logger.info(JSON.stringify(info));
+
     if ( mainWindow != undefined ){
         mainWindow.webContents.send('update-downloaded', info);
         setTimeout(()=>{
             mainWindow.webContents.send('update-quitForApply', info);
-        },2000)
+        },2000);
     }
 });
