@@ -1,8 +1,13 @@
 const electron = require('electron');
 const { autoUpdater } = require("electron-updater");
-let ipc = electron.ipcMain;
+let ipcMain = electron.ipcMain;
 var pjson = require('./package.json');
 var logger = require('electron-logger');
+const fs = require('fs');
+const path = require('path');
+
+
+
 logger.setOutput({file:"./../../kicadtools/log.log"});
 autoUpdater.logger = logger;
 // Module to control application life.
@@ -144,3 +149,23 @@ autoUpdater.on('update-downloaded', (info) => {
         },2000);
     }
 });
+
+
+ipcMain.on('get-settings', (event, arg) => {
+    console.log(arg) // affiche "ping"
+    event.returnValue = 'pong'
+})
+
+fs.readFile(path.resolve(__dirname , '../../kicadtools/settings.json') , 'utf-8' , (err , data )=>{
+
+    let settings = {};
+    if ( err ){
+        logger.info("No Settings Found , apply default");
+    }
+    else{
+        settings = JSON.parse(data);
+    }
+    
+    mainWindow.webContents.send('init-settings', settings);
+
+})
