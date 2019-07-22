@@ -44,6 +44,7 @@
     },
     "dependencies": {
         "electron-logger": "0.0.3",
+        "electron-store": "^4.0.0",
         "electron-updater": "^4.1.2"
     },
     "devDependencies": {

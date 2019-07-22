@@ -6,7 +6,7 @@ import robotoBoldFont from './roboto_bold';
 import kicadImg from './kicad_img';
 
 import Translate from '../../locales/translate';
-
+import Settings from '../../actions/settings';
 
 function exportBom( bom ){
     return new Promise((resolve , reject) => {
@@ -80,7 +80,13 @@ function exportBom( bom ){
         pdf.setFontStyle('bold');
         _addLine();
         //_pushText(file.project);
-        pdf.addImage(kicadImg.img, 'PNG', 400, lineOffset / 2 + 5 , 181/2, 71/2);
+
+        if ( Settings.get('logo') == undefined){
+            pdf.addImage(kicadImg.img, 'PNG', 400, lineOffset / 2 + 5 , 181/2, 71/2);
+        } else {
+            
+        }
+        
         _addLine();
         _addLine();
         pdf.setFontSize(10);    

@@ -31,6 +31,7 @@ class SettingsPage extends React.Component {
     _openBom(){
 
     }
+    
     render(){
         const classes = this.props.classes;
         const intl = this.props.intl;

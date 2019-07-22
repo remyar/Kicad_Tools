@@ -1,5 +1,12 @@
-import electron from 'electron';
+import Api from '../api';
 
-electron.ipcRenderer.on('init-settings', (event , message) => {
-    console.log(message)
-});
+
+
+function get( key ){
+ 
+}
+
+export default {
+
+    get,
+}

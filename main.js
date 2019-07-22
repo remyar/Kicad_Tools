@@ -150,11 +150,12 @@ autoUpdater.on('update-downloaded', (info) => {
     }
 });
 
-
+/*
 ipcMain.on('get-settings', (event, arg) => {
     console.log(arg) // affiche "ping"
     event.returnValue = 'pong'
 })
+
 
 fs.readFile(path.resolve(__dirname , '../../kicadtools/settings.json') , 'utf-8' , (err , data )=>{
 
@@ -169,3 +170,4 @@ fs.readFile(path.resolve(__dirname , '../../kicadtools/settings.json') , 'utf-8'
     mainWindow.webContents.send('init-settings', settings);
 
 })
+*/
