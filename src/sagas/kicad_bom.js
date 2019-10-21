@@ -29,11 +29,18 @@ function _getTypeWithRef(ref){
     return type;
 }
 
-export default function* getKicadBom() {
+export default function* getKicadBom(data) {
     try{
+        console.log(data);
         let fileList = { components : [] , bom : {} };
-
-        let filesList = yield Api.File.openDialog({ name : "Kicad Bom .xml" , extensions : ["xml"] });
+        let fileExt = { name : "Kicad Bom .xml" , extensions : ["xml"] };
+        switch ( data.fileType ){
+            case ( ".pro" ):{
+                fileExt = { name : "Kicad Project .pro" , extensions : ["pro"] };
+                break;
+            }  
+        }
+        let filesList = yield Api.File.openDialog(fileExt);
 
         let dataString = yield Api.File.read(filesList[0]);
 

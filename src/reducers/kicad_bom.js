@@ -12,7 +12,8 @@ export default function dataReducer (state = initialState, action) {
             return {
                 ...state,
                 data: [],
-                isLoading: true
+                isLoading: true,
+                fileType : ".pro"
             }
         }
         case ( Action.kicad_file.KICAD_CREATE_BOM_SUCCESS  ):{

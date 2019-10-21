@@ -55,7 +55,8 @@ class BomPage extends React.Component {
     }
 
     _openBom(){
-        this.props.dispatch(Actions.kicad_file.openKicadBomXml());
+        //this.props.dispatch(Actions.kicad_file.openKicadBomXml());
+        this.props.dispatch(Actions.kicad_file.openKicadProject())
     }
     _exportBomToPdf() {
         this.props.dispatch(Actions.export_file.exportBomToPdf(this.props.KicadBom && this.props.KicadBom.data || {}))

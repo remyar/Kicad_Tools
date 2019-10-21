@@ -8,9 +8,17 @@ function openKicadBomXml(){
     }
 }
 
+function openKicadProject(){
+    return {
+        type : KICAD_CREATE_BOM_START,
+        fileType : ".pro"
+    }
+}
+
 export default {
     KICAD_CREATE_BOM_START,
     KICAD_CREATE_BOM_SUCCESS,
     KICAD_CREATE_BOM_ERROR,
-    openKicadBomXml
+    openKicadBomXml,
+    openKicadProject,
 }
