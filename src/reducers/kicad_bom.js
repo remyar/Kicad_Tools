@@ -8,12 +8,12 @@ const initialState = {
 
 export default function dataReducer (state = initialState, action) {
     switch (action.type) {
+        case ( Action.kicad_file.KICAD_CREATE_BOM_PRO_START ):
         case ( Action.kicad_file.KICAD_CREATE_BOM_START ):{
             return {
                 ...state,
                 data: [],
                 isLoading: true,
-                fileType : ".pro"
             }
         }
         case ( Action.kicad_file.KICAD_CREATE_BOM_SUCCESS  ):{

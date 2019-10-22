@@ -34,12 +34,7 @@ export default function* getKicadBom(data) {
         console.log(data);
         let fileList = { components : [] , bom : {} };
         let fileExt = { name : "Kicad Bom .xml" , extensions : ["xml"] };
-        switch ( data.fileType ){
-            case ( ".pro" ):{
-                fileExt = { name : "Kicad Project .pro" , extensions : ["pro"] };
-                break;
-            }  
-        }
+
         let filesList = yield Api.File.openDialog(fileExt);
 
         let dataString = yield Api.File.read(filesList[0]);

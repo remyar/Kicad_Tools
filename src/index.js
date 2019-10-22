@@ -24,16 +24,14 @@ const history = createHashHistory();
 const sagaMiddleware = createSagaMiddleware()
 
 // i18n datas
-import en from 'react-intl/locale-data/en';
-import es from 'react-intl/locale-data/es';
-import fr from 'react-intl/locale-data/fr';
-import it from 'react-intl/locale-data/it';
+//import en from 'react-intl/locale-data/en';
+//import es from 'react-intl/locale-data/es';
+//import fr from 'react-intl/locale-data/fr';
+//import it from 'react-intl/locale-data/it';
 // Our translated strings
 //import localeData from './locales/data.json';
 
 import autoUpdater from './actions/autoUpdater';
-
-addLocaleData([...en, ...es, ...fr, ...it]);
 
 let store = createStore( reducers(history) , applyMiddleware(sagaMiddleware , routerMiddleware(history)) );
 autoUpdater(store.dispatch, store.getState);

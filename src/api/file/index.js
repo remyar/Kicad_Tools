@@ -15,11 +15,12 @@ function openDialog( filters ){
         dialog.showOpenDialog({       
             properties: ['openFile'],
             filters : filters
-        }, function (files) {
-            if ( files == undefined )
-                return reject("no file selected");
-            else
-                return resolve(files);
+        }).then((data)=>{
+            if ( data.filePaths ){
+                resolve(data.filePaths);
+            }
+        }).catch((err)=>{
+            reject("no file selected");
         });
     });
 }
