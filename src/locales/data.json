@@ -24,7 +24,9 @@
         "update.download" : "Téléchargement en cours",
         "update.downloaded" : "Mise a jours téléchargée",
         "update.apply" : "Quitter l'application pour appliquer la mise a jour",
-        "update.error" : "Erreur lors de la mise a jours"
+        "update.error" : "Erreur lors de la mise a jours",
+
+        "file.open.error" : "Erreur lors de l'ouverture du fichier"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -51,6 +53,8 @@
         "update.download" : "Download in progress",
         "update.downloaded" : "Update downloaded",
         "update.apply" : "Quit for apply update",
-        "update.error" : "Update error"
+        "update.error" : "Update error",
+
+        "file.open.error" : "Open file error"
     }
 }

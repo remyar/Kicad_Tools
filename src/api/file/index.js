@@ -1,6 +1,7 @@
 import {remote}  from 'electron';
 
 const fs = remote.require('fs');
+const path = window.require('path');
 
 function openDialog( filters ){
     let dialog = remote.dialog;
@@ -37,7 +38,35 @@ function read ( file ){
     });
 }
 
+function readList ( files ){
+    let promiseTab = [];
+
+    files.map((file)=>{
+        promiseTab.push(this.read(file));
+    });
+
+    return Promise.all(promiseTab)
+    
+}
+
+function getList ( p , ext ){
+    return new Promise((resolve , reject ) => {
+        let listPath = [];
+        let fileList = fs.readdirSync(p);
+
+        fileList.map((fileName)=>{
+            if ( fileName.endsWith(ext) ){
+                listPath.push(p + "\\" +  fileName );
+            }
+        });
+
+        resolve(listPath);
+    });
+}
+
 export default {
     openDialog,
-    read
+    read,
+    getList,
+    readList
 }

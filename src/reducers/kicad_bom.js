@@ -24,10 +24,15 @@ export default function dataReducer (state = initialState, action) {
             }
         }
         case ( Action.kicad_file.KICAD_CREATE_BOM_ERROR ):{
+            let snackBarObj = {};
+            snackBarObj.message = "file.open.error";
+            snackBarObj.variant = 'error';
+            snackBarObj.time = new Date().getTime();
+
             return {
                 ...state,
                 isLoading: false,
-                error : action.data
+                snackBar: snackBarObj
             }
         }
         default:
