@@ -14,6 +14,7 @@ function _getTypeWithRef(ref){
         { start : "T", ref : "Q" },
         { start : "J", ref : "J" },
         { start : "P", ref : "J" },
+        { start : "XA", ref : "XA" },
     ];
  
     if ( ref != undefined )

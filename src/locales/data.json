@@ -18,6 +18,14 @@
         "bom.punit" : "Prix Unitaire",
         "bom.ptotal" : "Prix Total",
 
+        "bom.R" : "Résistance(s)",
+        "bom.C" : "Condensateur(s)",
+        "bom.J" : "Connecteur(s)",
+        "bom.U" : "Circuit(s) Intégré",
+        "bom.D" : "Diode(s)",
+        "bom.Q" : "Transistor(s)",
+        "bom.XA" : "Diver",
+
         "progress.title" : "Chargement ...",
 
         "update.available" : "Mise a jours disponible",
@@ -46,6 +54,14 @@
         "bom.mfrnum" : "Manufacturer Ref",
         "bom.punit" : "Unit Price",
         "bom.ptotal" : "Total Price",
+
+        "bom.R" : "Resistor(s)",
+        "bom.C" : "Capacitor(s)",
+        "bom.J" : "Connector(s)",
+        "bom.U" : "Integrated Circuit(s)",
+        "bom.D" : "Rectifier(s)",
+        "bom.Q" : "Transistor(s)",
+        "bom.XA" : "Other",
 
         "progress.title" : "Loading ...",
 
