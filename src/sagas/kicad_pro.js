@@ -41,9 +41,10 @@ export default function* getKicadBomPro(data) {
         let dataStringTab = yield Api.File.readList(listingOfFile);
 
         dataStringTab.map((str) => {
-            let component = str.split('$Comp');
+            let components = str.split('$Comp');
 
-            component.map((compo) => {
+            components.map((component) => {
+                let compo = component.split('$EndComp')[0];
                 if ( compo.includes("EESchema Schematic File Version") == false ){
 
                     let compObj = {};
@@ -52,7 +53,6 @@ export default function* getKicadBomPro(data) {
                     lines.map((line) => {
                         line = line.replace('\r','').trim();
 
-                        
                         if ( line.startsWith("F") ){
 
                             switch ( line.match(/F ([0-9])/i)[1] ){
@@ -75,20 +75,17 @@ export default function* getKicadBomPro(data) {
                                 compObj.mfrnum = line.split(' ')[2].replace("\"" , "").replace("\"" , "");
                             }
 
-                        } else if ( line.startsWith("$EndComp") ){
-                            if ( compObj.ref.includes("#PWR") == false ){
-                                fileList.components.push(compObj);
-                            }
-                        }
-
+                        } 
                     });
+
+                    if ( Object.keys(compObj).length > 0 ){
+                        if ( compObj.ref.includes("#PWR") == false ){
+                            fileList.components.push(compObj);
+                        }
+                    }
                 }
             });
         });
-
-
-        fileList.components = yield Api.Mouser.searchAll(fileList.components);
-
 
         let components = fileList.components;
         let bom = {};
@@ -159,6 +156,8 @@ export default function* getKicadBomPro(data) {
 
             fileList.bom[comp.type].push(comp);
         });
+
+        fileList.bom = yield Api.Mouser.searchAll(fileList.bom);
 
         yield put({type : Action.kicad_file.KICAD_CREATE_BOM_SUCCESS , data : fileList.bom });
     }catch (e) {

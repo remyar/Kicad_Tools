@@ -15,40 +15,56 @@ function search(reference){
                 {
                     "SearchByKeywordRequest": {
                       "keyword": reference,
-                      "records": 0,
-                      "startingRecord": 0,
-                      "searchOptions": "string",
-                      "searchWithYourSignUpLanguage": "string"
                     }
                   }
             )
         }).then((response)=>{
             if ( response.status == 200){
-                resolve(response.json().SearchResults.Parts);
+                resolve(response.json());
             } else {
                 reject(response.json());
             } 
-        }).catch(()=>{
-            reject(response.json());
+        }).catch((e)=>{
+            reject(e);
         })
     });
 }
 
 
-function searchAll(references) {
-    
+function searchAll(bom) {
     let promiseTab = [];
-
-    references.map((reference) => {
-        if ( reference.mfrnum != undefined ){
-            promiseTab.push(this.search(reference.mfrnum));
-        }
-    })
-
+    for ( let key in bom ){
+        bom[key].map((component) => {
+            if ( component.mfrnum != undefined ){
+                promiseTab.push(this.search(component.mfrnum));
+            }
+        });
+    }
     return Promise.all(promiseTab).then((results)=>{
-console.log(results);
+        results.map((result) => {
+            let parts = result.SearchResults.Parts;
+
+            parts.map((part) => {
+                for ( let key in bom ){
+                    bom[key].map((component , idx) => {
+                        if ( component.mfrnum != part.ManufacturerPartNumber ){
+                            bom[key][idx].mouser = part.ProductDetailUrl;
+ 
+                            part.PriceBreaks.map((price) => {
+                                if ( component.nbRefs >= price.Quantity ){
+                                    bom[key][idx].unitPrice = price.Price.replace(',','.');
+                                }
+                            });
+
+                            bom[key][idx].totalPrice = parseFloat(bom[key][idx].unitPrice.replace(',','.')) * component.nbRefs;
+                        }
+                    });
+                }
+            })
+        })
+        return Promise.resolve(bom);
     }).catch((e)=>{
-        console.log(e);
+        return Promise.reject(bom);
     })
 }
 

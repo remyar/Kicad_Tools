@@ -102,13 +102,13 @@ class BomPage extends React.Component {
                                     </Grid>
                                     <Grid item xs={3}>
                                         {intl.formatMessage({id : 'bom.mfrnum'})}
-                                    </Grid>
+    </Grid>*/}
                                    <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.punit'})}
                                     </Grid>
                                     <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.ptotal'})}
-    </Grid>*/}
+    </Grid>
                                 </Grid>
                             </CustomTableCell>
                         </TableRow>
@@ -159,13 +159,13 @@ class BomPage extends React.Component {
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     {row.mfrnum}
-                                                </Grid>
+                                </Grid>*/}
                                                 <Grid item xs={2}>
                                                     {row.unitPrice}
                                                 </Grid>
                                                 <Grid item xs={2}>
                                                     {row.totalPrice}
-                                </Grid>*/}
+                                </Grid>
                                             </Grid>
                                         </CustomTableCell>
                                     </TableRow>
