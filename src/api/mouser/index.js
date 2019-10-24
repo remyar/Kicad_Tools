@@ -14,7 +14,7 @@ function search(reference){
             body: JSON.stringify(
                 {
                     "SearchByKeywordRequest": {
-                      "keyword": "LM358ADT",
+                      "keyword": reference,
                       "records": 0,
                       "startingRecord": 0,
                       "searchOptions": "string",
@@ -24,18 +24,35 @@ function search(reference){
             )
         }).then((response)=>{
             if ( response.status == 200){
-                return response.json();
+                resolve(response.json().SearchResults.Parts);
             } else {
-                reject();
-            }
-        }).then((json)=>{
-            return json.SearchResults.Parts;
+                reject(response.json());
+            } 
         }).catch(()=>{
-            reject();
+            reject(response.json());
         })
     });
 }
 
+
+function searchAll(references) {
+    
+    let promiseTab = [];
+
+    references.map((reference) => {
+        if ( reference.mfrnum != undefined ){
+            promiseTab.push(this.search(reference.mfrnum));
+        }
+    })
+
+    return Promise.all(promiseTab).then((results)=>{
+console.log(results);
+    }).catch((e)=>{
+        console.log(e);
+    })
+}
+
 export default {
     search,
+    searchAll,
 }

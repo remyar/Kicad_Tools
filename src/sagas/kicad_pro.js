@@ -86,6 +86,10 @@ export default function* getKicadBomPro(data) {
             });
         });
 
+
+        fileList.components = yield Api.Mouser.searchAll(fileList.components);
+
+
         let components = fileList.components;
         let bom = {};
 
@@ -155,11 +159,6 @@ export default function* getKicadBomPro(data) {
 
             fileList.bom[comp.type].push(comp);
         });
-
-
-
-        Api.Mouser.search();
-
 
         yield put({type : Action.kicad_file.KICAD_CREATE_BOM_SUCCESS , data : fileList.bom });
     }catch (e) {
