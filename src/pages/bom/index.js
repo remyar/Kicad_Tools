@@ -10,6 +10,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import MemoryIcon from '@material-ui/icons/Memory';
 
 import Actions from '../../actions';
 
@@ -40,7 +42,7 @@ const styles = theme  => ({
         '&:nth-of-type(odd)': {
           backgroundColor: theme.palette.background.default,
         },
-        height :  '30px'
+        height :  '28px'
     },
     table: {
         minWidth: 700,
@@ -78,10 +80,10 @@ class BomPage extends React.Component {
                         <TableRow style={{height : '30px' }}>
                             <CustomTableCell>
                             <Grid container spacing={24}>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.ident'})}
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={2}>
                                         {intl.formatMessage({id : 'bom.value'})}
                                     </Grid>
                                     <Grid item xs={1}>
@@ -103,12 +105,14 @@ class BomPage extends React.Component {
                                     <Grid item xs={3}>
                                         {intl.formatMessage({id : 'bom.mfrnum'})}
     </Grid>*/}
-                                   <Grid item xs={2}>
+                                   <Grid item xs={1}>
                                         {intl.formatMessage({id : 'bom.punit'})}
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={1}>
                                         {intl.formatMessage({id : 'bom.ptotal'})}
-    </Grid>
+                                    </Grid>
+                                        <Grid item xs={1}>
+                                    </Grid>
                                 </Grid>
                             </CustomTableCell>
                         </TableRow>
@@ -135,10 +139,10 @@ class BomPage extends React.Component {
                                     return  <TableRow className={classes.row} key={row.type + '_value_' + idx}>
                                         <CustomTableCell component="th" scope="row">
                                             <Grid container spacing={24}>
-                                                <Grid item xs={4}>
+                                                <Grid item xs={2}>
                                                     {row.refs.join(' ,')}
                                                 </Grid>
-                                                <Grid item xs={3}>
+                                                <Grid item xs={2}>
                                                     {row.val}
                                                 </Grid>
                                                 <Grid item xs={1}>
@@ -160,12 +164,17 @@ class BomPage extends React.Component {
                                                 <Grid item xs={3}>
                                                     {row.mfrnum}
                                 </Grid>*/}
-                                                <Grid item xs={2}>
+                                                <Grid item xs={1}>
                                                     {row.unitPrice}
                                                 </Grid>
-                                                <Grid item xs={2}>
+                                                <Grid item xs={1}>
                                                     {row.totalPrice}
-                                </Grid>
+                                                </Grid>
+                                                <Grid item xs={1}>
+                                                    <AddShoppingCartIcon style={{marginRight : "15px" , cursor : "pointer"}}/>
+                                                    <MemoryIcon style={{marginRight : "15px" , cursor : "pointer"}}/>
+                                                </Grid>
+                                                
                                             </Grid>
                                         </CustomTableCell>
                                     </TableRow>

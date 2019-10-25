@@ -47,12 +47,12 @@ function searchAll(bom) {
             parts.map((part) => {
                 for ( let key in bom ){
                     bom[key].map((component , idx) => {
-                        if ( component.mfrnum != part.ManufacturerPartNumber ){
+                        if ( component.mfrnum == part.ManufacturerPartNumber ){
                             bom[key][idx].mouser = part.ProductDetailUrl;
  
                             part.PriceBreaks.map((price) => {
                                 if ( component.nbRefs >= price.Quantity ){
-                                    bom[key][idx].unitPrice = price.Price.replace(',','.');
+                                    bom[key][idx].unitPrice = price.Price.replace(',','.').split(' ')[0];
                                 }
                             });
 
