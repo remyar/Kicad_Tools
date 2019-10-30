@@ -30,36 +30,60 @@ function _getTypeWithRef(ref){
     return type;
 }
 
-export default function* getKicadBom(data) {
+export default function* getKicadBomPro(data) {
     try{
-        console.log(data);
         let fileList = { components : [] , bom : {} };
-        let fileExt = { name : "Kicad Bom .xml" , extensions : ["xml"] };
+        let fileExt = { name : "Kicad Project .pro" , extensions : ["pro"] };
 
         let filesList = yield Api.File.openDialog(fileExt);
+        let path = filesList[0].substring(0,filesList[0].lastIndexOf("\\"));
+        let listingOfFile = yield Api.File.getList(path , ".sch")
+        let dataStringTab = yield Api.File.readList(listingOfFile);
 
-        let dataString = yield Api.File.read(filesList[0]);
+        dataStringTab.map((str) => {
+            let components = str.split('$Comp');
 
-        let fileObjXml = yield Api.Xml.parse(dataString);
+            components.map((component) => {
+                let compo = component.split('$EndComp')[0];
+                if ( compo.includes("EESchema Schematic File Version") == false ){
 
-        fileObjXml.export.components.map((components) => {
-            components.comp.map((component) => {
-                let compObj = {};
+                    let compObj = {};
 
-                compObj.ref = component.$.ref;
-                    compObj.type = _getTypeWithRef(compObj.ref);
-                    compObj.val = component.value[0];
-                    compObj.footprint = component.footprint[0];
-    
-                    if ( component.fields ){
-                        component.fields.map((fields) => {
-                            fields.field.map((field) => {
-                                if ( field.$.name.toLowerCase().includes("mfr. no") )
-                                    compObj.mfrnum = field._;
-                            })
-                        })
+                    let lines = compo.split('\n');
+                    lines.map((line) => {
+                        line = line.replace('\r','').trim();
+
+                        if ( line.startsWith("F") ){
+
+                            switch ( line.match(/F ([0-9])/i)[1] ){
+                                case ( "0" ):{
+                                    compObj.ref = line.split(' ')[2].replace("\"" , "").replace("\"" , "");
+                                    compObj.type = _getTypeWithRef(compObj.ref);
+                                    break;
+                                }
+                                case ( "1" ):{
+                                    compObj.val = line.split(' ')[2].replace("\"" , "").replace("\"" , "");
+                                    break;
+                                }
+                                case ( "2" ):{
+                                    compObj.footprint = line.split(' ')[2].replace("\"" , "").replace("\"" , "").split(":")[1];
+                                    break;
+                                }
+                            }
+
+                            if ( line.includes("Mfr. No") ){
+                                compObj.mfrnum = line.split(' ')[2].replace("\"" , "").replace("\"" , "");
+                            }
+
+                        } 
+                    });
+
+                    if ( Object.keys(compObj).length > 0 ){
+                        if ( compObj.ref.includes("#PWR") == false ){
+                            fileList.components.push(compObj);
+                        }
                     }
-                    fileList.components.push(compObj);
+                }
             });
         });
 
@@ -133,9 +157,11 @@ export default function* getKicadBom(data) {
             fileList.bom[comp.type].push(comp);
         });
 
+        fileList.bom = yield Api.Mouser.searchAll(fileList.bom);
+
         yield put({type : Action.kicad_file.KICAD_CREATE_BOM_SUCCESS , data : fileList.bom });
-    } catch (e) {
+    }catch (e) {
         console.error(e);
-        yield put({ type: Action.kicad_file.KICAD_CREATE_BOM_ERROR , data : { status : e.message , time : new Date().getTime() }})
+        yield put({ type: Action.kicad_file.KICAD_CREATE_BOM_ERROR })
     }
 }

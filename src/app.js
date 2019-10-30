@@ -8,7 +8,8 @@ import Drawer from './components/Drawer';
 import ProgressBar from './components/ProgressBar';
 
 import HomePage from './pages/home';
-import BomPage from './pages/bom'
+import BomPage from './pages/bom';
+import SettingsPage from './pages/settings';
 
 import { withSnackbar } from 'notistack';
 
@@ -72,6 +73,7 @@ class App extends React.Component {
 
                 <Route path='/' exact={true}  component={HomePage}/>
                 <Route path='/bom' component={BomPage}/>
+                <Route path='/settings' component={SettingsPage}/>
             </div>
         </div>
     }

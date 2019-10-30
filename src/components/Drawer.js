@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Home from '@material-ui/icons/Home';
 import Memory from '@material-ui/icons/Memory';
+import Settings from '@material-ui/icons/Settings';
 
 const styles = {
     drawerStyle : {
@@ -57,8 +58,20 @@ class MyDrawer extends React.Component {
 
                         </ListItem>
                     </Link>
+{/*
+                    <Link to="/settings" className={classes.noStyle}>
+                        <ListItem button >
+                            <ListItemIcon>
+                                <Settings />
+                            </ListItemIcon>
 
-                  {/*  <Link to="/convert_eagle_lib" className={classes.noStyle}>
+                            <ListItemText primary={intl.formatMessage({id : 'nav.settings'})}  secondary={intl.formatMessage({id : 'nav.settings.desc'})}  />
+
+                        </ListItem>
+                    </Link>
+
+
+                    <Link to="/convert_eagle_lib" className={classes.noStyle}>
                         <ListItem button >
                             <ListItemIcon>
                                 <AccountCircle />

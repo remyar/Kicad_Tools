@@ -1,7 +1,11 @@
 import kicad_file from './kicad_file';
 import export_file from './export_file';
+import settings from './settings';
+import goto from './goto';
 
 export default {
     kicad_file,
-    export_file
+    export_file,
+    settings,
+    goto
 }

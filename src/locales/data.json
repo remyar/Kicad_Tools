@@ -6,6 +6,9 @@
         "nav.home" : "Accueil",
         "nav.home.desc" : "Revenir a l'accueil",
 
+        "nav.settings" : "Paranétres",
+        "nav.settings.desc" : "Paranétres de l'application",
+
         "bom.load" : "Charger BOM",
         "bom.export.pdf" : "Exporter en PDF",
         "bom.ident" : "Identification",
@@ -15,13 +18,23 @@
         "bom.punit" : "Prix Unitaire",
         "bom.ptotal" : "Prix Total",
 
+        "bom.R" : "Résistance(s)",
+        "bom.C" : "Condensateur(s)",
+        "bom.J" : "Connecteur(s)",
+        "bom.U" : "Circuit(s) Intégré",
+        "bom.D" : "Diode(s)",
+        "bom.Q" : "Transistor(s)",
+        "bom.XA" : "Diver",
+
         "progress.title" : "Chargement ...",
 
         "update.available" : "Mise a jours disponible",
         "update.download" : "Téléchargement en cours",
         "update.downloaded" : "Mise a jours téléchargée",
         "update.apply" : "Quitter l'application pour appliquer la mise a jour",
-        "update.error" : "Erreur lors de la mise a jours"
+        "update.error" : "Erreur lors de la mise a jours",
+
+        "file.open.error" : "Erreur lors de l'ouverture du fichier"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -29,6 +42,9 @@
 
         "nav.home" : "Home",
         "nav.home.desc" : "Got to home",
+
+        "nav.settings" : "Settings",
+        "nav.settings.desc" : "Application's settings",
 
         "bom.load" : "Open BOM",
         "bom.export.pdf" : "Export to PDF",
@@ -39,12 +55,22 @@
         "bom.punit" : "Unit Price",
         "bom.ptotal" : "Total Price",
 
+        "bom.R" : "Resistor(s)",
+        "bom.C" : "Capacitor(s)",
+        "bom.J" : "Connector(s)",
+        "bom.U" : "Integrated Circuit(s)",
+        "bom.D" : "Rectifier(s)",
+        "bom.Q" : "Transistor(s)",
+        "bom.XA" : "Other",
+
         "progress.title" : "Loading ...",
 
         "update.available" : "Update available",
         "update.download" : "Download in progress",
         "update.downloaded" : "Update downloaded",
         "update.apply" : "Quit for apply update",
-        "update.error" : "Update error"
+        "update.error" : "Update error",
+
+        "file.open.error" : "Open file error"
     }
 }
