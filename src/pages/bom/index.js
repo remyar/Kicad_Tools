@@ -64,6 +64,10 @@ class BomPage extends React.Component {
         this.props.dispatch(Actions.export_file.exportBomToPdf(this.props.KicadBom && this.props.KicadBom.data || {}))
     }
 
+    _addShoppingCartClick(product){
+        this.props.dispatch(Actions.goto.goto(product));
+    }
+    
     render(){
         const classes = this.props.classes;
         const intl = this.props.intl;
@@ -92,19 +96,6 @@ class BomPage extends React.Component {
                                     <Grid item xs={4}>
                                         {intl.formatMessage({id : 'bom.mfrnum'})}
                                     </Grid>
-
-                                   {/*  <Grid item xs={2}>
-                                        {intl.formatMessage({id : 'bom.ident'})}
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        {intl.formatMessage({id : 'bom.value'})}
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        {intl.formatMessage({id : 'bom.quantity'})}
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        {intl.formatMessage({id : 'bom.mfrnum'})}
-    </Grid>*/}
                                    <Grid item xs={1}>
                                         {intl.formatMessage({id : 'bom.punit'})}
                                     </Grid>
@@ -151,19 +142,6 @@ class BomPage extends React.Component {
                                                 <Grid item xs={4}>
                                                     {row.mfrnum}
                                                 </Grid>
-
-                                         {/*       <Grid item xs={2}>
-                                                    {row.refs.join(' ,')}
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    {row.val}
-                                                </Grid>
-                                                <Grid item xs={1}>
-                                                    {row.nbRefs}
-                                                </Grid>
-                                                <Grid item xs={3}>
-                                                    {row.mfrnum}
-                                </Grid>*/}
                                                 <Grid item xs={1}>
                                                     {row.unitPrice}
                                                 </Grid>
@@ -171,8 +149,12 @@ class BomPage extends React.Component {
                                                     {row.totalPrice}
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    <AddShoppingCartIcon style={{marginRight : "15px" , cursor : "pointer"}}/>
-                                                    <MemoryIcon style={{marginRight : "15px" , cursor : "pointer"}}/>
+                                                    {(()=>{
+                                                        if ( row.mouser != undefined ){
+                                                            return <AddShoppingCartIcon style={{marginRight : "15px" , cursor : "pointer"}} onClick={this._addShoppingCartClick.bind(this , row.mouser)}/>                                                               
+                                                        }
+                                                    })()}
+
                                                 </Grid>
                                                 
                                             </Grid>

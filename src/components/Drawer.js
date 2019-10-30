@@ -58,7 +58,7 @@ class MyDrawer extends React.Component {
 
                         </ListItem>
                     </Link>
-
+{/*
                     <Link to="/settings" className={classes.noStyle}>
                         <ListItem button >
                             <ListItemIcon>
@@ -71,7 +71,7 @@ class MyDrawer extends React.Component {
                     </Link>
 
 
-                  {/*  <Link to="/convert_eagle_lib" className={classes.noStyle}>
+                    <Link to="/convert_eagle_lib" className={classes.noStyle}>
                         <ListItem button >
                             <ListItemIcon>
                                 <AccountCircle />

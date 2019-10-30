@@ -2,13 +2,13 @@ const electron = require('electron');
 const { autoUpdater } = require("electron-updater");
 let ipcMain = electron.ipcMain;
 var pjson = require('./package.json');
-var logger = require('electron-logger');
+var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 
-
-
-logger.setOutput({file:"./../../kicadtools/log.log"});
+logger.transports.file.level = 'info';
+logger.transports.file.maxSize = 1048576;
+logger.transports.file.clear();
 autoUpdater.logger = logger;
 // Module to control application life.
 const app = electron.app
