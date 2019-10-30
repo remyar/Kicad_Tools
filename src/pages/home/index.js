@@ -34,11 +34,11 @@ class HomePage extends React.Component {
                     <Link to="/bom" className={classes.noStyle}>
                         <Button variant="contained" color="primary" className={classes.button}>{intl.formatMessage({id : 'nav.generate.bom'})}</Button>
                     </Link>
-                    {/*<br />
-                    <Link to="/convert_eagle_lib" className={classes.noStyle}>
-                        <Button variant="contained" color="primary" className={classes.button}>{intl.formatMessage({id : 'nav.eagle.convert'})}</Button>
-                    </Link>
                     <br />
+                    <Link to="/lib_generator" className={classes.noStyle}>
+                        <Button variant="contained" color="primary" className={classes.button}>{intl.formatMessage({id : 'nav.generate.librarie' })}</Button>
+                    </Link>
+                   {/* <br />
                     <Link to="/convert_pcb_to_footprint" className={classes.noStyle}>
                         <Button variant="contained" color="primary" className={classes.button}>{intl.formatMessage({id : 'nav.eagle.convertPcbToFootprint'})}</Button>
                     </Link>*/}

@@ -9,6 +9,7 @@ import ProgressBar from './components/ProgressBar';
 
 import HomePage from './pages/home';
 import BomPage from './pages/bom';
+import LibGeneratorPage from './pages/libGenerator';
 import SettingsPage from './pages/settings';
 
 import { withSnackbar } from 'notistack';
@@ -74,6 +75,7 @@ class App extends React.Component {
                 <Route path='/' exact={true}  component={HomePage}/>
                 <Route path='/bom' component={BomPage}/>
                 <Route path='/settings' component={SettingsPage}/>
+                <Route path='/lib_generator' component={LibGeneratorPage}/>
             </div>
         </div>
     }

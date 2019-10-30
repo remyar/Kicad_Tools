@@ -3,6 +3,9 @@
         "nav.generate.bom" : "Génération BOM",
         "nav.generate.bom.desc" : "Génération d'une liste de composant",
 
+        "nav.generate.librarie" : "Génération Kicad .lib",
+        "nav.generate.librarie.desc" : "Génération d'une librairie de composant",
+
         "nav.home" : "Accueil",
         "nav.home.desc" : "Revenir a l'accueil",
 
@@ -39,6 +42,9 @@
     "en":{
         "nav.generate.bom" : "Generate BOM",
         "nav.generate.bom.desc" : "Generate bill of material",
+
+        "nav.generate.librarie" : "Generate Kicad .lib",
+        "nav.generate.librarie.desc" : "Generate librarie of component",
 
         "nav.home" : "Home",
         "nav.home.desc" : "Got to home",

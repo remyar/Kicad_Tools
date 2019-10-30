@@ -6,10 +6,13 @@ import KicadBom from './kicad_bom';
 import KicadPro from './kicad_pro';
 import ExportBom from './export_bom';
 import AutoUpdaterSaga from './autoUpdater';
+import Github from './github';
 
 export default function* root() {
     yield takeEvery(AUTOUPDATER_START_UPDATE ,AutoUpdaterSaga )
     yield takeEvery(Action.kicad_file.KICAD_CREATE_BOM_START, KicadBom);
     yield takeEvery(Action.kicad_file.KICAD_CREATE_BOM_PRO_START, KicadPro);
     yield takeEvery(Action.export_file.EXPORT_FILE_START, ExportBom);
+    yield takeEvery(Action.github.GET_GITHUB_COMPONENT_START, Github);
+    yield takeEvery(Action.github.GET_ALL_GITHUB_CATEGORIES_START, Github);
 }
