@@ -5,6 +5,7 @@ import { put, takeEvery } from 'redux-saga/effects'
 import KicadBom from './kicad_bom';
 import KicadPro from './kicad_pro';
 import ExportBom from './export_bom';
+import KicadLibOpen from './kicad_librarie.open';
 import AutoUpdaterSaga from './autoUpdater';
 import Github from './github';
 
@@ -15,4 +16,6 @@ export default function* root() {
     yield takeEvery(Action.export_file.EXPORT_FILE_START, ExportBom);
     yield takeEvery(Action.github.GET_GITHUB_COMPONENT_START, Github);
     yield takeEvery(Action.github.GET_ALL_GITHUB_CATEGORIES_START, Github);
+    yield takeEvery(Action.kicad_file.KICAD_READ_LIBRARIE_START, KicadLibOpen);
+    
 }

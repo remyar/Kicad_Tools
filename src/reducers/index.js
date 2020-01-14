@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
 import KicadBom from './kicad_bom';
 import ExportBom from './export_bom';
+import KicadLib from './kicad_lib';
 import AutoUpdater from './autoUpdater';
 import Github from './github';
 
@@ -10,5 +11,6 @@ export default (history) => combineReducers({
     KicadBom,
     ExportBom,
     AutoUpdater,
-    Github
+    Github,
+    KicadLib,
 });

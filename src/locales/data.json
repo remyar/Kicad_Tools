@@ -37,7 +37,12 @@
         "update.apply" : "Quitter l'application pour appliquer la mise a jour",
         "update.error" : "Erreur lors de la mise a jours",
 
-        "file.open.error" : "Erreur lors de l'ouverture du fichier"
+        "file.open.error" : "Erreur lors de l'ouverture du fichier",
+
+        "lib.gen.type" : "Type de composant",
+        "lib.gen.addToLib" : "Ajouter a ma libraire",
+        "lib.load" : "Charger Librairie",
+        "lib.myLib" :"Ma Librairie"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -77,6 +82,11 @@
         "update.apply" : "Quit for apply update",
         "update.error" : "Update error",
 
-        "file.open.error" : "Open file error"
+        "file.open.error" : "Open file error",
+
+        "lib.gen.type" : "Component type",
+        "lib.gen.addToLib" : "Add to my librarie",
+        "lib.load" : "Load Librarie",
+        "lib.myLib" :"My Librarie"
     }
 }
