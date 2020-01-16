@@ -6,6 +6,7 @@ import KicadBom from './kicad_bom';
 import KicadPro from './kicad_pro';
 import ExportBom from './export_bom';
 import KicadLibOpen from './kicad_librarie.open';
+import KicadLibCreate from './kicad_librarie.create';
 import AutoUpdaterSaga from './autoUpdater';
 import Github from './github';
 
@@ -17,5 +18,5 @@ export default function* root() {
     yield takeEvery(Action.github.GET_GITHUB_COMPONENT_START, Github);
     yield takeEvery(Action.github.GET_ALL_GITHUB_CATEGORIES_START, Github);
     yield takeEvery(Action.kicad_file.KICAD_READ_LIBRARIE_START, KicadLibOpen);
-    
+    yield takeEvery(Action.kicad_file.KICAD_NEW_LIBRARIE_START, KicadLibCreate);
 }

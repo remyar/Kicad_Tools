@@ -42,7 +42,9 @@
         "lib.gen.type" : "Type de composant",
         "lib.gen.addToLib" : "Ajouter a ma libraire",
         "lib.load" : "Charger Librairie",
-        "lib.myLib" :"Ma Librairie"
+        "lib.myLib" :"Ma Librairie",
+        "lib.new" :"Créer une Librairie",
+        "lib.save" : "Enregistrer"
     },
     "en":{
         "nav.generate.bom" : "Generate BOM",
@@ -87,6 +89,8 @@
         "lib.gen.type" : "Component type",
         "lib.gen.addToLib" : "Add to my librarie",
         "lib.load" : "Load Librarie",
-        "lib.myLib" :"My Librarie"
+        "lib.myLib" :"My Librarie",
+        "lib.new" :"New Librarie",
+        "lib.save" : "Save"
     }
 }
