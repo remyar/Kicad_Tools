@@ -22,6 +22,12 @@ jobs:
         node-version: '10.x'
         registry-url: 'https://registry.npmjs.org'
 
+    - name: Install snapcraft
+      run: |
+        sudo snap install snapcraft --classic
+      env:
+        CI: true
+
     - name: npm install
       working-directory: ${{ github.workspace }}
       run: |
