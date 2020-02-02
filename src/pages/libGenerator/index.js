@@ -11,7 +11,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import FolderIcon from '@material-ui/icons/Folder';
+import ExitToApp from '@material-ui/icons/ExitToApp';
+import Save from '@material-ui/icons/Save';
+import Reply from '@material-ui/icons/Reply';
+import DeleteForever from '@material-ui/icons/DeleteForever';
 import { remote } from 'electron';
 
 const fs = remote.require('fs');
@@ -50,6 +53,9 @@ const styles = theme => ({
         minWidth: 700,
         overflow: 'Hidden',
     },
+    noselect: {
+        userSelect: "none"
+    }
 });
 
 class LibGeneratorPage extends React.Component {
@@ -58,7 +64,29 @@ class LibGeneratorPage extends React.Component {
         super(props);
         this.state = {
             selectedPath: undefined,
+            savingLabrarie: false,
+            isModified: false,
+            existingLibrarie: undefined,
             addToLibrarie: []
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (state.isModified == false) {
+            state.existingLibrarie = (props.KicadLib && props.KicadLib.data && props.KicadLib.data.data);
+        }
+        return state;
+    }
+    _onUnselectCategorie() {
+        if (this.state.selectedPath != undefined || this.state.selectedPath.length > 0) {
+            if (this.state.selectedPath.indexOf('/') == -1) {
+                this.state.selectedPath = undefined;
+            } else {
+                let endpath = this.state.selectedPath.substring(this.state.selectedPath.lastIndexOf('/'), this.state.selectedPath.length);
+                this.state.selectedPath = this.state.selectedPath.replace(endpath, "");
+            }
+
+            this.forceUpdate();
         }
     }
 
@@ -79,13 +107,56 @@ class LibGeneratorPage extends React.Component {
         this.props.dispatch(Actions.kicad_file.openKicadLibraire());
     }
 
-    _createLibrarie(){
+    _createLibrarie() {
         this.props.dispatch(Actions.kicad_file.newKicadLibrarie());
     }
 
-    _addToLibrarie(component) {
-        this.state.addToLibrarie.push({ mpn : component.name , description : component.description , ref : component.ref});
+    _removeComponent(component) {
+        let idx = this.state.addToLibrarie.findIndex((element) => element.mpn == component.mpn);
+        if (idx != -1) {
+            this.state.addToLibrarie.splice(idx, 1);
+        } else {
+            let newLibContent = [];
+            let componentFound = false;
+
+            this.state.existingLibrarie.split('\n').map((_line) => {
+
+                _line = _line.replace('\r', '');
+
+                if (_line.startsWith("DEF " + component.mpn) == true) {
+                    componentFound = true;
+                }
+
+                if (componentFound == false) {
+                    newLibContent.push(_line);
+                } else if (_line.startsWith("ENDDEF") == true) {
+                    componentFound = false;
+                }
+            });
+
+            this.state.existingLibrarie = newLibContent.join('\n');
+        }
+        this.state.isModified = true;
         this.forceUpdate();
+    }
+
+    _addToLibrarie(component) {
+        if (this.state.addToLibrarie.find((element) => element.mpn == component.name) == undefined) {
+
+            if ( this.state.existingLibrarie.split('\n').find((_line) => _line.startsWith("DEF " + component.name)) == undefined ){
+                this.state.addToLibrarie.push({ mpn: component.name, description: component.description, ref: component.ref, path: component.path });
+            }
+            
+        }
+        this.forceUpdate();
+    }
+
+    _saveLibrarie() {
+        let myLibrariePath = (this.props.KicadLib && this.props.KicadLib.data && this.props.KicadLib.data.filename);
+        this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie));
+        this.state.savingLabrarie = true;
+        this.state.isModified = false;
+        this.state.addToLibrarie = [];
     }
 
     render() {
@@ -96,8 +167,8 @@ class LibGeneratorPage extends React.Component {
         let myLibrarieFilename = (this.props.KicadLib && this.props.KicadLib.data && this.props.KicadLib.data.filename && this.props.KicadLib.data.filename.substring(this.props.KicadLib.data.filename.lastIndexOf(path.sep) + 1, this.props.KicadLib.data.filename.length));
         let myLibrarieComponent = [];
 
-        if (this.props.KicadLib && this.props.KicadLib.data && this.props.KicadLib.data.data) {
-            let _lines = this.props.KicadLib.data.data.split('\n');
+        if (this.state.existingLibrarie) {
+            let _lines = this.state.existingLibrarie.split('\n');
 
             let _definition = {};
             _lines.map((_line, idx) => {
@@ -139,7 +210,7 @@ class LibGeneratorPage extends React.Component {
         for (let key in data) {
             let obj = { name: key };
             if (Array.isArray(data[key]) == true) {
-                obj = { ...obj , ...data[key][0] };
+                obj = { ...obj, ...data[key][0] };
                 obj.isComponent = true;
                 obj.description = data[key][0].description || "";
             }
@@ -162,16 +233,19 @@ class LibGeneratorPage extends React.Component {
 
             <br></br>
 
-            <Grid container spacing={24}>
-                <Grid item xs={5}>
+            <Grid container spacing={24} className={classes.noselect}>
+                <Grid item xs={6} style={{ paddingRight: "8px" }}>
                     <Paper className={classes.root}>
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow style={{ height: '30px' }}>
                                     <CustomTableCell>
                                         <Grid container spacing={24}>
-                                            <Grid item xs={12}>
+                                            <Grid item xs={11}>
                                                 {intl.formatMessage({ id: 'lib.gen.type' })}
+                                            </Grid>
+                                            <Grid item xs={1} style={{ cursor: "pointer" }} onClick={this._onUnselectCategorie.bind(this)}>
+                                                <Reply />
                                             </Grid>
                                         </Grid>
                                     </CustomTableCell>
@@ -185,13 +259,12 @@ class LibGeneratorPage extends React.Component {
                                                 <Grid item xs={row.isComponent ? 3 : 12} style={{ marginTop: "auto", marginBottom: "auto" }}>
                                                     {row.name}
                                                 </Grid>
-                                                {row.isComponent ? <Grid item xs={7} style={{ padding: "-10px" }} style={{ marginTop: "auto", marginBottom: "auto" }}>
+                                                {row.isComponent ? <Grid item xs={8} style={{ padding: "-10px" }} style={{ marginTop: "auto", marginBottom: "auto" }}>
                                                     {row.description}
                                                 </Grid> : null}
-                                                {row.isComponent ? <Grid item xs={2} style={{ padding: "-10px" }}>
-                                                    <Button variant="contained" color="primary" onClick={this._addToLibrarie.bind(this, row)}>
-                                                        {intl.formatMessage({ id: 'lib.gen.addToLib' })}
-                                                    </Button></Grid> : null}
+                                                {row.isComponent ? <Grid item xs={1} style={{ padding: "-10px", cursor: "pointer" }} onClick={this._addToLibrarie.bind(this, row)}>
+                                                    <ExitToApp />
+                                                </Grid> : null}
                                             </Grid>
                                         </CustomTableCell>
                                     </TableRow>);
@@ -200,21 +273,18 @@ class LibGeneratorPage extends React.Component {
                         </Table>
                     </Paper>
                 </Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{ paddingLeft: "8px" }}>
                     <Paper className={classes.root}>
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow style={{ height: '30px' }}>
                                     <CustomTableCell>
                                         <Grid container spacing={24}>
-                                            <Grid item xs={9}>
+                                            <Grid item xs={11}>
                                                 {intl.formatMessage({ id: 'lib.myLib' })} : {myLibrarieFilename ? myLibrarieFilename : ""}
                                             </Grid>
-                                            <Grid item xs={3}>
-                                            <Button variant="contained" color="primary" onClick={this._createLibrarie.bind(this)} style={{ width: "100%" }}>
-                        {intl.formatMessage({ id: 'lib.save' })}
-                    </Button>
+                                            <Grid item xs={1} onClick={this._saveLibrarie.bind(this)} style={{ cursor: "pointer", color: ((this.state.addToLibrarie.length > 0) || (this.state.isModified == true)) ? "red" : "white", paddingLeft: "15px" }}>
+                                                <Save />
                                             </Grid>
                                         </Grid>
                                     </CustomTableCell>
@@ -231,8 +301,11 @@ class LibGeneratorPage extends React.Component {
                                                 <Grid item xs={1} style={{ marginTop: "auto", marginBottom: "auto" }}>
                                                     {row.ref}
                                                 </Grid>
-                                                <Grid item xs={8} style={{ marginTop: "auto", marginBottom: "auto" }}>
+                                                <Grid item xs={7} style={{ marginTop: "auto", marginBottom: "auto" }}>
                                                     {row.description}
+                                                </Grid>
+                                                <Grid item xs={1} style={{ marginTop: "auto", marginBottom: "auto", paddingLeft: "15px", cursor: "pointer" }}>
+                                                    <DeleteForever onClick={this._removeComponent.bind(this, row)} />
                                                 </Grid>
                                             </Grid>
                                         </CustomTableCell>

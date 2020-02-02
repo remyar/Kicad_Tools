@@ -23,6 +23,46 @@ function getGithubAllCategories() {
     });
 }
 
+
+ function getFile(url) {
+    return new Promise((resolve, reject) => {
+        fetch(url, {
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            },
+            credentials: 'same-origin',
+            method: "GET"
+        }).then((response) => {
+            if (response.status == 200) {
+                resolve(response.text());
+            } else {
+                reject("blabla");
+            }
+        }).catch((e) => {
+            reject(e);
+        });
+    });
+}
+
+function getAllComponents(components) {
+    return new Promise((resolve, reject) => {
+        let promiseTab = [];
+
+        components.map((component) => {
+            promiseTab.push(getFile(component.path + "/" + component.mpn + ".lib"));
+        });
+
+        Promise.all(promiseTab).then((results) => {
+            resolve(results);
+        });
+        
+    });
+}
+
 export default {
     getGithubAllCategories,
+    getAllComponents,
+    getFile
 }

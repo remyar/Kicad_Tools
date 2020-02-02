@@ -1,35 +1,66 @@
-import {remote}  from 'electron';
+import { remote } from 'electron';
 
 const fs = remote.require('fs');
 const path = window.require('path');
 
-function openDialog( filters ){
+function openDialog(filters) {
     let dialog = remote.dialog;
 
-    if ( filters == undefined ){
+    if (filters == undefined) {
         filters = [
-            { name : "Kicad .sch" , extensions : ["sch"] },
+            { name: "Kicad .sch", extensions: ["sch"] },
         ];
     }
 
-    return new Promise((resolve , reject ) => {
-        dialog.showOpenDialog({       
+    return new Promise((resolve, reject) => {
+        dialog.showOpenDialog({
             properties: ['openFile'],
-            filters : filters
-        }).then((data)=>{
-            if ( data.filePaths ){
+            filters: filters
+        }).then((data) => {
+            if (data.filePaths) {
                 resolve(data.filePaths);
             }
-        }).catch((err)=>{
+        }).catch((err) => {
             reject("no file selected");
         });
     });
 }
 
-function read ( file ){
-    return new Promise((resolve , reject ) => {
-        fs.readFile(file,'utf8',(err , data) => {
-            if ( err != undefined ){
+function saveDialog(filters) {
+    let dialog = remote.dialog;
+
+    if (filters == undefined) {
+        filters = [
+            { name: "Kicad .lib", extensions: ["lib"] },
+        ];
+    }
+
+    return new Promise((resolve, reject) => {
+        dialog.showSaveDialog({
+            filters: filters
+        }).then((data) => {
+            if (data.filePath) {
+                resolve(data.filePath);
+            }
+        }).catch((err) => {
+            reject("no file selected");
+        });
+    });
+
+}
+
+function write(file, data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(file , data , 'utf8' , (err ) => {
+            resolve(data);
+        });
+    });
+}
+
+function read(file) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(file, 'utf8', (err, data) => {
+            if (err != undefined) {
                 reject("Impossible to read file : " + file)
             } else {
                 resolve(data);
@@ -38,25 +69,25 @@ function read ( file ){
     });
 }
 
-function readList ( files ){
+function readList(files) {
     let promiseTab = [];
 
-    files.map((file)=>{
+    files.map((file) => {
         promiseTab.push(this.read(file));
     });
 
     return Promise.all(promiseTab)
-    
+
 }
 
-function getList ( p , ext ){
-    return new Promise((resolve , reject ) => {
+function getList(p, ext) {
+    return new Promise((resolve, reject) => {
         let listPath = [];
         let fileList = fs.readdirSync(p);
 
-        fileList.map((fileName)=>{
-            if ( fileName.endsWith(ext) ){
-                listPath.push(p + "\\" +  fileName );
+        fileList.map((fileName) => {
+            if (fileName.endsWith(ext)) {
+                listPath.push(p + "\\" + fileName);
             }
         });
 
@@ -64,9 +95,13 @@ function getList ( p , ext ){
     });
 }
 
+
+
 export default {
     openDialog,
+    saveDialog,
     read,
+    write,
     getList,
     readList
 }
