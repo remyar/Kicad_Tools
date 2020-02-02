@@ -1,4 +1,4 @@
-name: Build Libraries
+name: Build Application
 
 on:
   push:
@@ -18,3 +18,10 @@ jobs:
       with:
         node-version: '10.x'
         registry-url: 'https://registry.npmjs.org'
+
+    - name: npm install
+      working-directory: ${{ github.workspace }}
+      run: |
+        npm install
+      env:
+        CI: true
