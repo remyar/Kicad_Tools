@@ -1,0 +1,37 @@
+name: Build Application
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: npm install
+      working-directory: ${{ github.workspace }}
+      run: |
+        npm install
+        npm run webpack
+      env:
+        CI: true
+
+    - name: Build/release Electron app
+      uses: samuelmeuli/action-electron-builder@v1
+      with:
+        release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        github_token: ${{ secrets.github_token }}
