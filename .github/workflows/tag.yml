@@ -7,7 +7,7 @@ jobs:
   release-on-push:
     runs-on: ubuntu-latest
     env:
-      github_token: ${{ secrets.github_token }}
+      GITHUB_TOKEN: ${{ secrets.github_token }}
     steps:
       - uses: rymndhng/release-on-push-action@master
         with:
