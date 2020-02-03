@@ -1,0 +1,38 @@
+name: Tag Application
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+
+  Tag-on-push:
+    runs-on: windows-latest
+
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Github Action
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Bump Version
+        run: |
+          npm version patch -m "v%s"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          repository: 'remyar/Kicad_Tools'
+          directory: './'

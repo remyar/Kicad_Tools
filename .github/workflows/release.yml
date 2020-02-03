@@ -1,9 +1,9 @@
-name: Tag Application
+name: Release Application
 
 on: 
   push:
-    branches:
-      - master
+    tags:
+      - v*
 
 jobs:
 
@@ -20,22 +20,6 @@ jobs:
         with:
           node-version: '10.x'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Github Action
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Bump Version
-        run: |
-          npm version patch -m "v%s"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.github_token }}
-          repository: 'remyar/Kicad_Tools'
-          directory: './'
 
       - name: npm install / run webpack
         working-directory: ${{ github.workspace }}
