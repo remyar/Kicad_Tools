@@ -1,3 +1,5 @@
+name: Tag Application
+
 on: 
   push:
     branches:
@@ -7,8 +9,11 @@ jobs:
   release-on-push:
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.github_token }}
+      github_token: ${{ secrets.github_token }}
     steps:
-      - uses: rymndhng/release-on-push-action@master
+      - name: package-version-to-git-tag
+        uses: azu/action-package-version-to-git-tag@v1
         with:
-          strategy: minor
+          github_repo: ${{ github.repository }}
+          git_commit_sha: ${{ github.sha }}
+          git_tag_prefix: "v"
