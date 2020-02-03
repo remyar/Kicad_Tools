@@ -21,13 +21,11 @@ jobs:
           node-version: '10.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Github Action
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Bump version
-        run: npm version patch
+      - uses: tool3/bump@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          user: 'GitHub Action'
+          email: 'action@github.com'
 
       - name: npm install / run webpack
         working-directory: ${{ github.workspace }}
