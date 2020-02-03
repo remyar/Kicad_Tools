@@ -22,7 +22,7 @@ jobs:
         node-version: '10.x'
         registry-url: 'https://registry.npmjs.org'
 
-    - name: npm install
+    - name: npm install / run webpack
       working-directory: ${{ github.workspace }}
       run: |
         npm install
