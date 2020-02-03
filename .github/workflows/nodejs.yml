@@ -6,12 +6,12 @@ on:
       - v*
 
 jobs:
-  release-OsX-Win:
+  release-Win:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [ windows-latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -71,3 +71,4 @@ jobs:
       with:
         release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         github_token: ${{ secrets.github_token }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
