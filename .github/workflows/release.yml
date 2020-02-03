@@ -23,9 +23,7 @@ jobs:
 
       - uses: tool3/bump@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          user: 'GitHub Action'
-          email: 'action@github.com'
+          github_token: ${{ secrets.github_token }}
 
       - name: npm install / run webpack
         working-directory: ${{ github.workspace }}
