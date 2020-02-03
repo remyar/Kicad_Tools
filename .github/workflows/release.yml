@@ -25,10 +25,17 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+      - name: Bump Version
+        run: |
+          npm version patch -m "v%s"
           
-      - uses: tool3/bump@v1
-        with:
-          github_token: ${{ secrets.github_token }}
+      - name: Push changes
+          uses: ad-m/github-push-action@master
+          with:
+            github_token: ${{ secrets.github_token }}
+            repository: 'remyar/Kicad_Tools'
+            directory: './'
 
       - name: npm install / run webpack
         working-directory: ${{ github.workspace }}
