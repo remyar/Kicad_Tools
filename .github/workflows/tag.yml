@@ -6,10 +6,10 @@ on:
       - master
 
 jobs:
-  release-on-push:
+
+  Tag-on-push:
     runs-on: ubuntu-latest
-    env:
-      github_token: ${{ secrets.github_token }}
+
     steps:
 
       - name: checkout
@@ -24,6 +24,7 @@ jobs:
       - name: package-version-to-git-tag
         uses: azu/action-package-version-to-git-tag@v1
         with:
+          github_token: ${{ secrets.github_token }}
           github_repo: ${{ github.repository }}
           git_commit_sha: ${{ github.sha }}
           git_tag_prefix: "v"
@@ -31,4 +32,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
+          github_token: ${{ secrets.github_token }}
           tags : true
