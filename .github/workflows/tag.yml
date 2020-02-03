@@ -1,0 +1,14 @@
+on: 
+  push:
+    branches:
+      - develop
+
+jobs:
+  release-on-push:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.github_token }}
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          strategy: minor
