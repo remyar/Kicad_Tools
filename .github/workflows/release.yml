@@ -1,11 +1,40 @@
-name: Build Application
+name: Tag Application
 
-on:
+on: 
   push:
-    tags:
-      - v*
+    branches:
+      - master
 
 jobs:
+
+  Tag-on-push:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: package-version-to-git-tag
+        uses: azu/action-package-version-to-git-tag@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          github_repo: ${{ github.repository }}
+          git_commit_sha: ${{ github.sha }}
+          git_tag_prefix: "v"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          tags : true
+
   release:
     runs-on: ${{ matrix.os }}
 
