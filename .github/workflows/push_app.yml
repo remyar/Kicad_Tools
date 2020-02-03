@@ -1,7 +1,7 @@
 name: Release Application
 
 on: 
-  push:
+  create:
     tags:
       - 'v*'
 
