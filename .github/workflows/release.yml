@@ -1,4 +1,4 @@
-name: Tag Application
+name: Release Application
 
 on: 
   push:
