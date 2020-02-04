@@ -67,7 +67,8 @@ class LibGeneratorPage extends React.Component {
             savingLabrarie: false,
             isModified: false,
             existingLibrarie: undefined,
-            addToLibrarie: []
+            addToLibrarie: [],
+            allComponents : [],
         }
     }
 
@@ -153,7 +154,8 @@ class LibGeneratorPage extends React.Component {
 
     _saveLibrarie() {
         let myLibrariePath = (this.props.KicadLib && this.props.KicadLib.data && this.props.KicadLib.data.filename);
-        this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie));
+        await this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie));
+        await this.props.dispatch(Actions.kicad_file.downloadKicadFootprint(myLibrariePath , this.state.allComponents));
         this.state.savingLabrarie = true;
         this.state.isModified = false;
         this.state.addToLibrarie = [];
@@ -199,7 +201,7 @@ class LibGeneratorPage extends React.Component {
         });
 
         let rows = [];
-
+        this.state.allComponents=[];
         if (this.state.selectedPath != undefined) {
             let pathTab = this.state.selectedPath.split('/');
             pathTab.map((path) => {
@@ -215,6 +217,7 @@ class LibGeneratorPage extends React.Component {
                 obj.description = data[key][0].description || "";
             }
             rows.push(obj);
+            this.state.allComponents.push(allComponents)
         }
 
         return <div className={classes.container}>

@@ -9,6 +9,7 @@ import KicadLibOpen from './kicad_librarie.open';
 import KicadLibCreate from './kicad_librarie.create';
 import KicadLibSave from './kicad_librarie.save';
 import AutoUpdaterSaga from './autoUpdater';
+import KicadDownloadFootprint from './kicad_footprint.download';
 import Github from './github';
 
 export default function* root() {
@@ -21,4 +22,6 @@ export default function* root() {
     yield takeEvery(Action.kicad_file.KICAD_READ_LIBRARIE_START, KicadLibOpen);
     yield takeEvery(Action.kicad_file.KICAD_NEW_LIBRARIE_START, KicadLibCreate);
     yield takeEvery(Action.kicad_file.KICAD_SAVE_LIBRARIE_START, KicadLibSave);
+    yield takeEvery(Action.kicad_file.KICAD_DOWNLOAD_FOOTPRINT_START, KicadDownloadFootprint);
+    
 }
