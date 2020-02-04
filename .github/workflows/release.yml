@@ -1,37 +1,52 @@
-name: Build Application
+name: Release Application
 
-on:
+on: 
   push:
-    tags:
-      - v*
+    branches:
+      - master
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
 
-    strategy:
-      matrix:
-        os: [ windows-latest]
+  Tag-on-push:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v1
 
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-        registry-url: 'https://registry.npmjs.org'
+      - name: checkout
+        uses: actions/checkout@v1
 
-    - name: npm install / run webpack
-      working-directory: ${{ github.workspace }}
-      run: |
-        npm install
-        npm run webpack
-      env:
-        CI: true
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
 
-    - name: Build/release Electron app
-      uses: samuelmeuli/action-electron-builder@v1
-      with:
-        release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        github_token: ${{ secrets.github_token }}
+      - name: Github Action
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Bump Version
+        run: |
+          npm version patch -m "v%s"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          repository: 'remyar/Kicad_Tools'
+          directory: './'
+
+      - name: npm install / run webpack
+        working-directory: ${{ github.workspace }}
+        run: |
+          npm install
+          npm run webpack
+        env:
+          CI: true
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          release: true
+          github_token: ${{ secrets.github_token }}
