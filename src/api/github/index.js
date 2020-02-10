@@ -1,5 +1,7 @@
 const fetch = require('isomorphic-fetch');
 let mouser = require('../mouser');
+let fileApi = require('../file');
+let path = require('path');
 
 function getGithubAllCategories() {
     return new Promise((resolve, reject) => {
@@ -61,8 +63,31 @@ function getAllComponents(components) {
     });
 }
 
+function downloadAllFootprint(dataPath , components){
+    return new Promise((resolve, reject) => {
+        let promiseTab = [];
+
+        components.map((component) => {
+            promiseTab.push(getFile(component.path + "/" + component.name + ".kicad_mod"));
+        });
+        
+        Promise.all(promiseTab).then((results) => {
+            promiseTab = [];
+
+            components.map((component , idx ) => {
+                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.name + ".kicad_mod" , results[idx]));
+            });
+
+            return Promise.all(promiseTab);
+        }).then((result)=>{
+            resolve();
+        })
+    });
+}
+
 export default {
     getGithubAllCategories,
     getAllComponents,
-    getFile
+    getFile,
+    downloadAllFootprint
 }

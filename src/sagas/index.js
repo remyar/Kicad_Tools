@@ -20,5 +20,5 @@ export default function* root() {
     yield takeEvery(Action.github.GET_ALL_GITHUB_CATEGORIES_START, Github);
     yield takeEvery(Action.kicad_file.KICAD_READ_LIBRARIE_START, KicadLibOpen);
     yield takeEvery(Action.kicad_file.KICAD_NEW_LIBRARIE_START, KicadLibCreate);
-    yield takeEvery(Action.kicad_file.KICAD_SAVE_LIBRARIE_START, KicadLibSave);
+    yield takeEvery(Action.kicad_file.KICAD_SAVE_LIBRARIE_START, KicadLibSave);    
 }

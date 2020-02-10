@@ -1,9 +1,7 @@
 import Action from '../actions';
 import Api from '../api';
-import { put, takeEvery } from 'redux-saga/effects'
-
-
-
+import { put, takeEvery } from 'redux-saga/effects';
+import path from 'path';
 
 export default function* saveKicadlibFile(data) {
     try {
@@ -54,7 +52,7 @@ export default function* saveKicadlibFile(data) {
         let text = yield mergeComponents(allText);
 
         yield Api.File.write(filename, text);
-
+        yield Api.Github.downloadAllFootprint( filename.substring(0 , filename.lastIndexOf(path.sep)) , data.allComponents);
         yield put({ type: Action.kicad_file.KICAD_READ_LIBRARIE_SUCCESS, data: { filename: filename, data: text } });
 
     } catch (e) {
