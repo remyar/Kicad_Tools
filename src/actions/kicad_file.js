@@ -40,12 +40,13 @@ function newKicadLibrarie(){
     }
 }
 
-function saveKicadLibrarie(filename,data , existingComponents){
+function saveKicadLibrarie(filename,data , existingComponents , allComponents){
     return {
         type : KICAD_SAVE_LIBRARIE_START,
         filename : filename,
         data : data,
-        existingComponents : existingComponents
+        existingComponents : existingComponents,
+        allComponents : allComponents
     }
 }
 
