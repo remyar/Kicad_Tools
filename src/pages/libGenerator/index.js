@@ -68,7 +68,7 @@ class LibGeneratorPage extends React.Component {
             isModified: false,
             existingLibrarie: undefined,
             addToLibrarie: [],
-            allComponents : [],
+            allComponents: [],
         }
     }
 
@@ -144,17 +144,38 @@ class LibGeneratorPage extends React.Component {
     _addToLibrarie(component) {
         if (this.state.addToLibrarie.find((element) => element.mpn == component.name) == undefined) {
 
-            if ( this.state.existingLibrarie.split('\n').find((_line) => _line.startsWith("DEF " + component.name)) == undefined ){
+            if (this.state.existingLibrarie.split('\n').find((_line) => _line.startsWith("DEF " + component.name)) == undefined) {
                 this.state.addToLibrarie.push({ mpn: component.name, description: component.description, ref: component.ref, path: component.path });
             }
-            
+
         }
         this.forceUpdate();
     }
 
     async _saveLibrarie() {
         let myLibrariePath = (this.props.KicadLib && this.props.KicadLib.data && this.props.KicadLib.data.filename);
-        await this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie , this.state.allComponents));
+        let data = this.props.Github && this.props.Github.data ? this.props.Github.data : {};
+
+        this.state.allComponents.map((component) => {
+
+            let foundComponent = undefined;
+            function _parse(componentName, obj) {
+                if (Array.isArray(obj) == false) {
+
+                    if (obj.hasOwnProperty(componentName) == true) {
+                        foundComponent = obj[componentName][0];
+                    } else {
+                        for (let key in obj) {
+                            _parse(componentName, obj[key]);
+                        }
+                    }
+                }
+            }
+            _parse(component.mpn, data);
+            component.path = foundComponent.path;
+        });
+
+        await this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie, this.state.allComponents));
         //await this.props.dispatch(Actions.kicad_file.downloadKicadFootprint(myLibrariePath , this.state.allComponents));
         this.state.savingLabrarie = true;
         this.state.isModified = false;
@@ -201,7 +222,7 @@ class LibGeneratorPage extends React.Component {
         });
 
         let rows = [];
-        this.state.allComponents=[];
+        this.state.allComponents = myLibrarieComponent;
         if (this.state.selectedPath != undefined) {
             let pathTab = this.state.selectedPath.split('/');
             pathTab.map((path) => {
@@ -217,7 +238,7 @@ class LibGeneratorPage extends React.Component {
                 obj.description = data[key][0].description || "";
             }
             rows.push(obj);
-            this.state.allComponents.push(obj)
+
         }
 
         return <div className={classes.container}>
