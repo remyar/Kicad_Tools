@@ -68,14 +68,14 @@ function downloadAllFootprint(dataPath , components){
         let promiseTab = [];
 
         components.map((component) => {
-            promiseTab.push(getFile(component.path + "/" + component.name + ".kicad_mod"));
+            promiseTab.push(getFile(component.path + "/" + component.mpn + ".kicad_mod"));
         });
         
         Promise.all(promiseTab).then((results) => {
             promiseTab = [];
 
             components.map((component , idx ) => {
-                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.name + ".kicad_mod" , results[idx]));
+                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.mpn + ".kicad_mod" , results[idx]));
             });
 
             return Promise.all(promiseTab);
