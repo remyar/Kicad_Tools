@@ -74,7 +74,24 @@ class LibGeneratorPage extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (state.isModified == false) {
-            state.existingLibrarie = (props.KicadLib && props.KicadLib.data && props.KicadLib.data.data);
+            if (props.KicadLib && props.KicadLib.data && props.KicadLib.data.data) {
+                let _lineLib = [];
+                let componentFound = false;
+                (props.KicadLib && props.KicadLib.data && props.KicadLib.data.data).split('\n').map((_line) => {
+                    _line = _line.replace('\r', '');
+                    if ( _line.startsWith("DEF") && _line.includes("#PWR") ){
+                        componentFound = true;
+                    }
+
+                    if (componentFound == false) {
+                        _lineLib.push(_line);
+                    } else if (_line.startsWith("ENDDEF") == true) {
+                        componentFound = false;
+                    }
+                });
+                state.existingLibrarie = _lineLib.join("\n");
+            }
+            //state.existingLibrarie = (props.KicadLib && props.KicadLib.data && props.KicadLib.data.data);
         }
         return state;
     }
@@ -238,7 +255,6 @@ class LibGeneratorPage extends React.Component {
                 obj.description = data[key][0].description || "";
             }
             rows.push(obj);
-
         }
 
         return <div className={classes.container}>
