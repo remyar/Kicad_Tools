@@ -161,7 +161,7 @@ class LibGeneratorPage extends React.Component {
     _addToLibrarie(component) {
         if (this.state.addToLibrarie.find((element) => element.mpn == component.name) == undefined) {
 
-            if (this.state.existingLibrarie.split('\n').find((_line) => _line.startsWith("DEF " + component.name)) == undefined) {
+            if (this.state.existingLibrarie == undefined || this.state.existingLibrarie.split('\n').find((_line) => _line.startsWith("DEF " + component.name)) == undefined) {
                 this.state.addToLibrarie.push({ mpn: component.name, description: component.description, ref: component.ref, path: component.path });
             }
 
@@ -189,7 +189,7 @@ class LibGeneratorPage extends React.Component {
                 }
             }
             _parse(component.mpn, data);
-            component.path = foundComponent.path;
+            component.path = foundComponent && foundComponent.path;
         });
 
         await this.props.dispatch(Actions.kicad_file.saveKicadLibrarie(myLibrariePath, this.state.addToLibrarie, this.state.existingLibrarie, this.state.allComponents));
@@ -221,7 +221,7 @@ class LibGeneratorPage extends React.Component {
                 if (_line.startsWith("F0 ")) {
                     _definition.ref = _line.match(/\"([^\\"]|\\")*\"/gm)[0].replace(/\"/gm, "");
                 }
-                if (_line.startsWith("F1 ")) {
+                if (_line.startsWith("F2 ")) {
                     _definition.mpn = _line.match(/\"([^\\"]|\\")*\"/gm)[0].replace(/\"/gm, "");
                 }
                 if (_line.startsWith("F4 ")) {
