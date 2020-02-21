@@ -56,12 +56,18 @@ function getAllComponents(components) {
             promiseTab.push(getFile(component.path + "/" + component.mpn + ".lib"));
         });
 
-        promiseTab.push(getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib"));
+        //promiseTab.push(getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib"));
 
         Promise.all(promiseTab).then((results) => {
             resolve(results);
         });
         
+    });
+}
+
+function downloadPowerLib(path){
+    getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib").then((file)=>{
+        fileApi.default.write( dataPath + path.sep + "Power.lib" , file);
     });
 }
 
@@ -91,5 +97,6 @@ export default {
     getGithubAllCategories,
     getAllComponents,
     getFile,
-    downloadAllFootprint
+    downloadAllFootprint,
+    downloadPowerLib
 }
