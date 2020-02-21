@@ -65,7 +65,7 @@ function getAllComponents(components) {
     });
 }
 
-function downloadPowerLib(path){
+function downloadPowerLib(dataPath){
     getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib").then((file)=>{
         fileApi.default.write( dataPath + path.sep + "Power.lib" , file);
     });

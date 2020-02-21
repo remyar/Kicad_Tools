@@ -52,7 +52,7 @@ export default function* saveKicadlibFile(data) {
         let text = yield mergeComponents(allText);
 
         yield Api.File.write(filename, text);
-        yield Api.Github.downloadPowerLib();
+        yield Api.Github.downloadPowerLib(filename.substring(0 , filename.lastIndexOf(path.sep)));
         yield Api.Github.downloadAllFootprint( filename.substring(0 , filename.lastIndexOf(path.sep)) , data.allComponents);
         yield put({ type: Action.kicad_file.KICAD_READ_LIBRARIE_SUCCESS, data: { filename: filename, data: text } });
 
