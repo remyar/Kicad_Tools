@@ -93,10 +93,33 @@ function downloadAllFootprint(dataPath , components){
     });
 }
 
+function downloadAll3D(dataPath , components){
+    return new Promise((resolve, reject) => {
+        let promiseTab = [];
+
+        components.map((component) => {
+            promiseTab.push(getFile(component.path + "/" + component.mpn + ".stp"));
+        });
+
+        Promise.all(promiseTab).then((results) => {
+            promiseTab = [];
+
+            components.map((component , idx ) => {
+                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.mpn + ".stp" , results[idx]));
+            });
+            
+            return Promise.all(promiseTab);
+        }).then((result)=>{
+            resolve();
+        })
+    });
+}
+
 export default {
     getGithubAllCategories,
     getAllComponents,
     getFile,
     downloadAllFootprint,
-    downloadPowerLib
+    downloadPowerLib,
+    downloadAll3D
 }
