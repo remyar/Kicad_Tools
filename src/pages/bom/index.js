@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import {injectIntl} from 'react-intl';
 import Table from '@material-ui/core/Table';

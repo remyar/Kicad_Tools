@@ -12,6 +12,8 @@
         "nav.settings" : "Paranétres",
         "nav.settings.desc" : "Paranétres de l'application",
 
+        "nav.convert.eagle2kicad" : "Convertisseur Librairie Eagle en Kicad",
+
         "bom.load" : "Charger BOM",
         "bom.export.pdf" : "Exporter en PDF",
         "bom.ident" : "Identification",
@@ -58,6 +60,8 @@
 
         "nav.settings" : "Settings",
         "nav.settings.desc" : "Application's settings",
+
+        "nav.convert.eagle2kicad" : "Convert Eagle libary to Kicad",
 
         "bom.load" : "Open BOM",
         "bom.export.pdf" : "Export to PDF",
