@@ -10,6 +10,7 @@ import KicadLibCreate from './kicad_librarie.create';
 import KicadLibSave from './kicad_librarie.save';
 import AutoUpdaterSaga from './autoUpdater';
 import Github from './github';
+import EagleLibOpen from './eagle_librarie.open';
 
 export default function* root() {
     yield takeEvery(AUTOUPDATER_START_UPDATE ,AutoUpdaterSaga )
@@ -21,4 +22,5 @@ export default function* root() {
     yield takeEvery(Action.kicad_file.KICAD_READ_LIBRARIE_START, KicadLibOpen);
     yield takeEvery(Action.kicad_file.KICAD_NEW_LIBRARIE_START, KicadLibCreate);
     yield takeEvery(Action.kicad_file.KICAD_SAVE_LIBRARIE_START, KicadLibSave);    
+    yield takeEvery(Action.eagle_library.EAGLE_OPEN_LIB_FILE_START,EagleLibOpen);
 }

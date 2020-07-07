@@ -76,6 +76,7 @@ class App extends React.Component {
                 <Route path='/bom' component={BomPage}/>
                 <Route path='/settings' component={SettingsPage}/>
                 <Route path='/lib_generator' component={LibGeneratorPage}/>
+                
             </div>
         </div>
     }
