@@ -62,7 +62,7 @@
         "babel-loader": "^8.0.6",
         "connected-react-router": "^6.6.1",
         "css-loader": "^3.4.2",
-        "electron": "7.1.11",
+        "electron": "9.1.0",
         "electron-builder": "^22.3.2",
         "electron-reload": "^1.5.0",
         "file-loader": "^5.0.2",
