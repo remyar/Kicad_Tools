@@ -26,7 +26,7 @@ function getGithubAllCategories() {
 }
 
 
- function getFile(url) {
+function getFile(url) {
     return new Promise((resolve, reject) => {
         fetch(url, {
             headers: {
@@ -48,71 +48,41 @@ function getGithubAllCategories() {
     });
 }
 
-function getAllComponents(components) {
-    return new Promise((resolve, reject) => {
-        let promiseTab = [];
+async function getAllComponents(components) {
 
-        components.map((component) => {
-            promiseTab.push(getFile(component.path + "/" + component.mpn + ".lib"));
-        });
+    let results = [];
+    await Promise.all(components.map(async (component) => {
+        let result = await getFile(component.path + "/" + component.mpn + ".lib");
+        results.push(results);
+    }));
 
-        //promiseTab.push(getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib"));
+    return results;
 
-        Promise.all(promiseTab).then((results) => {
-            resolve(results);
-        });
-        
-    });
 }
 
-function downloadPowerLib(dataPath){
-    getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib").then((file)=>{
-        fileApi.default.write( dataPath + path.sep + "Power.lib" , file);
-    });
+async function downloadPowerLib(dataPath) {
+
+    let result = await getFile("https://raw.githubusercontent.com/remyar/Kicad_Lib_v2/master/Power.lib");
+    await fileApi.default.write(dataPath + path.sep + "Power.lib", result);
+
 }
 
-function downloadAllFootprint(dataPath , components){
-    return new Promise((resolve, reject) => {
-        let promiseTab = [];
+async function downloadAllFootprint(dataPath, components) {
 
-        components.map((component) => {
-            promiseTab.push(getFile(component.path + "/" + component.mpn + ".kicad_mod"));
-        });
-        
-        Promise.all(promiseTab).then((results) => {
-            promiseTab = [];
+    await Promise.all(components.map(async (component) => {
+        let result = await getFile(component.path + "/" + component.mpn + ".kicad_mod");
+        await fileApi.default.write( dataPath + path.sep + component.mpn + ".kicad_mod" , result)
+    }))
 
-            components.map((component , idx ) => {
-                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.mpn + ".kicad_mod" , results[idx]));
-            });
-
-            return Promise.all(promiseTab);
-        }).then((result)=>{
-            resolve();
-        })
-    });
 }
 
-function downloadAll3D(dataPath , components){
-    return new Promise((resolve, reject) => {
-        let promiseTab = [];
+async function downloadAll3D(dataPath, components) {
 
-        components.map((component) => {
-            promiseTab.push(getFile(component.path + "/" + component.mpn + ".stp"));
-        });
+    await Promise.all(components.map(async (component) => {
+        let result = await getFile(component.path + "/" + component.mpn + ".stp");
+        await fileApi.default.write( dataPath + path.sep + component.mpn + ".stp" , result)
+    }))
 
-        Promise.all(promiseTab).then((results) => {
-            promiseTab = [];
-
-            components.map((component , idx ) => {
-                promiseTab.push(fileApi.default.write( dataPath + path.sep + component.mpn + ".stp" , results[idx]));
-            });
-            
-            return Promise.all(promiseTab);
-        }).then((result)=>{
-            resolve();
-        })
-    });
 }
 
 export default {
