@@ -130,10 +130,10 @@ class LibGeneratorPage extends React.Component {
     }
 
     _removeComponent(component) {
-        let idx = this.state.addToLibrarie.findIndex((element) => element.mpn == component.mpn);
+       let idx = this.state.addToLibrarie.findIndex((element) => element.mpn == component.mpn);
         if (idx != -1) {
             this.state.addToLibrarie.splice(idx, 1);
-        } else {
+        }  else {
             let newLibContent = [];
             let componentFound = false;
 
