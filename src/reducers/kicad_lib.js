@@ -8,6 +8,7 @@ const initialState = {
 
 export default function dataReducer(state = initialState, action) {
     switch (action.type) {
+        case (Action.kicad_file.KICAD_SAVE_LIBRARIE_START):
         case (Action.kicad_file.KICAD_READ_LIBRARIE_START):{
             return {
                 ...state,
@@ -23,6 +24,6 @@ export default function dataReducer(state = initialState, action) {
             }
         }
         default:
-            return state;
+            return {...state , isLoading: false};
     }
 }

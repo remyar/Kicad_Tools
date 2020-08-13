@@ -20,6 +20,7 @@ function openDialog(filters) {
             if (data.filePaths) {
                 resolve(data.filePaths);
             }
+            reject("no file selected");
         }).catch((err) => {
             reject("no file selected");
         });
@@ -42,6 +43,7 @@ function saveDialog(filters) {
             if (data.filePath) {
                 resolve(data.filePath);
             }
+            reject("no file selected");
         }).catch((err) => {
             reject("no file selected");
         });

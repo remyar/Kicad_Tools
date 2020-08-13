@@ -53,7 +53,7 @@ async function getAllComponents(components) {
     let results = [];
     await Promise.all(components.map(async (component) => {
         let result = await getFile(component.path + "/" + component.mpn + ".lib");
-        results.push(results);
+        results.push(result);
     }));
 
     return results;
