@@ -1,6 +1,6 @@
 {
     "name": "kicadtools",
-    "version": "0.6.11",
+    "version": "0.6.12",
     "description": "A lot of tools for Kicad",
     "main": "./main.js",
     "scripts": {
