@@ -32,14 +32,7 @@
                 "--remote-debugging-port=9222"
             ],
             "webRoot": "${workspaceRoot}",
-            "sourceMaps": true,
-            "sourceMapPathOverrides": {
-                "webpack:///*": "${workspaceRoot}/*",
-                "webpack://*": "${workspaceRoot}/*",
-                "webpack-internal:///*": "${workspaceRoot}/*",
-                "webpack-internal://*": "${workspaceRoot}/*"
-            },
-            "preLaunchTask": "npm: webpack"
+            "sourceMaps": true
         },
     ]
 }

@@ -16,39 +16,39 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
-//require('electron-reload')(__dirname);
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow() {
 
     autoUpdater.checkForUpdates();
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 1024, height: 768 , webPreferences: {
-        nodeIntegration: true
-    } ,
+    mainWindow = new BrowserWindow({
+        width: 1024, height: 768, webPreferences: {
+            nodeIntegration: true
+        },
         //toolbar: false,
         //skipTaskbar: true,
     })
 
     mainWindow.setMenu(null);
-    
+
     mainWindow.maximize();
 
     // and load the index.html of the app.
-    mainWindow.loadURL(`file://${__dirname}/dist/index.html`)
+    //mainWindow.loadURL(`file://${__dirname}/dist/index.html`)
+    mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-    //  mainWindow.webContents.openDevTools()
+      mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
         mainWindow = null
     })
 }
@@ -83,7 +83,7 @@ app.on('activate', function () {
 //autoUpdater.checkForUpdatesAndNotify()
 autoUpdater.currentVersion = pjson.version
 
-let eventTab =[];
+let eventTab = [];
 
 autoUpdater.on('checking-for-update', () => {
     logger.info('Checking for update...');
@@ -93,15 +93,15 @@ autoUpdater.on('update-available', (info) => {
     logger.info('Update available.');
     logger.info(JSON.stringify(info));
 
-    eventTab =[
-        { percent : 0 , isSend : false },
-        { percent : 25 , isSend : false },
-        { percent : 50 , isSend : false },
-        { percent : 75 , isSend : false },
-        { percent : 100 , isSend : false },
+    eventTab = [
+        { percent: 0, isSend: false },
+        { percent: 25, isSend: false },
+        { percent: 50, isSend: false },
+        { percent: 75, isSend: false },
+        { percent: 100, isSend: false },
     ];
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-available', info);
     }
 });
@@ -114,7 +114,7 @@ autoUpdater.on('error', (err) => {
     logger.info('Error in auto-updater.');
     logger.info(JSON.stringify(err));
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-error', err);
     }
 });
@@ -125,12 +125,12 @@ autoUpdater.on('download-progress', (progressObj) => {
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     logger.info(log_message);
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
 
         let val = parseInt(progressObj.percent.toString());
 
-        eventTab.map((e , idx)=>{
-            if ( val >= e.percent && e.isSend == false ){
+        eventTab.map((e, idx) => {
+            if (val >= e.percent && e.isSend == false) {
                 mainWindow.webContents.send('download-progress', progressObj);
                 eventTab[idx].isSend = true;
             }
@@ -142,32 +142,10 @@ autoUpdater.on('update-downloaded', (info) => {
     logger.info('Update downloaded; will install in 30 seconds');
     logger.info(JSON.stringify(info));
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-downloaded', info);
-        setTimeout(()=>{
+        setTimeout(() => {
             mainWindow.webContents.send('update-quitForApply', info);
-        },2000);
+        }, 2000);
     }
 });
-
-/*
-ipcMain.on('get-settings', (event, arg) => {
-    console.log(arg) // affiche "ping"
-    event.returnValue = 'pong'
-})
-
-
-fs.readFile(path.resolve(__dirname , '../../kicadtools/settings.json') , 'utf-8' , (err , data )=>{
-
-    let settings = {};
-    if ( err ){
-        logger.info("No Settings Found , apply default");
-    }
-    else{
-        settings = JSON.parse(data);
-    }
-    
-    mainWindow.webContents.send('init-settings', settings);
-
-})
-*/
