@@ -44,6 +44,11 @@
     }
   },
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.4",
+    "@mui/material": "^5.2.4",
+    "axios": "^0.24.0",
     "electron": "^16.0.5",
     "electron-log": "^4.4.3",
     "electron-logger": "0.0.3",
