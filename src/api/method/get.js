@@ -1,10 +1,10 @@
-const axios = require('axios').default;
+import axios from 'axios'
 
-module.exports = async (url) => {
+export default function get(url) {
     return new Promise(async (resolve, reject) => {
         try {
-            let resp = await axios.get(url);
-           resolve(resp.data)
+            let response = await axios.get('/' + url);
+            resolve(response.data)
         } catch (err) {
             reject(err);
         }

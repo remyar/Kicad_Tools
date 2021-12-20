@@ -5,6 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from "react-router-dom";
 import NavigationProvider from './providers/navigation';
 import StoreProvider from './providers/StoreProvider';
+import SnackBarGenerator from './providers/snackBar';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import api from "./api";
@@ -47,7 +48,9 @@ ReactDOM.render(
             <MemoryRouter>
                 <NavigationProvider>
                     <IntlProvider locale={language} messages={messages}>
-                        <App />
+                        <SnackBarGenerator>
+                            <App />
+                        </SnackBarGenerator>
                     </IntlProvider>
                 </NavigationProvider>
             </MemoryRouter>

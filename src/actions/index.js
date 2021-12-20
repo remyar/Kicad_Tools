@@ -1,5 +1,6 @@
-const lcsc = require('./lcsc');
+import lcsc from './lcsc';
 
-module.exports = {
-    lcsc
+
+export default {
+    lcsc,
 }

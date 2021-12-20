@@ -1,5 +1,5 @@
-const get = require('./get.sch');
+import getComponent from "./get.sch";
 
-module.exports = {
-    get
+export default {
+    getComponent
 }

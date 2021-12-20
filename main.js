@@ -5,6 +5,8 @@ var pjson = require('./package.json');
 var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const axios = require('axios');
 
 logger.transports.file.level = 'info';
 logger.transports.file.maxSize = 1048576;
@@ -42,7 +44,7 @@ function createWindow() {
     mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-      mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -149,3 +151,24 @@ autoUpdater.on('update-downloaded', (info) => {
         }, 2000);
     }
 });
+
+
+
+const requestListener = async function (req, res) {
+    let url = req.url.replace('/', '');
+    try{
+        let resp = await axios.get(url);
+        res.writeHead(resp.status);
+        if ( typeof resp.data != 'string'){
+            resp.data = JSON.stringify(resp.data);
+        }
+        res.write(resp.data);
+        res.end();
+    }catch(err){
+        res.writeHead(500);
+        res.end();
+    }
+}
+
+const server = http.createServer(requestListener);
+server.listen(4000);

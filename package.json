@@ -54,6 +54,8 @@
     "electron-logger": "0.0.3",
     "electron-store": "^8.0.1",
     "electron-updater": "^4.6.1",
+    "node-html-parser": "^5.1.0",
+    "notistack": "^2.0.3",
     "npm-check-updates": "^12.0.5",
     "react": "^17.0.2",
     "react-datepicker": "^4.1.1",
@@ -62,6 +64,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.0"
   },
+  "proxy": "http://localhost:4000",
   "devDependencies": {},
   "browserslist": {
     "production": [
