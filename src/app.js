@@ -13,17 +13,35 @@ import Drawer from './components/Drawer';
 import HomePage from './pages/home';
 import LibGeneratorPage from './pages/libGenerator';
 
+import actions from './actions'
+
 const routes = [
     { path: routeMdw.urlIndex(), name: 'homePage', Component: HomePage },
     { path: routeMdw.urlLibGenerator(), name: 'LibGeneratorPage', Component: LibGeneratorPage },
 ]
 
 function App(props) {
-    const [drawerState, setDrawerState] = useState(false)
+    const [drawerState, setDrawerState] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                let response = await props.dispatch(actions.electron.getUpdateAvailable());
+                if (response?.updateAvailable?.version != undefined) {
+                    let progress = await props.dispatch(action.electron.getUpdateProgress());
+                    console.log(progress?.audapteProgress);
+                }
+            } catch (err) {
+
+            }
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
     return <Box>
         <AppBar onClick={() => { setDrawerState(true) }} />
         <Box>
-            <Container maxWidth="xl" sx={{ height: 'calc(100vh - 64px)' , paddingTop : "25px"}} >
+            <Container maxWidth="xl" sx={{ height: 'calc(100vh - 64px)', paddingTop: "25px" }} >
                 <Drawer
                     open={drawerState}
                     onClose={() => { setDrawerState(false) }}
