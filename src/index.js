@@ -15,7 +15,7 @@ import localeData from './locales';
 
 // WHITELIST
 const persistConfig = {
-    key: 'diyBMSv4',
+    key: 'kicadTools',
     persist: true,
     whitelist: [
         "settings"
