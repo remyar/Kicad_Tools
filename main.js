@@ -1,54 +1,57 @@
 const electron = require('electron');
 const { autoUpdater } = require("electron-updater");
-let ipcMain = electron.ipcMain;
 var pjson = require('./package.json');
 var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const axios = require('axios');
+const isDev = require('electron-is-dev');
 
 logger.transports.file.level = 'info';
 logger.transports.file.maxSize = 1048576;
 logger.transports.file.clear();
 autoUpdater.logger = logger;
+
 // Module to control application life.
 const app = electron.app
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
-//require('electron-reload')(__dirname);
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow() {
 
     autoUpdater.checkForUpdates();
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 1024, height: 768 , webPreferences: {
-        nodeIntegration: true
-    } ,
+    mainWindow = new BrowserWindow({
+        width: 1024, height: 768, webPreferences: {
+            nodeIntegration: true
+        },
         //toolbar: false,
         //skipTaskbar: true,
     })
 
     mainWindow.setMenu(null);
-    
+
     mainWindow.maximize();
 
     // and load the index.html of the app.
-    mainWindow.loadURL(`file://${__dirname}/dist/index.html`)
+    mainWindow.loadURL(isDev ? `http://localhost:3000` : `file://${__dirname}/build/index.html`)
+    //mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-    //  mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
         mainWindow = null
     })
 }
@@ -83,7 +86,7 @@ app.on('activate', function () {
 //autoUpdater.checkForUpdatesAndNotify()
 autoUpdater.currentVersion = pjson.version
 
-let eventTab =[];
+let eventTab = [];
 
 autoUpdater.on('checking-for-update', () => {
     logger.info('Checking for update...');
@@ -93,15 +96,15 @@ autoUpdater.on('update-available', (info) => {
     logger.info('Update available.');
     logger.info(JSON.stringify(info));
 
-    eventTab =[
-        { percent : 0 , isSend : false },
-        { percent : 25 , isSend : false },
-        { percent : 50 , isSend : false },
-        { percent : 75 , isSend : false },
-        { percent : 100 , isSend : false },
+    eventTab = [
+        { percent: 0, isSend: false },
+        { percent: 25, isSend: false },
+        { percent: 50, isSend: false },
+        { percent: 75, isSend: false },
+        { percent: 100, isSend: false },
     ];
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-available', info);
     }
 });
@@ -114,7 +117,7 @@ autoUpdater.on('error', (err) => {
     logger.info('Error in auto-updater.');
     logger.info(JSON.stringify(err));
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-error', err);
     }
 });
@@ -125,12 +128,12 @@ autoUpdater.on('download-progress', (progressObj) => {
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     logger.info(log_message);
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
 
         let val = parseInt(progressObj.percent.toString());
 
-        eventTab.map((e , idx)=>{
-            if ( val >= e.percent && e.isSend == false ){
+        eventTab.map((e, idx) => {
+            if (val >= e.percent && e.isSend == false) {
                 mainWindow.webContents.send('download-progress', progressObj);
                 eventTab[idx].isSend = true;
             }
@@ -142,32 +145,95 @@ autoUpdater.on('update-downloaded', (info) => {
     logger.info('Update downloaded; will install in 30 seconds');
     logger.info(JSON.stringify(info));
 
-    if ( mainWindow != undefined ){
+    if (mainWindow != undefined) {
         mainWindow.webContents.send('update-downloaded', info);
-        setTimeout(()=>{
+        setTimeout(() => {
             mainWindow.webContents.send('update-quitForApply', info);
-        },2000);
+        }, 2000);
     }
 });
 
-/*
-ipcMain.on('get-settings', (event, arg) => {
-    console.log(arg) // affiche "ping"
-    event.returnValue = 'pong'
-})
 
-
-fs.readFile(path.resolve(__dirname , '../../kicadtools/settings.json') , 'utf-8' , (err , data )=>{
-
-    let settings = {};
-    if ( err ){
-        logger.info("No Settings Found , apply default");
+async function _saveFile(p, filename, data) {
+    if (fs.existsSync(p) == false) {
+        fs.mkdirSync(p, { recursive: true });
     }
-    else{
-        settings = JSON.parse(data);
-    }
-    
-    mainWindow.webContents.send('init-settings', settings);
 
-})
-*/
+    if (fs.existsSync(p) == true) {
+        fs.writeFileSync(path.resolve(p, filename.replace('\\', '_').replace('/', '_')), data);
+    }
+
+    return;
+}
+
+const requestListener = async function (req, res) {
+
+    if (req.url.startsWith('/fetch/')) {
+        let url = req.url.replace('/fetch/', '');
+        try {
+            let resp = await axios.get(url);
+            res.writeHead(resp.status);
+            if (typeof resp.data != 'string') {
+                resp.data = JSON.stringify(resp.data);
+            }
+            res.write(resp.data);
+            res.end();
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    } else if (req.url.startsWith('/getFilenameForSave')) {
+        try {
+            let resp = await electron.dialog.showSaveDialog(null, {
+                title: "Save librarie file",
+                defaultPath: "librarie",
+                buttonLabel: "Save",
+
+                filters: [
+                    { name: 'lib', extensions: ['lib'] },
+                ]
+            });
+
+            res.writeHead(200);
+            res.write(JSON.stringify(resp));
+            res.end();
+
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    } else if (req.url.startsWith('/writeFile')) {
+        try {
+            async function __waitBody() {
+                return new Promise((resolve, reject) => {
+                    let body = ''
+                    req.on('data', function (data) {
+                        body += data;
+                    })
+                    req.on('end', function () {
+
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end('post received');
+                        resolve(JSON.parse(body));
+                    })
+                });
+            }
+
+            let postData = await __waitBody();
+
+            postData.filename = postData.filepath.replace(/^.*[\\\/]/, '');
+            postData.filepath = postData.filepath.replace(postData.filename, '');
+            await _saveFile(postData.filepath, postData.filename, postData.data);
+
+            res.writeHead(200);
+            res.end();
+
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    }
+}
+
+const server = http.createServer(requestListener);
+server.listen(4000);

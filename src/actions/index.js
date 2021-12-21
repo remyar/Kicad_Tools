@@ -1,15 +1,9 @@
-import kicad_file from './kicad_file';
-import export_file from './export_file';
-import settings from './settings';
-import goto from './goto';
-import github from './github';
-import eagle_library from './eagle_library';
+import lcsc from './lcsc';
+import electron from './electron';
+import kicad from './kicad';
 
 export default {
-    kicad_file,
-    export_file,
-    settings,
-    goto,
-    github,
-    eagle_library,
+    lcsc,
+    electron,
+    kicad
 }

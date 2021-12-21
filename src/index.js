@@ -1,56 +1,60 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import {MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { routerMiddleware , ConnectedRouter } from 'connected-react-router';
-import { createHashHistory   } from 'history';
-import { IntlProvider, addLocaleData } from 'react-intl';
-import { SnackbarProvider } from 'notistack';
-
-import translate from './locales/translate';
-
-import 'typeface-roboto';
-
-import reducers from './reducers';
-import sagas from './sagas';
 import App from './app';
+import { IntlProvider } from 'react-intl';
+import { MemoryRouter } from "react-router-dom";
+import NavigationProvider from './providers/navigation';
+import StoreProvider from './providers/StoreProvider';
+import SnackBarGenerator from './providers/snackBar';
+import CssBaseline from '@mui/material/CssBaseline';
 
-const myTheme = createMuiTheme();
-const history = createHashHistory();
-
-// create the saga middleware
-const sagaMiddleware = createSagaMiddleware()
+import api from "./api";
 
 // i18n datas
-//import en from 'react-intl/locale-data/en';
-//import es from 'react-intl/locale-data/es';
-//import fr from 'react-intl/locale-data/fr';
-//import it from 'react-intl/locale-data/it';
-// Our translated strings
-//import localeData from './locales/data.json';
+import localeData from './locales';
 
-import autoUpdater from './actions/autoUpdater';
+// WHITELIST
+const persistConfig = {
+    key: 'diyBMSv4',
+    persist: true,
+    whitelist: [
+        "settings"
+    ]
+};
 
-let store = createStore( reducers(history) , applyMiddleware(sagaMiddleware , routerMiddleware(history)) );
-autoUpdater(store.dispatch, store.getState);
 
-sagaMiddleware.run(sagas)
 
-// store as GLOBAL
-window.__redux__ = store;
+// Define user's language. Different browsers have the user locale defined
+// on different fields on the `navigator` object, so we make sure to account
+// for these different by checking all of them
+const language = (navigator.languages && navigator.languages[0]) ||
+    navigator.language ||
+    navigator.userLanguage;
+
+window.userLocale = language;
+
+// Split locales with a region code
+let languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
+
+window.userLocaleWithoutRegionCode = languageWithoutRegionCode;
+localeData.setLocale(languageWithoutRegionCode);
+// Try full locale, try locale without region code, fallback to 'en'
+const messages = localeData[languageWithoutRegionCode] || localeData[language] || localeData.en;
 
 ReactDOM.render(
-    <Provider store={store}>
-        <IntlProvider locale={translate.getLanguage()} messages={translate.getMessages()}>
-            <MuiThemeProvider theme={myTheme}>
-                <ConnectedRouter history={history}>
-                    <SnackbarProvider maxSnack={3} >
-                        <App />
-                    </SnackbarProvider>
-                </ConnectedRouter>
-            </MuiThemeProvider>
-        </IntlProvider>
-    </Provider>
-, document.getElementById('root'));
+    <React.StrictMode>
+        <CssBaseline />
+        <StoreProvider extra={{ api }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" } }}>
+            <MemoryRouter>
+                <NavigationProvider>
+                    <IntlProvider locale={language} messages={messages}>
+                        <SnackBarGenerator>
+                            <App />
+                        </SnackBarGenerator>
+                    </IntlProvider>
+                </NavigationProvider>
+            </MemoryRouter>
+        </StoreProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
+);

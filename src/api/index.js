@@ -1,15 +1,7 @@
-import File from './file';
-import Xml from './xml';
-import Pdf from './pdf';
-import Ini from './ini';
-import Mouser from './mouser';
-import Github from './github';
+import get from './method/get';
+import post from './method/post';
 
 export default {
-    File,
-    Xml,
-    Pdf,
-    Ini,
-    Mouser,
-    Github
+    get,
+    post
 }
