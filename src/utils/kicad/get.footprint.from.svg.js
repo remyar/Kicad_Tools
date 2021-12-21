@@ -1,6 +1,6 @@
 const ArcSegmenter = require('./ArcSegmenter ');
 
-module.exports = async (svg) => {
+export default async (svg) => {
     return new Promise(async (resolve, reject) => {
         let Tab2 = [];
         let config = {

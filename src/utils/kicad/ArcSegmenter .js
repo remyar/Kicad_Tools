@@ -144,4 +144,4 @@ class ArcSegmenter {
 }
 
 
-module.exports = ArcSegmenter;
+export default ArcSegmenter;

@@ -123,7 +123,7 @@ async function getFootprint(component) {
     }
 
 }
-module.exports = {
+export default {
     getSymbol,
     getFootprint,
     generateLib

@@ -1,5 +1,5 @@
 const kicad = require('./kicad');
 
-module.exports = {
+export default {
     kicad
 }
