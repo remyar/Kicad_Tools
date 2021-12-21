@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { withStoreProvider } from './providers/StoreProvider';
-
+import { withSnackBar } from './providers/snackBar';
 import routeMdw from './middleware/route';
 
 import AppBar from './components/AppBar';
@@ -28,13 +28,13 @@ function App(props) {
             try {
                 let response = await props.dispatch(actions.electron.getUpdateAvailable());
                 if (response?.updateAvailable?.version != undefined) {
-                    let progress = await props.dispatch(action.electron.getUpdateProgress());
-                    console.log(progress?.audapteProgress);
+                    let progress = await props.dispatch(actions.electron.getUpdateProgress());
+                    props.snackbar.info('Update Download : ' + parseInt(progress?.updateProgress?.percent || "0.0") + "%");
                 }
             } catch (err) {
 
             }
-        }, 2000);
+        }, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -53,5 +53,5 @@ function App(props) {
         </Box>
     </Box>
 }
-export default withStoreProvider(App);
+export default withStoreProvider(withSnackBar(App));
 
