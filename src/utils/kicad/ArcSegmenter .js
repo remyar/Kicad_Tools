@@ -1,4 +1,4 @@
-class ArcSegmenter {
+export default class ArcSegmenter {
     constructor(x0, y0, x1, y1, a, b, alfa, sweep, larc) {
         this.PI2 = Math.PI * 2;
         this.ACC_ZERO_ANG = 0.001 * Math.PI / 180.0;
@@ -142,6 +142,3 @@ class ArcSegmenter {
         return result;
     }
 }
-
-
-export default ArcSegmenter;

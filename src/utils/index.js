@@ -1,4 +1,4 @@
-const kicad = require('./kicad');
+import kicad from './kicad';
 
 export default {
     kicad

@@ -1,4 +1,4 @@
-const ArcSegmenter = require('./ArcSegmenter ');
+import ArcSegmenter from './ArcSegmenter ';
 
 export default async (svg) => {
     return new Promise(async (resolve, reject) => {

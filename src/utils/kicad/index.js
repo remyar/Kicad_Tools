@@ -1,6 +1,6 @@
 const SVGJson = require('svg-parser');
-const getComponentFromSvg = require('./get.component.from.svg');
-const getFootprintFromSvg = require('./get.footprint.from.svg');
+import getComponentFromSvg from './get.component.from.svg';
+import getFootprintFromSvg from './get.footprint.from.svg';
 
 function getChildrenWithParam(children, param) {
 
@@ -123,6 +123,7 @@ async function getFootprint(component) {
     }
 
 }
+
 export default {
     getSymbol,
     getFootprint,
