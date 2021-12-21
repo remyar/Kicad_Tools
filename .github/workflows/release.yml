@@ -45,7 +45,7 @@ jobs:
         env:
           CI: true
           GENERATE_SOURCEMAP: false
-          REACT_APP_PROXY:'http://localhost:4000'
+          REACT_APP_PROXY: 'http://localhost:4000'
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
