@@ -1,5 +1,5 @@
-const lcsc = require('./lscs');
+const kicad = require('./kicad');
 
 module.exports = {
-    lcsc
+    kicad
 }

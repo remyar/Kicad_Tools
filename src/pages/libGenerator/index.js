@@ -31,6 +31,7 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
 import SettingsInputSvideoIcon from '@mui/icons-material/SettingsInputSvideo';
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
@@ -84,6 +85,7 @@ function LibGeneratorPage(props) {
                         <TableCell>Description</TableCell>
                         <TableCell>LCSC Part #</TableCell>
                         <TableCell></TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -96,7 +98,6 @@ function LibGeneratorPage(props) {
                             <TableCell>{component.lcscPartNumber}</TableCell>
                             <TableCell>
                                 <Grid container spacing={2}>
-
                                     <Grid item xs={3}>
                                         <Tooltip title="Symbol">
                                             <SettingsInputSvideoIcon sx={{
@@ -137,6 +138,17 @@ function LibGeneratorPage(props) {
                                     </Grid>
                                 </Grid>
                             </TableCell>
+                            <TableCell>
+                                <DeleteForeverIcon sx={{ color: 'red', cursor: 'pointer' }} onClick={() => {
+                                    let _c = [];
+                                    components.forEach((_comp, _idx) => {
+                                        if (idx != _idx) {
+                                            _c.push(_comp);
+                                        }
+                                    });
+                                    setComponents(_c);
+                                }} />
+                            </TableCell>
                         </TableRow>
                     })}
                 </TableBody>
@@ -152,6 +164,26 @@ function LibGeneratorPage(props) {
                 key={'Save'}
                 icon={<SaveIcon />}
                 tooltipTitle={'Save'}
+                onClick={async ()=>{
+                    setDisplayLoader(true);
+                    try{
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave())).getFilenameForSave;
+                        if ( filename.canceled == false ){
+                            filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
+                        }
+
+                        let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components , filename.name.replace('.lib','')))).librarieContent;
+                        let footprints = (await props.dispatch(actions.kicad.generateFootprints(components , filename.name.replace('.lib','')))).footprints;
+                        
+                        await props.dispatch(actions.electron.writeFile(filename.filePath , librarieFile));
+                        for ( let footprint of footprints ){
+                            await props.dispatch(actions.electron.writeFile(filename.filePath.replace( filename.name , '') + '/' +  filename.name.replace('.lib','.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod" , footprint.footprint));
+                        }
+                    } catch( err ){
+                        props.snackbar.error(err.message);
+                    }
+                    setDisplayLoader(false);
+                }}
             />
         </SpeedDial>
     </Box >

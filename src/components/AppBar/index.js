@@ -22,7 +22,7 @@ function MyAppBar(props) {
                     <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Kicad Tools { }
+                    Kicad Tools {process.env.REACT_APP_VERSION}
                 </Typography>
             </Toolbar>
         </AppBar>

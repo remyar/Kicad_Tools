@@ -1,17 +1,18 @@
 const electron = require('electron');
 const { autoUpdater } = require("electron-updater");
-let ipcMain = electron.ipcMain;
 var pjson = require('./package.json');
 var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const axios = require('axios');
+const isDev = require('electron-is-dev');
 
 logger.transports.file.level = 'info';
 logger.transports.file.maxSize = 1048576;
 logger.transports.file.clear();
 autoUpdater.logger = logger;
+
 // Module to control application life.
 const app = electron.app
 
@@ -40,8 +41,8 @@ function createWindow() {
     mainWindow.maximize();
 
     // and load the index.html of the app.
-    //mainWindow.loadURL(`file://${__dirname}/dist/index.html`)
-    mainWindow.loadURL(`http://localhost:3000`)
+    mainWindow.loadURL(isDev ? `http://localhost:3000` : `file://${__dirname}/build/index.html`)
+    //mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
@@ -153,20 +154,84 @@ autoUpdater.on('update-downloaded', (info) => {
 });
 
 
+async function _saveFile(p, filename, data) {
+    if (fs.existsSync(p) == false) {
+        fs.mkdirSync(p, { recursive: true });
+    }
+
+    if (fs.existsSync(p) == true) {
+        fs.writeFileSync(path.resolve(p, filename.replace('\\', '_').replace('/', '_')), data);
+    }
+
+    return;
+}
 
 const requestListener = async function (req, res) {
-    let url = req.url.replace('/', '');
-    try{
-        let resp = await axios.get(url);
-        res.writeHead(resp.status);
-        if ( typeof resp.data != 'string'){
-            resp.data = JSON.stringify(resp.data);
+
+    if (req.url.startsWith('/fetch/')) {
+        let url = req.url.replace('/fetch/', '');
+        try {
+            let resp = await axios.get(url);
+            res.writeHead(resp.status);
+            if (typeof resp.data != 'string') {
+                resp.data = JSON.stringify(resp.data);
+            }
+            res.write(resp.data);
+            res.end();
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
         }
-        res.write(resp.data);
-        res.end();
-    }catch(err){
-        res.writeHead(500);
-        res.end();
+    } else if (req.url.startsWith('/getFilenameForSave')) {
+        try {
+            let resp = await electron.dialog.showSaveDialog(null, {
+                title: "Save librarie file",
+                defaultPath: "librarie",
+                buttonLabel: "Save",
+
+                filters: [
+                    { name: 'lib', extensions: ['lib'] },
+                ]
+            });
+
+            res.writeHead(200);
+            res.write(JSON.stringify(resp));
+            res.end();
+
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    } else if (req.url.startsWith('/writeFile')) {
+        try {
+            async function __waitBody() {
+                return new Promise((resolve, reject) => {
+                    let body = ''
+                    req.on('data', function (data) {
+                        body += data;
+                    })
+                    req.on('end', function () {
+
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+                        res.end('post received');
+                        resolve(JSON.parse(body));
+                    })
+                });
+            }
+
+            let postData = await __waitBody();
+
+            postData.filename = postData.filepath.replace(/^.*[\\\/]/, '');
+            postData.filepath = postData.filepath.replace(postData.filename, '');
+            await _saveFile(postData.filepath, postData.filename, postData.data);
+
+            res.writeHead(200);
+            res.end();
+
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
     }
 }
 
