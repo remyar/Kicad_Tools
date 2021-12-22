@@ -179,6 +179,7 @@ function LibGeneratorPage(props) {
                         for ( let footprint of footprints ){
                             await props.dispatch(actions.electron.writeFile(filename.filePath.replace( filename.name , '') + '/' +  filename.name.replace('.lib','.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod" , footprint.footprint));
                         }
+                        props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
                     } catch( err ){
                         props.snackbar.error(err.message);
                     }

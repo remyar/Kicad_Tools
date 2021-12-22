@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -21,21 +22,34 @@ const routes = [
 ]
 
 function App(props) {
+
+    const intl = props.intl;
     const [drawerState, setDrawerState] = useState(false);
 
-    useEffect(() => {
-        const interval = setInterval(async () => {
-            try {
-                let response = await props.dispatch(actions.electron.getUpdateAvailable());
-                if (response?.updateAvailable?.version != undefined) {
-                    let progress = await props.dispatch(actions.electron.getUpdateProgress());
-                    props.snackbar.info('Update Download : ' + parseInt(progress?.updateProgress?.percent || "0.0") + "%");
-                }
-            } catch (err) {
+    useEffect(async () => {
 
-            }
-        }, 30000);
-        return () => clearInterval(interval);
+        let response = await props.dispatch(actions.electron.getUpdateAvailable());
+        if (response?.updateAvailable?.version != undefined) {
+            props.snackbar.warning(intl.formatMessage({ id: 'update.available' }));
+            const interval = setInterval(async () => {
+                try {
+                    let progress = await props.dispatch(actions.electron.getUpdateProgress());
+                    if ( progress?.updateProgress?.percent ){
+                        props.snackbar.info(intl.formatMessage({ id: 'update.download' }) + ' : ' + parseInt(progress?.updateProgress?.percent || "0.0") + "%");
+                    } else {
+                        props.snackbar.info(intl.formatMessage({ id: 'update.downloaded' }));
+                        clearInterval(interval); 
+                        setTimeout(()=>{
+                            props.snackbar.success(intl.formatMessage({ id: 'update.apply' }));
+                        },5000);
+                    }
+                } catch (err) {
+                    clearInterval(interval);
+                }
+            }, 5000);
+            return () => clearInterval(interval);
+        }
+
     }, []);
 
     return <Box>
@@ -53,5 +67,5 @@ function App(props) {
         </Box>
     </Box>
 }
-export default withStoreProvider(withSnackBar(App));
+export default withStoreProvider(withSnackBar(injectIntl(App)));
 

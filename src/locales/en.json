@@ -35,5 +35,6 @@
     "lib.load": "Load Librarie",
     "lib.myLib": "My Librarie",
     "lib.new": "New Librarie",
-    "lib.save": "Save"
+    "lib.save": "Save",
+    "lib.save.success": "Librarie saved"
 }

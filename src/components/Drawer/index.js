@@ -18,7 +18,7 @@ function MyDrawer(props) {
     const intl = props.intl;
     return <Drawer open={props.open} onClose={() => { props.onClose && props.onClose() }}>
         <List>
-            <ListItem button onClick={() => {
+            {/*<ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlBom());
                 props.onClose && props.onClose();
             }}>
@@ -26,7 +26,7 @@ function MyDrawer(props) {
                     <MemoryIcon />
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.generate.bom' })} secondary={intl.formatMessage({ id: 'nav.generate.bom.desc' })} />
-            </ListItem>
+        </ListItem>*/}
             <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlLibGenerator());
                 props.onClose && props.onClose();
@@ -36,7 +36,7 @@ function MyDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.generate.librarie' })} secondary={intl.formatMessage({ id: 'nav.generate.librarie.desc' })} />
             </ListItem>
-            <ListItem button onClick={() => {
+          {/*  <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlIndex());
                 props.onClose && props.onClose();
             }}>
@@ -44,7 +44,7 @@ function MyDrawer(props) {
                     <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.home' })} secondary={intl.formatMessage({ id: 'nav.home.desc' })} />
-            </ListItem>
+        </ListItem>*/}
         </List>
     </Drawer>;
 }
