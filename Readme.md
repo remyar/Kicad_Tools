@@ -11,7 +11,7 @@ ARNAUDIN Rémy
 ### Project Information
 - Repository: [github.com](https://github.com/remyar/Kicad_Tools.git)
 
-- Forum: [kiCad.info](https://forum.kicad.info/t/kicad-tools-reborn)
+- Forum: [kiCad.info](https://forum.kicad.info/t/kicad-tools-create-librarie-symbol-and-footprint-from-lcsc-com/32613)
 
 -  Coding Standard
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)

@@ -1,11 +1,13 @@
 import createAction from '../../middleware/actions';
 
-export async function getFilenameForSave({ extra, getState }) {
+export async function getFilenameForSave( extensions , { extra, getState }) {
 
     let api = extra.api;
-
+    if ( typeof extensions == 'string'){
+        extensions = [extensions];
+    }
     try {
-        let response = await api.get("/getFilenameForSave");
+        let response = await api.post("/getFilenameForSave" , { extensions: extensions });
         return {
             getFilenameForSave : response
         };

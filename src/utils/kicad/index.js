@@ -1,6 +1,7 @@
 const SVGJson = require('svg-parser');
 import getComponentFromSvg from './get.component.from.svg';
 import getFootprintFromSvg from './get.footprint.from.svg';
+import ComponentsLibs from './libs/component'
 
 function getChildrenWithParam(children, param) {
 
@@ -14,7 +15,6 @@ function getChildrenWithParam(children, param) {
             if (result !== false) {
                 return result;
             }
-
         }
 
         return false;
@@ -60,7 +60,6 @@ async function getSymbol(component, librarieName) {
                     let result = c_param.match(/pre`([^`]*)?`/i);
 
                     _indexComponent = result[1].replace("?", "");
-
 
                     bomSp = c_param.match(/BOM_Supplier Part`([^`]*)?`/i)[1];
 
@@ -220,9 +219,18 @@ async function parseKicadLib(str) {
     }
 }
 
+async function parseKicadNetlist(str){
+    try{
+        await ComponentsLibs.LoadComponentFromNET({},str)
+    }catch(err){
+        throw Error(err)
+    }
+}
+
 export default {
     getSymbol,
     getFootprint,
     generateLib,
     parseKicadLib,
+    parseKicadNetlist
 }

@@ -220,11 +220,17 @@ const requestListener = async function (req, res) {
         }
     } else if (req.url.startsWith('/getFilenameForOpen')) {
         try {
-            let resp = await electron.dialog.showOpenDialog(null, {
-                properties: ['openFile'], filters: [
-                    { name: 'lib', extensions: ['lib'] },
-                    { name: 'pro', extensions: ['pro'] },
-                ]
+            let postData = await __waitBody();
+            let filters = [];
+            for( let _ext of postData?.extensions ){
+                filters.push({
+                    name : _ext.replace('.',''),
+                    extensions : [_ext.replace('.','')]
+                })
+            }
+
+            let resp = await electron.dialog.showOpenDialog(mainWindow, {
+                properties: ['openFile'], filters: filters
             });
 
             res.writeHead(200);
@@ -237,14 +243,21 @@ const requestListener = async function (req, res) {
         }
     } else if (req.url.startsWith('/getFilenameForSave')) {
         try {
-            let resp = await electron.dialog.showSaveDialog(null, {
+            let postData = await __waitBody();
+            let filters = [];
+            for( let _ext of postData?.extensions ){
+                filters.push({
+                    name : _ext.replace('.',''),
+                    extensions : [_ext.replace('.','')]
+                })
+            }
+            
+            let resp = await electron.dialog.showSaveDialog(mainWindow, {
                 title: "Save librarie file",
                 defaultPath: "librarie",
                 buttonLabel: "Save",
 
-                filters: [
-                    { name: 'lib', extensions: ['lib'] },
-                ]
+                filters: filters
             });
 
             res.writeHead(200);

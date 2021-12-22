@@ -13,12 +13,14 @@ import Drawer from './components/Drawer';
 
 import HomePage from './pages/home';
 import LibGeneratorPage from './pages/libGenerator';
+import BomPage from './pages/bom';
 
 import actions from './actions'
 
 const routes = [
     { path: routeMdw.urlIndex(), name: 'homePage', Component: HomePage },
     { path: routeMdw.urlLibGenerator(), name: 'LibGeneratorPage', Component: LibGeneratorPage },
+    { path: routeMdw.urlBom(), name: 'BomPage', Component: BomPage },
 ]
 
 function App(props) {

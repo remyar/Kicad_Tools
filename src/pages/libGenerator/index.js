@@ -170,7 +170,7 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen())).getFilenameForOpen;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.lib')))?.getFilenameForOpen?.data;
                         if ( file.canceled == false ){
 
                             let fileData = (await props.dispatch(actions.electron.readFile(file.filePaths[0]))).fileData;
@@ -199,7 +199,7 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let filename = (await props.dispatch(actions.electron.getFilenameForSave())).getFilenameForSave;
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.lib')))?.getFilenameForSave?.data;
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                         }

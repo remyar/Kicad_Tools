@@ -18,7 +18,7 @@ function MyDrawer(props) {
     const intl = props.intl;
     return <Drawer open={props.open} onClose={() => { props.onClose && props.onClose() }}>
         <List>
-            {/*<ListItem button onClick={() => {
+            <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlBom());
                 props.onClose && props.onClose();
             }}>
@@ -26,7 +26,7 @@ function MyDrawer(props) {
                     <MemoryIcon />
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.generate.bom' })} secondary={intl.formatMessage({ id: 'nav.generate.bom.desc' })} />
-        </ListItem>*/}
+            </ListItem>
             <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlLibGenerator());
                 props.onClose && props.onClose();

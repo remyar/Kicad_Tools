@@ -17,9 +17,9 @@ function HomePage(props) {
         transform: 'translate(-50%, -50%)',
         textAlign: 'center'
     }}>
-        {/*<Box>
+        <Box>
             <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlBom()) }}>{intl.formatMessage({ id: 'nav.generate.bom' })}</Button>
-        </Box>*/}
+        </Box>
         <Box sx={{ paddingTop: "10px" }}>
             <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlLibGenerator()) }}>{intl.formatMessage({ id: 'nav.generate.librarie' })}</Button>
         </Box>
