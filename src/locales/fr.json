@@ -35,5 +35,6 @@
     "lib.load": "Charger Librairie",
     "lib.myLib": "Ma Librairie",
     "lib.new": "Créer une Librairie",
-    "lib.save": "Enregistrer"
+    "lib.save": "Enregistrer",
+    "lib.save.success": "Librairie sauvegardé"
 }

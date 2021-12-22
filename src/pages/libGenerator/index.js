@@ -200,7 +200,7 @@ function LibGeneratorPage(props) {
                         }
 
                         props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
-                    } catch (err) {
+                    } catch( err ){
                         props.snackbar.error(err.message);
                     }
                     setDisplayLoader(false);

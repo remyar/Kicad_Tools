@@ -94,6 +94,10 @@ let eventTab = [
     { percent: 100, isSend: false },
 ];
 
+
+let updateAvailable = undefined;
+let progressObjAvailable = undefined;
+
 autoUpdater.on('checking-for-update', () => {
     logger.info('Checking for update...');
 });
@@ -112,7 +116,8 @@ autoUpdater.on('update-not-available', (ev, info) => {
     logger.info('Update not available.');
 
     updateAvailable = undefined;
-    progressObjAvailable = undefined;
+    progressObjAvailable =undefined;
+
 });
 
 autoUpdater.on('error', (err) => {
@@ -138,7 +143,7 @@ autoUpdater.on('download-progress', (progressObj) => {
 
         eventTab.map((e, idx) => {
             if (val >= e.percent && e.isSend == false) {
-                mainWindow.webContents.send('download-progress', progressObj);
+                //mainWindow.webContents.send('download-progress', progressObj);
                 eventTab[idx].isSend = true;
             }
         });
@@ -174,6 +179,7 @@ async function _saveFile(p, filename, data) {
 }
 
 const requestListener = async function (req, res) {
+
     if (req.url.startsWith('/update-progress')) {
         let resp = JSON.stringify(progressObjAvailable ? progressObjAvailable : {});
         res.writeHead(200);
