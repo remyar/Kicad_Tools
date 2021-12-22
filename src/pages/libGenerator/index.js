@@ -170,8 +170,21 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let fileData = (await props.dispatch(actions.electron.readFile())).fileData;
-                        await utils.kicad.parseKicadLib(fileData);
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen())).getFilenameForOpen;
+                        if ( file.canceled == false ){
+
+                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePaths[0]))).fileData;
+                            let _c = await utils.kicad.parseKicadLib(fileData);
+                            let footprintsPath = file.filePaths[0].replace('.lib' , '.pretty');
+                            let ___c = [...components];
+                            for ( let __c of _c ){
+                                let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
+                                __c.footprintData = footprintData;
+                                ___c.push(__c);
+                            }
+                            
+                            setComponents(___c);
+                        }
                     } catch (err) {
                         props.snackbar.error(err.message);
                     }

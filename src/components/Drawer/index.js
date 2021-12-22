@@ -36,7 +36,7 @@ function MyDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.generate.librarie' })} secondary={intl.formatMessage({ id: 'nav.generate.librarie.desc' })} />
             </ListItem>
-          {/*  <ListItem button onClick={() => {
+            <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlIndex());
                 props.onClose && props.onClose();
             }}>
@@ -44,7 +44,7 @@ function MyDrawer(props) {
                     <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.home' })} secondary={intl.formatMessage({ id: 'nav.home.desc' })} />
-        </ListItem>*/}
+            </ListItem>
         </List>
     </Drawer>;
 }

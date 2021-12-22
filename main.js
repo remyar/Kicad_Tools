@@ -116,7 +116,7 @@ autoUpdater.on('update-not-available', (ev, info) => {
     logger.info('Update not available.');
 
     updateAvailable = undefined;
-    progressObjAvailable =undefined;
+    progressObjAvailable = undefined;
 
 });
 
@@ -180,6 +180,20 @@ async function _saveFile(p, filename, data) {
 
 const requestListener = async function (req, res) {
 
+    async function __waitBody() {
+        return new Promise((resolve, reject) => {
+            let body = ''
+            req.on('data', function (data) {
+                body += data;
+            })
+            req.on('end', function () {
+                //res.writeHead(200, { 'Content-Type': 'text/html' });
+                //res.end('post received');
+                resolve(JSON.parse(body));
+            })
+        });
+    }
+
     if (req.url.startsWith('/update-progress')) {
         let resp = JSON.stringify(progressObjAvailable ? progressObjAvailable : {});
         res.writeHead(200);
@@ -200,6 +214,23 @@ const requestListener = async function (req, res) {
             }
             res.write(resp.data);
             res.end();
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    } else if (req.url.startsWith('/getFilenameForOpen')) {
+        try {
+            let resp = await electron.dialog.showOpenDialog(null, {
+                properties: ['openFile'], filters: [
+                    { name: 'lib', extensions: ['lib'] },
+                    { name: 'pro', extensions: ['pro'] },
+                ]
+            });
+
+            res.writeHead(200);
+            res.write(JSON.stringify(resp));
+            res.end();
+
         } catch (err) {
             res.writeHead(500);
             res.end();
@@ -226,20 +257,6 @@ const requestListener = async function (req, res) {
         }
     } else if (req.url.startsWith('/writeFile')) {
         try {
-            async function __waitBody() {
-                return new Promise((resolve, reject) => {
-                    let body = ''
-                    req.on('data', function (data) {
-                        body += data;
-                    })
-                    req.on('end', function () {
-
-                        res.writeHead(200, { 'Content-Type': 'text/html' });
-                        res.end('post received');
-                        resolve(JSON.parse(body));
-                    })
-                });
-            }
 
             let postData = await __waitBody();
 
@@ -256,22 +273,16 @@ const requestListener = async function (req, res) {
         }
     } else if (req.url.startsWith('/readFile')) {
         try {
-            let resp = await electron.dialog.showOpenDialog(mainWindow, {
-                properties: ['openFile'], filters: [
-                    { name: 'lib', extensions: ['lib'] },
-                    { name: 'pro', extensions: ['pro'] },
-                ]
-            });
 
-            if (resp.canceled == false) {
-                let data = fs.readFileSync(resp.filePaths[0], "utf-8");
-                res.writeHead(200);
-                res.write(JSON.stringify({ data: data }));
-                res.end();
-            } else {
-                res.writeHead(200);
-                res.end();
+            let postData = await __waitBody();
+            let data = "";
+            if (postData) {
+                data = fs.readFileSync(postData.filepath, "utf-8");
             }
+            res.writeHead(200);
+            res.write(JSON.stringify({ data: data }));
+            res.end();
+
         } catch (err) {
             res.writeHead(500);
             res.end();
