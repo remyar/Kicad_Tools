@@ -45,7 +45,7 @@ function createWindow() {
     //mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -86,7 +86,13 @@ app.on('activate', function () {
 //autoUpdater.checkForUpdatesAndNotify()
 autoUpdater.currentVersion = pjson.version
 
-let eventTab = [];
+let eventTab = [
+    { percent: 0, isSend: false },
+    { percent: 25, isSend: false },
+    { percent: 50, isSend: false },
+    { percent: 75, isSend: false },
+    { percent: 100, isSend: false },
+];
 
 autoUpdater.on('checking-for-update', () => {
     logger.info('Checking for update...');
@@ -96,21 +102,17 @@ autoUpdater.on('update-available', (info) => {
     logger.info('Update available.');
     logger.info(JSON.stringify(info));
 
-    eventTab = [
-        { percent: 0, isSend: false },
-        { percent: 25, isSend: false },
-        { percent: 50, isSend: false },
-        { percent: 75, isSend: false },
-        { percent: 100, isSend: false },
-    ];
-
     if (mainWindow != undefined) {
         mainWindow.webContents.send('update-available', info);
     }
+    updateAvailable = { ...info };
 });
 
 autoUpdater.on('update-not-available', (ev, info) => {
     logger.info('Update not available.');
+
+    updateAvailable = undefined;
+    progressObjAvailable = undefined;
 });
 
 autoUpdater.on('error', (err) => {
@@ -128,6 +130,8 @@ autoUpdater.on('download-progress', (progressObj) => {
     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
     logger.info(log_message);
 
+    progressObjAvailable = { ...progressObj };
+
     if (mainWindow != undefined) {
 
         let val = parseInt(progressObj.percent.toString());
@@ -144,6 +148,9 @@ autoUpdater.on('download-progress', (progressObj) => {
 autoUpdater.on('update-downloaded', (info) => {
     logger.info('Update downloaded; will install in 30 seconds');
     logger.info(JSON.stringify(info));
+
+    updateAvailable = undefined;
+    progressObjAvailable = undefined;
 
     if (mainWindow != undefined) {
         mainWindow.webContents.send('update-downloaded', info);
@@ -167,8 +174,17 @@ async function _saveFile(p, filename, data) {
 }
 
 const requestListener = async function (req, res) {
-
-    if (req.url.startsWith('/fetch/')) {
+    if (req.url.startsWith('/update-progress')) {
+        let resp = JSON.stringify(progressObjAvailable ? progressObjAvailable : {});
+        res.writeHead(200);
+        res.write(resp);
+        res.end();
+    } else if (req.url.startsWith('/update-available')) {
+        let resp = JSON.stringify(updateAvailable?.version ? updateAvailable : {});
+        res.writeHead(200);
+        res.write(resp);
+        res.end();
+    } else if (req.url.startsWith('/fetch/')) {
         let url = req.url.replace('/fetch/', '');
         try {
             let resp = await axios.get(url);
@@ -228,6 +244,28 @@ const requestListener = async function (req, res) {
             res.writeHead(200);
             res.end();
 
+        } catch (err) {
+            res.writeHead(500);
+            res.end();
+        }
+    } else if (req.url.startsWith('/readFile')) {
+        try {
+            let resp = await electron.dialog.showOpenDialog(mainWindow, {
+                properties: ['openFile'], filters: [
+                    { name: 'lib', extensions: ['lib'] },
+                    { name: 'pro', extensions: ['pro'] },
+                ]
+            });
+
+            if (resp.canceled == false) {
+                let data = fs.readFileSync(resp.filePaths[0], "utf-8");
+                res.writeHead(200);
+                res.write(JSON.stringify({ data: data }));
+                res.end();
+            } else {
+                res.writeHead(200);
+                res.end();
+            }
         } catch (err) {
             res.writeHead(500);
             res.end();

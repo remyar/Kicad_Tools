@@ -124,8 +124,18 @@ async function getFootprint(component) {
 
 }
 
+
+async function parseKicadLib(str){
+    try {
+        
+    }catch(err){
+        throw Error(err)
+    }
+}
+
 export default {
     getSymbol,
     getFootprint,
-    generateLib
+    generateLib,
+    parseKicadLib,
 }

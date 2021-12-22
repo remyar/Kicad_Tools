@@ -37,6 +37,9 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 
+import FileOpenIcon from '@mui/icons-material/FileOpen';
+import utils from '../../utils';
+
 function LibGeneratorPage(props) {
 
     const intl = props.intl;
@@ -161,25 +164,43 @@ function LibGeneratorPage(props) {
             icon={<SpeedDialIcon />}
         >
             <SpeedDialAction
+                key={'Open'}
+                icon={<FileOpenIcon />}
+                tooltipTitle={'Open'}
+                onClick={async () => {
+                    setDisplayLoader(true);
+                    try {
+                        let fileData = (await props.dispatch(actions.electron.readFile())).fileData;
+                        await utils.kicad.parseKicadLib(fileData);
+                    } catch (err) {
+                        props.snackbar.error(err.message);
+                    }
+                    setDisplayLoader(false);
+                }}>
+            </SpeedDialAction>
+
+            <SpeedDialAction
                 key={'Save'}
                 icon={<SaveIcon />}
                 tooltipTitle={'Save'}
-                onClick={async ()=>{
+                onClick={async () => {
                     setDisplayLoader(true);
-                    try{
+                    try {
                         let filename = (await props.dispatch(actions.electron.getFilenameForSave())).getFilenameForSave;
-                        if ( filename.canceled == false ){
+                        if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                         }
 
-                        let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components , filename.name.replace('.lib','')))).librarieContent;
-                        let footprints = (await props.dispatch(actions.kicad.generateFootprints(components , filename.name.replace('.lib','')))).footprints;
-                        
-                        await props.dispatch(actions.electron.writeFile(filename.filePath , librarieFile));
-                        for ( let footprint of footprints ){
-                            await props.dispatch(actions.electron.writeFile(filename.filePath.replace( filename.name , '') + '/' +  filename.name.replace('.lib','.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod" , footprint.footprint));
+                        let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components, filename.name.replace('.lib', '')))).librarieContent;
+                        let footprints = (await props.dispatch(actions.kicad.generateFootprints(components, filename.name.replace('.lib', '')))).footprints;
+
+                        await props.dispatch(actions.electron.writeFile(filename.filePath, librarieFile));
+                        for (let footprint of footprints) {
+                            await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
                         }
-                    } catch( err ){
+
+                        props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
+                    } catch (err) {
                         props.snackbar.error(err.message);
                     }
                     setDisplayLoader(false);
