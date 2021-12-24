@@ -221,7 +221,58 @@ async function parseKicadLib(str) {
 
 async function parseKicadNetlist(str){
     try{
-        await ComponentsLibs.LoadComponentFromNET({},str)
+        let netlistParsed = await ComponentsLibs.LoadComponentFromNET(str);
+        let res = await ComponentsLibs.ExtractAndSortComponents(netlistParsed);
+        let components = await ComponentsLibs.ApplaySort(res);
+        return components;
+    }catch(err){
+        throw Error(err)
+    }
+}
+
+async function generateBom(components){
+    function generateHeader(){
+        let header = [];
+
+        header.push('Row');
+        header.push('Description');
+        header.push('Part');
+        header.push('References');
+        header.push('Value');
+        header.push('Footprint');
+        header.push('Quantity Per PCB');
+        header.push('Status');
+        header.push('Datasheet');
+        header.push('LCSCStockCode');
+        header.push('PartNumber');
+        return header.join(',');
+    }
+    try{
+        let lines = [];
+        lines.push(generateHeader());
+
+        components?.UniquePartList?.map((component , row) => {
+            let line = [];
+            let refs = [];
+
+            component.Ref.forEach(element => {
+                refs.push(component.RefPrefix + element);
+            });
+
+            line.push(row);
+            line.push((component.Fields?.Description || "").replace(/,/g,''));
+            line.push(component.RefPrefix);
+            line.push(refs.join(' '));
+            line.push(component.Value);
+            line.push(component.Footprint);
+            line.push(component.Count);
+            line.push(component.Status || "");
+            line.push(component.Datasheet || "");
+            line.push(component.Fields?.LCSC || "");
+            line.push(component.PartNumber || "");
+            lines.push(line.join(','));
+        });
+        return lines.join('\r\n');
     }catch(err){
         throw Error(err)
     }
@@ -231,6 +282,7 @@ export default {
     getSymbol,
     getFootprint,
     generateLib,
+    generateBom,
     parseKicadLib,
     parseKicadNetlist
 }

@@ -36,14 +36,14 @@ function App(props) {
             const interval = setInterval(async () => {
                 try {
                     let progress = await props.dispatch(actions.electron.getUpdateProgress());
-                    if ( progress?.updateProgress?.percent ){
+                    if (progress?.updateProgress?.percent) {
                         props.snackbar.info(intl.formatMessage({ id: 'update.download' }) + ' : ' + parseInt(progress?.updateProgress?.percent || "0.0") + "%");
                     } else {
                         props.snackbar.info(intl.formatMessage({ id: 'update.downloaded' }));
-                        clearInterval(interval); 
-                        setTimeout(()=>{
+                        clearInterval(interval);
+                        setTimeout(() => {
                             props.snackbar.success(intl.formatMessage({ id: 'update.apply' }));
-                        },5000);
+                        }, 5000);
                     }
                 } catch (err) {
                     clearInterval(interval);
