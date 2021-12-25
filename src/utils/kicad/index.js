@@ -240,10 +240,10 @@ async function generateBom(components){
         header.push('References');
         header.push('Value');
         header.push('Footprint');
-        header.push('Quantity Per PCB');
+        header.push('Quantity');
         header.push('Status');
         header.push('Datasheet');
-        header.push('LCSCStockCode');
+        header.push('LCSC Part Number');
         header.push('PartNumber');
         return header.join(',');
     }
