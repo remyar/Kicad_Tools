@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 
+import { styled } from '@mui/material/styles';
+
 import { withStoreProvider } from '../../providers/StoreProvider';
 import { withSnackBar } from '../../providers/snackBar';
 
@@ -26,7 +28,28 @@ import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
 
 function BomPage(props) {
     const [displayLoader, setDisplayLoader] = useState(false);
@@ -41,15 +64,15 @@ function BomPage(props) {
             <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Ref</TableCell>
-                        <TableCell>Qty</TableCell>
-                        <TableCell>Value</TableCell>
-                        <TableCell>Footprint</TableCell>
+                        <StyledTableCell>Ref</StyledTableCell>
+                        <StyledTableCell>Qty</StyledTableCell>
+                        <StyledTableCell>Value</StyledTableCell>
+                        <StyledTableCell>Footprint</StyledTableCell>
                         {components?.UniquePartList?.map((component) => {
                             let res = [];
                             for (let field in component?.Fields) {
                                 if (fields.find((el) => el == field) == undefined) {
-                                    res.push(<TableCell>{field}</TableCell>);
+                                    res.push(<StyledTableCell>{field}</StyledTableCell>);
                                     fields.push(field);
                                 }
                             }
@@ -64,14 +87,14 @@ function BomPage(props) {
                         component.Ref.forEach(element => {
                             refs.push(component.RefPrefix + element);
                         });
-                        cells.push(<TableCell>{refs.join(', ')}</TableCell>);
-                        cells.push(<TableCell>{component.Count}</TableCell>);
-                        cells.push(<TableCell>{component.Value}</TableCell>);
-                        cells.push(<TableCell>{component.Footprint}</TableCell>);
+                        cells.push(<StyledTableCell >{refs.join(', ')}</StyledTableCell >);
+                        cells.push(<StyledTableCell >{component.Count}</StyledTableCell >);
+                        cells.push(<StyledTableCell >{component.Value}</StyledTableCell >);
+                        cells.push(<StyledTableCell >{component.Footprint}</StyledTableCell >);
                         fields.map((field) => {
-                            cells.push(<TableCell>{component?.Fields && component?.Fields[field] || ""}</TableCell>);
+                            cells.push(<StyledTableCell >{component?.Fields && component?.Fields[field] || ""}</StyledTableCell >);
                         })
-                        return <TableRow>{cells}</TableRow>;
+                        return <StyledTableRow key={component.Value}>{cells}</StyledTableRow>;
                     })}
                 </TableBody>
             </Table>
@@ -119,7 +142,7 @@ function BomPage(props) {
 
                         await props.dispatch(actions.electron.writeFile(filename.filePath, bomFile));
 
-                    } catch( err ){
+                    } catch (err) {
                         props.snackbar.error(err.message);
                     }
                     setDisplayLoader(false);
