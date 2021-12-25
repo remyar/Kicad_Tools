@@ -27,12 +27,12 @@ function App(props) {
 
     const intl = props.intl;
     const [drawerState, setDrawerState] = useState(false);
+    const [newVerion, setNewVersion] = useState(false);
 
     useEffect(async () => {
-
-        let response = await props.dispatch(actions.electron.getUpdateAvailable());
-        if (response?.updateAvailable?.version != undefined) {
+        if (newVerion == true) {
             props.snackbar.warning(intl.formatMessage({ id: 'update.available' }));
+
             const interval = setInterval(async () => {
                 try {
                     let progress = await props.dispatch(actions.electron.getUpdateProgress());
@@ -51,7 +51,19 @@ function App(props) {
             }, 5000);
             return () => clearInterval(interval);
         }
+    }, [newVerion]);
 
+    useEffect(async () => {
+
+        const interval = setInterval(async () => {
+            let response = await props.dispatch(actions.electron.getUpdateAvailable());
+            if (response?.updateAvailable?.version != undefined) {
+                setNewVersion(true);
+            } else {
+                setNewVersion(false);
+            }
+        }, 2000);
+        return () => clearInterval(interval);
     }, []);
 
     return <Box>
