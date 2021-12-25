@@ -17,12 +17,13 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
+import { styled } from '@mui/material/styles';
+
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
 
 import Tooltip from '@mui/material/Tooltip';
 
@@ -39,6 +40,29 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import utils from '../../utils';
+
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
 
 function LibGeneratorPage(props) {
 
@@ -82,24 +106,24 @@ function LibGeneratorPage(props) {
             <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Manufacturer</TableCell>
-                        <TableCell>Mfr. Part #</TableCell>
-                        <TableCell>Package</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>LCSC Part #</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <StyledTableCell>Manufacturer</StyledTableCell>
+                        <StyledTableCell>Mfr. Part #</StyledTableCell>
+                        <StyledTableCell>Package</StyledTableCell>
+                        <StyledTableCell>Description</StyledTableCell>
+                        <StyledTableCell>LCSC Part #</StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {components.map((component, idx) => {
-                        return <TableRow key={'_libraire_component_' + idx}>
-                            <TableCell>{component.manufacturer}</TableCell>
-                            <TableCell>{component.manufacturerPartnumber}</TableCell>
-                            <TableCell>{component.package}</TableCell>
-                            <TableCell>{component.description}</TableCell>
-                            <TableCell>{component.lcscPartNumber}</TableCell>
-                            <TableCell>
+                        return <StyledTableRow key={'_libraire_component_' + idx}>
+                            <StyledTableCell>{component.manufacturer}</StyledTableCell>
+                            <StyledTableCell>{component.manufacturerPartnumber}</StyledTableCell>
+                            <StyledTableCell>{component.package}</StyledTableCell>
+                            <StyledTableCell>{component.description}</StyledTableCell>
+                            <StyledTableCell>{component.lcscPartNumber}</StyledTableCell>
+                            <StyledTableCell>
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
                                         <Tooltip title="Symbol">
@@ -140,8 +164,8 @@ function LibGeneratorPage(props) {
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
-                            </TableCell>
-                            <TableCell>
+                            </StyledTableCell>
+                            <StyledTableCell>
                                 <DeleteForeverIcon sx={{ color: 'red', cursor: 'pointer' }} onClick={() => {
                                     let _c = [];
                                     components.forEach((_comp, _idx) => {
@@ -151,8 +175,8 @@ function LibGeneratorPage(props) {
                                     });
                                     setComponents(_c);
                                 }} />
-                            </TableCell>
-                        </TableRow>
+                            </StyledTableCell>
+                        </StyledTableRow>
                     })}
                 </TableBody>
             </Table>
