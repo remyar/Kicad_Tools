@@ -11,6 +11,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MemoryIcon from '@mui/icons-material/Memory';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import HomeIcon from '@mui/icons-material/Home';
+import EditLocationIcon from '@mui/icons-material/EditLocation';
 
 import routeMdw from '../../middleware/route';
 
@@ -18,15 +19,7 @@ function MyDrawer(props) {
     const intl = props.intl;
     return <Drawer open={props.open} onClose={() => { props.onClose && props.onClose() }}>
         <List>
-            <ListItem button onClick={() => {
-                props.navigation.push(routeMdw.urlBom());
-                props.onClose && props.onClose();
-            }}>
-                <ListItemIcon>
-                    <MemoryIcon />
-                </ListItemIcon>
-                <ListItemText primary={intl.formatMessage({ id: 'nav.generate.bom' })} secondary={intl.formatMessage({ id: 'nav.generate.bom.desc' })} />
-            </ListItem>
+            
             <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlLibGenerator());
                 props.onClose && props.onClose();
@@ -37,7 +30,25 @@ function MyDrawer(props) {
                 <ListItemText primary={intl.formatMessage({ id: 'nav.generate.librarie' })} secondary={intl.formatMessage({ id: 'nav.generate.librarie.desc' })} />
             </ListItem>
             <ListItem button onClick={() => {
-                props.navigation.push(routeMdw.urlIndex());
+                props.navigation.push(routeMdw.urlBom());
+                props.onClose && props.onClose();
+            }}>
+                <ListItemIcon>
+                    <MemoryIcon />
+                </ListItemIcon>
+                <ListItemText primary={intl.formatMessage({ id: 'nav.generate.bom' })} secondary={intl.formatMessage({ id: 'nav.generate.bom.desc' })} />
+            </ListItem>
+            <ListItem button onClick={() => {
+                props.navigation.push(routeMdw.urlBom());
+                props.onClose && props.onClose();
+            }}>
+                <ListItemIcon>
+                    <EditLocationIcon />
+                </ListItemIcon>
+                <ListItemText primary={intl.formatMessage({ id: 'nav.generate.pos' })} secondary={intl.formatMessage({ id: 'nav.generate.pos.desc' })} />
+            </ListItem>
+            <ListItem button onClick={() => {
+                props.navigation.push(routeMdw.urlPos());
                 props.onClose && props.onClose();
             }}>
                 <ListItemIcon>
