@@ -1,5 +1,6 @@
 {
-    "nav.generate.bom": "Génération BOM",
+    "nav.generate.bom": "Génération LCSC BOM",
+    "nav.generate.pos": "Génération LCSC Pos File",
     "nav.generate.bom.desc": "Génération d'une liste de composant",
     "nav.generate.librarie": "Génération Kicad .lib",
     "nav.generate.librarie.desc": "Génération d'une librairie de composant",

@@ -17,11 +17,14 @@ function HomePage(props) {
         transform: 'translate(-50%, -50%)',
         textAlign: 'center'
     }}>
-        <Box>
+        <Box >
+            <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlLibGenerator()) }}>{intl.formatMessage({ id: 'nav.generate.librarie' })}</Button>
+        </Box>
+        <Box sx={{ paddingTop: "10px" }}>
             <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlBom()) }}>{intl.formatMessage({ id: 'nav.generate.bom' })}</Button>
         </Box>
         <Box sx={{ paddingTop: "10px" }}>
-            <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlLibGenerator()) }}>{intl.formatMessage({ id: 'nav.generate.librarie' })}</Button>
+            <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlPos()) }}>{intl.formatMessage({ id: 'nav.generate.pos' })}</Button>
         </Box>
        {/* <Box sx={{ paddingTop: "10px" }}>
             <Button variant="contained" sx={{ width: '100%' }} onClick={() => { }}>{intl.formatMessage({ id: 'nav.convert.eagle2kicad' })}</Button>
