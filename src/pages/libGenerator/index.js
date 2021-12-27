@@ -90,7 +90,18 @@ function LibGeneratorPage(props) {
                 <Button variant="contained" sx={{ width: '100%', height: '100%' }} onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let _component = (await props.dispatch(actions.lcsc.getComponent(url))).component;
+                        //-- get symbol and footprint
+                        let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim()))).component;
+
+                        //-- get 3dPackage if exist
+                        if ( _component.package && _component.package != "" ){
+                            let model3D = (await props.dispatch(actions.snapeda.get3DModel(_component.manufacturerPartnumber , _component.package))).model3d;
+                            _component.has3dModel = false;
+                            if ( model3D.length > 0){
+                                _component.has3dModel = true;
+                            }
+                        }
+
                         let _c = [...components];
                         _c.push(_component);
                         setComponents(_c);
@@ -146,7 +157,7 @@ function LibGeneratorPage(props) {
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip title="3D">
-                                            <ThreeDRotationIcon sx={{ color: component.Package3D ? "" : "LightGray" }}></ThreeDRotationIcon>
+                                            <ThreeDRotationIcon sx={{ color: component.has3dModel ? "" : "LightGray" }}></ThreeDRotationIcon>
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>

@@ -45,7 +45,7 @@ function createWindow() {
     //mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-    //mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -207,11 +207,12 @@ const requestListener = async function (req, res) {
     } else if (req.url.startsWith('/fetch/')) {
         let url = req.url.replace('/fetch/', '');
         try {
-            let resp = await axios.get(url);
-            res.writeHead(resp.status);
+            let resp = await axios.get(url, req.params);
             if (typeof resp.data != 'string') {
                 resp.data = JSON.stringify(resp.data);
             }
+            
+            res.writeHead(resp.status);
             res.write(resp.data);
             res.end();
         } catch (err) {
