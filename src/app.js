@@ -16,6 +16,7 @@ import LibGeneratorPage from './pages/libGenerator';
 import BomPage from './pages/bom';
 import PosPage from './pages/pos';
 
+
 import actions from './actions'
 
 const routes = [
@@ -28,9 +29,10 @@ const routes = [
 function App(props) {
 
     const intl = props.intl;
+
     const [drawerState, setDrawerState] = useState(false);
     const [newVerion, setNewVersion] = useState(false);
-
+/*
     useEffect(async () => {
         if (newVerion == true) {
             props.snackbar.warning(intl.formatMessage({ id: 'update.available' }));
@@ -67,7 +69,7 @@ function App(props) {
         }, 2000);
         return () => clearInterval(interval);
     }, []);
-
+*/
     return <Box>
         <AppBar onClick={() => { setDrawerState(true) }} />
         <Box>

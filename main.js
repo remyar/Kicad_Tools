@@ -30,7 +30,9 @@ function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1024, height: 768, webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
         },
         //toolbar: false,
         //skipTaskbar: true,
@@ -166,6 +168,9 @@ autoUpdater.on('update-downloaded', (info) => {
 });
 
 
+
+
+/*
 async function _saveFile(p, filename, data) {
     if (fs.existsSync(p) == false) {
         fs.mkdirSync(p, { recursive: true });
@@ -211,7 +216,7 @@ const requestListener = async function (req, res) {
             if (typeof resp.data != 'string') {
                 resp.data = JSON.stringify(resp.data);
             }
-            
+
             res.writeHead(resp.status);
             res.write(resp.data);
             res.end();
@@ -223,10 +228,10 @@ const requestListener = async function (req, res) {
         try {
             let postData = await __waitBody();
             let filters = [];
-            for( let _ext of postData?.extensions ){
+            for (let _ext of postData?.extensions) {
                 filters.push({
-                    name : _ext.replace('.',''),
-                    extensions : [_ext.replace('.','')]
+                    name: _ext.replace('.', ''),
+                    extensions: [_ext.replace('.', '')]
                 })
             }
 
@@ -246,13 +251,13 @@ const requestListener = async function (req, res) {
         try {
             let postData = await __waitBody();
             let filters = [];
-            for( let _ext of postData?.extensions ){
+            for (let _ext of postData?.extensions) {
                 filters.push({
-                    name : _ext.replace('.',''),
-                    extensions : [_ext.replace('.','')]
+                    name: _ext.replace('.', ''),
+                    extensions: [_ext.replace('.', '')]
                 })
             }
-            
+
             let resp = await electron.dialog.showSaveDialog(mainWindow, {
                 title: "Save librarie file",
                 defaultPath: "librarie",
@@ -306,3 +311,4 @@ const requestListener = async function (req, res) {
 
 const server = http.createServer(requestListener);
 server.listen(4000);
+*/

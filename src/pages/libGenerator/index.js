@@ -95,13 +95,15 @@ function LibGeneratorPage(props) {
 
                         //-- get 3dPackage if exist
                         if (_component.package && _component.package != "") {
+                            let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+                            /*
                             let model3D = (await props.dispatch(actions.snapeda.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
                             if (model3D.length > 0) {
                                 _component.has3dModel = true;
                                 for ( let _m of model3D){
                                     _component.model3D.push(_m);
                                 }
-                            }
+                            }*/
                         }
 
                         let _c = [...components];

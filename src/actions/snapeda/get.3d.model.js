@@ -2,14 +2,13 @@ import createAction from '../../middleware/actions';
 
 import * as zip from "@zip.js/zip.js";
 
-import HTMLParser from 'node-html-parser';
-
 export async function get3DModel(_mpn, _package, { extra, getState }) {
     let api = extra.api;
 
     try {
         let filterPackage = [
-            { name: "PDIP", filter: "DIP" }
+            { name: "PDIP", filter: "DIP" },
+            { name: "SOT-23(SOT-23-3)", filter: "SOT23" }
         ]
 
         filterPackage.forEach((_f) => {
