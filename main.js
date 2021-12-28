@@ -7,6 +7,8 @@ const path = require('path');
 const http = require('http');
 const axios = require('axios');
 const isDev = require('electron-is-dev');
+require('@electron/remote/main').initialize()
+
 
 logger.transports.file.level = 'info';
 logger.transports.file.maxSize = 1048576;
@@ -47,7 +49,7 @@ function createWindow() {
     //mainWindow.loadURL(`http://localhost:3000`)
 
     // Open the DevTools.
-    //mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -56,6 +58,8 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    require("@electron/remote/main").enable(mainWindow.webContents);
 }
 
 // This method will be called when Electron has finished
@@ -166,7 +170,6 @@ autoUpdater.on('update-downloaded', (info) => {
         }, 2000);
     }
 });
-
 
 
 

@@ -96,14 +96,16 @@ function LibGeneratorPage(props) {
                         //-- get 3dPackage if exist
                         if (_component.package && _component.package != "") {
                             let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                            /*
-                            let model3D = (await props.dispatch(actions.snapeda.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+
+                            // let model3D = (await props.dispatch(actions.snapeda.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
                             if (model3D.length > 0) {
                                 _component.has3dModel = true;
-                                for ( let _m of model3D){
+                                for (let _m of model3D) {
                                     _component.model3D.push(_m);
                                 }
-                            }*/
+                            } else {
+                                model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+                            }
                         }
 
                         let _c = [...components];
@@ -219,8 +221,8 @@ function LibGeneratorPage(props) {
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
                                 __c.footprintData = footprintData;
-                                if ( footprintData.includes('model')){
-                                    __c.has3dModel = true; 
+                                if (footprintData.includes('model')) {
+                                    __c.has3dModel = true;
                                 }
                                 ___c.push(__c);
                             }
@@ -240,23 +242,23 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.lib')))?.getFilenameForSave?.data;
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.lib')))?.getFilenameForSave;
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
-                        }
 
-                        let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components, filename.name.replace('.lib', '')))).librarieContent;
-                        let footprints = (await props.dispatch(actions.kicad.generateFootprints(components, filename.name.replace('.lib', '')))).footprints;
+                            let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components, filename.name.replace('.lib', '')))).librarieContent;
+                            let footprints = (await props.dispatch(actions.kicad.generateFootprints(components, filename.name.replace('.lib', '')))).footprints;
 
-                        await props.dispatch(actions.electron.writeFile(filename.filePath, librarieFile));
-                        for (let footprint of footprints) {
-                            await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
-                            if ( footprint.model3D && footprint.model3D.length > 0){
-                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".step", footprint.model3D));
+                            await props.dispatch(actions.electron.writeFile(filename.filePath, librarieFile));
+                            for (let footprint of footprints) {
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
+                                if (footprint.model3D && footprint.model3D.length > 0) {
+                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".step", footprint.model3D));
+                                }
                             }
-                        }
 
-                        props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
+                            props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
+                        }
                     } catch (err) {
                         props.snackbar.error(err.message);
                     }

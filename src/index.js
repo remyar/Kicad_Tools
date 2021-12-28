@@ -10,6 +10,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import api from "./api";
 
+const electron = require('@electron/remote')
+
 // i18n datas
 import localeData from './locales';
 
@@ -44,7 +46,7 @@ const messages = localeData[languageWithoutRegionCode] || localeData[language] |
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline />
-        <StoreProvider extra={{ api }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" } }}>
+        <StoreProvider extra={{ api , electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" } }}>
             <MemoryRouter>
                 <NavigationProvider>
                     <IntlProvider locale={language} messages={messages}>

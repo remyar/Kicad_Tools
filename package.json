@@ -51,6 +51,7 @@
     },
     "dependencies": {
         "@craco/craco": "^6.4.3",
+        "@electron/remote": "^2.0.1",
         "@emotion/react": "^11.7.1",
         "@emotion/styled": "^11.6.0",
         "@mui/icons-material": "^5.2.4",
