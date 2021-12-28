@@ -18,15 +18,10 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
 
         let model3d = [];
 
-        // let url = "https://www.snapeda.com/api/v1/search_local?q=" + _mpn + "&SEARCH=Search&sort=&resistance=&tolerance=&search-type=parts&has_3d=1&package=" + _package;
-
-        //   let response = await api.get('/fetch/' + url);
-
         var formData = new FormData(); //--{ username : process.env.REACT_APP_SNAPEDA_LOGIN , password : process.env.REACT_APP_SNAPEDA_PASSWORD })
 
         formData.append('username', process.env.REACT_APP_SNAPEDA_LOGIN);
         formData.append('password', process.env.REACT_APP_SNAPEDA_PASSWORD);
-
 
         let token = (await api.post("https://www.snapeda.com/account/api-login/", formData))?.data;
         let resp = await api.get("https://www.snapeda.com/api/v1/search_local?q=" + _mpn + "&token=" + token.token + "&SEARCH=Search&sort=&resistance=&tolerance=&search-type=parts&has_3d=1&package=" + _package);
@@ -58,7 +53,7 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
                         {
                             onprogress: (index, max) => {
                                 // onprogress callback
-                                console.log(index, max);
+                                //console.log(index, max);
                             }
                         }
                     );

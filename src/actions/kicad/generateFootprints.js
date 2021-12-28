@@ -1,19 +1,24 @@
 import createAction from '../../middleware/actions';
 import utils from '../../utils';
 
-export async function generateFootprints(components , librarieName , { extra, getState }) {
+export async function generateFootprints(components, librarieName, { extra, getState }) {
 
     try {
 
         let footprints = [];
 
-        for ( let component of components){
-            let footprint = await utils.kicad.getFootprint(component , librarieName);
-            footprints.push({ name : component.manufacturerPartnumber , footprint : footprint});
+        for (let component of components) {
+            let footprint = await utils.kicad.getFootprint(component, librarieName);
+            let model3D = undefined;
+            if ( component.has3dModel){
+                model3D = component.model3D[0];
+            }
+            footprints.push({ name: component.manufacturerPartnumber, footprint: footprint , model3D });
+
         }
 
         return {
-            footprints : footprints
+            footprints: footprints
         };
 
     } catch (err) {

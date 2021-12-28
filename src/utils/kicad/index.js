@@ -109,7 +109,7 @@ async function generateLib(symbols) {
     })
 }
 
-async function getFootprint(component) {
+async function getFootprint(component, librarieName) {
     try {
         if (component.footprintData) {
             return component.footprintData;
@@ -138,6 +138,14 @@ async function getFootprint(component) {
                     Tab.push("(fp_text reference " + _indexComponent + " (at 0 " + (-(footprint.bbox.height / 4) + 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
                     Tab.push("(fp_text value " + component.manufacturerPartnumber + " (at 0 " + ((footprint.bbox.height / 4) - 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
                     Tab.push(...kicadFootprint);
+
+                    if (component.has3dModel) {
+                        Tab.push("(model ./" + librarieName + ".pretty/" + component.manufacturerPartnumber.replace('\\', '_').replace('/', '_') + ".step");
+                        Tab.push("(at (xyz 0 0 0))");
+                        Tab.push("(scale (xyz 1 1 1))");
+                        Tab.push("(rotate (xyz -90 0 0))");
+                        Tab.push(")");
+                    }
                     Tab.push(")");
 
                     let str = Tab.join("\n");
@@ -219,19 +227,19 @@ async function parseKicadLib(str) {
     }
 }
 
-async function parseKicadNetlist(str){
-    try{
+async function parseKicadNetlist(str) {
+    try {
         let netlistParsed = await ComponentsLibs.LoadComponentFromNET(str);
         let res = await ComponentsLibs.ExtractAndSortComponents(netlistParsed);
         let components = await ComponentsLibs.ApplaySort(res);
         return components;
-    }catch(err){
+    } catch (err) {
         throw Error(err)
     }
 }
 
-async function generateBom(components){
-    function generateHeader(){
+async function generateBom(components) {
+    function generateHeader() {
         let header = [];
 
         header.push('Row');
@@ -247,11 +255,11 @@ async function generateBom(components){
         header.push('PartNumber');
         return header.join(',');
     }
-    try{
+    try {
         let lines = [];
         lines.push(generateHeader());
 
-        components?.UniquePartList?.map((component , row) => {
+        components?.UniquePartList?.map((component, row) => {
             let line = [];
             let refs = [];
 
@@ -260,7 +268,7 @@ async function generateBom(components){
             });
 
             line.push(row);
-            line.push((component.Fields?.Description || "").replace(/,/g,''));
+            line.push((component.Fields?.Description || "").replace(/,/g, ''));
             line.push(component.RefPrefix);
             line.push(refs.join(' '));
             line.push(component.Value);
@@ -273,7 +281,7 @@ async function generateBom(components){
             lines.push(line.join(','));
         });
         return lines.join('\r\n');
-    }catch(err){
+    } catch (err) {
         throw Error(err)
     }
 }
