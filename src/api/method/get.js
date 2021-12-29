@@ -9,7 +9,13 @@ export default function get(url, config = {}) {
             const response = await fetch(url , { ...config , useElectronNet : false , signal: controller.signal});
 
             clearTimeout(id);
-            let r = await response.text();
+
+            let r = undefined;
+            if ( config && config.responseType && config.responseType == 'arraybuffer'){
+                r = await response.arrayBuffer();
+            } else {
+                r = await response.text();
+            }
             resolve(r)
         } catch (err) {
             reject(err);

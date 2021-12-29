@@ -7,9 +7,7 @@ export async function getComponent(url, { extra, getState }) {
 
     try {
 
-        let component = {
-            svgs: []
-        };
+        let component = {};
 
         let response = await api.get(url);
         let html = HTMLParser.parse(response);
@@ -25,16 +23,6 @@ export async function getComponent(url, { extra, getState }) {
         component.has3dModel = false;
         component.hasSymbol = false;
         component.hasFootprint = false;
-
-        let respSvgs = await api.get("https://easyeda.com/api/products/" + component.lcscPartNumber + "/svgs");
-        respSvgs = JSON.parse(respSvgs);
-        
-        if (respSvgs?.result) {
-            component.svgs = respSvgs.result;
-            component.hasSymbol = component.svgs.find((x) => x.docType == 2) ? true : false;
-            component.hasFootprint = component.svgs.find((x) => x.docType == 4) ? true : false;
-            component.model3D = [];
-        }
 
         return {
             component: component

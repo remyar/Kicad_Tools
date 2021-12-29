@@ -44,6 +44,42 @@ async function getSymbol(component, librarieName) {
         } else {
 
             let Tab = [];
+
+            Tab.push('#');
+            Tab.push('# ' + component.manufacturerPartnumber);
+            Tab.push('#');
+
+            let drawStarted = false;
+            let fIndex = 0;
+            for (let line of component.symbol) {
+                if (drawStarted == false) {
+                    if (line.startsWith("F")) {
+                        fIndex = parseInt(line.split(' ')[0].replace('F', ''));
+                    }
+
+                    if ( line.startsWith("F2 ")){
+                        line = line.replace(line.split(' ')[1],'"'+ librarieName + ':' + component.manufacturerPartnumber.replace('/', '_').replace('\\', '_') +'"');
+
+                        /*
+                        line = line.replace('F2 "' , 'F2 "' + librarieName + ':')
+                        */
+                    }
+                }
+
+                if (line.startsWith("DRAW")) {
+                    fIndex++;
+                    Tab.push('F' + fIndex + ' "' + component.lcscPartNumber + '" 3050 -700 50 H I L CNN "LCSC Part Number"');
+                    fIndex++;
+                    Tab.push('F' + fIndex + ' "' + component.package + '" 3050 -700 50 V I C CNN "Package"');
+                    drawStarted = true;
+                }
+                Tab.push(line)
+            }
+            Tab.push('#');
+
+            let str = Tab.join("\n");
+            return str;
+            /*
             let _indexComponent = "Q";
 
             let sch = component.svgs.find((x) => x.docType == 2);
@@ -71,24 +107,27 @@ async function getSymbol(component, librarieName) {
                 Tab.push('#');
                 Tab.push('# ' + component.manufacturerPartnumber);
                 Tab.push('#');
-                Tab.push('DEF ' + component.manufacturerPartnumber + ' ' + _indexComponent + ' 0 5 Y Y 1 F N');
-                Tab.push('F0 "' + _indexComponent + '" 0 ' + y + ' 50 H V C CNN');
-                Tab.push('F1 "' + component.manufacturerPartnumber + '" 0 -' + y + ' 50 H V C CNN');
-                Tab.push('F2 "' + librarieName + ':' + component.manufacturerPartnumber.replace('/', '_').replace('\\', '_') + '" 0 100 50 V I C CNN');
-                Tab.push('F3 "' + component.datasheet + '" 0 100 50 V I C CNN');
-                Tab.push('F4 "' + bomSp + '" 0 100 50 V I C CNN "LCSC"');
-                Tab.push('F5 "' + component.manufacturer + '" 0 100 50 V I C CNN "Manufacturer"');
-                Tab.push('F6 "' + component.package + '" 0 100 50 V I C CNN "Package"');
-                Tab.push('F7 "' + component.description + '" 0 100 50 V I C CNN "Description"');
-                Tab.push('DRAW');
-                Tab.push(...kicadComponent);
-                Tab.push('ENDDRAW');
-                Tab.push('ENDDEF');
-                Tab.push('#');
+*/
+            /*
+            Tab.push('DEF ' + component.manufacturerPartnumber + ' ' + _indexComponent + ' 0 5 Y Y 1 F N');
+            Tab.push('F0 "' + _indexComponent + '" 0 ' + y + ' 50 H V C CNN');
+            Tab.push('F1 "' + component.manufacturerPartnumber + '" 0 -' + y + ' 50 H V C CNN');
+            Tab.push('F2 "' + librarieName + ':' + component.manufacturerPartnumber.replace('/', '_').replace('\\', '_') + '" 0 100 50 V I C CNN');
+            Tab.push('F3 "' + component.datasheet + '" 0 100 50 V I C CNN');
+            Tab.push('F4 "' + bomSp + '" 0 100 50 V I C CNN "LCSC"');
+            Tab.push('F5 "' + component.manufacturer + '" 0 100 50 V I C CNN "Manufacturer"');
+            Tab.push('F6 "' + component.package + '" 0 100 50 V I C CNN "Package"');
+            Tab.push('F7 "' + component.description + '" 0 100 50 V I C CNN "Description"');
+            Tab.push('DRAW');
+            Tab.push(...kicadComponent);
+            Tab.push('ENDDRAW');
+            Tab.push('ENDDEF');
+          
+            Tab.push('#');
 
-                let str = Tab.join("\n");
-                return str;
-            }
+            let str = Tab.join("\n");
+            return str;
+        }  */
         }
     } catch (err) {
         throw Error(err)
@@ -115,6 +154,16 @@ async function getFootprint(component, librarieName) {
             return component.footprintData;
         } else {
 
+            let Tab = [];
+            for ( let line of component.footprint ){
+                if ( line.startsWith("(model ") ){
+                    line = line.replace("(model " , "(model ./" + librarieName + ".pretty/");
+                }
+                Tab.push(line);
+            }
+            let str = Tab.join("\n");
+            return str;
+/*
             let Tab = [];
             let sch = component.svgs.find((x) => x.docType == 2);
             let footprint = component.svgs.find((x) => x.docType == 4);
@@ -151,7 +200,7 @@ async function getFootprint(component, librarieName) {
                     let str = Tab.join("\n");
                     return str;
                 }
-            }
+            }*/
         }
     } catch (err) {
         throw Error(err)

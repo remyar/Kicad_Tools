@@ -91,25 +91,24 @@ function LibGeneratorPage(props) {
                     setDisplayLoader(true);
                     try {
                         //-- get symbol and footprint
-                        let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim()))).component;
+                        let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim())))?.component;
 
-                        //-- get 3dPackage if exist
-                        if (_component.package && _component.package != "") {
+                        let PointLib = (await props.dispatch(actions.samacsys.getLibrarie(_component.manufacturerPartnumber ,  _component.package)))?.librarie;
+                        if ( PointLib ){
+                            _component.hasSymbol = true;
+                            _component.symbol = PointLib;
+                        }
 
-                            let model3dProvider = [
-                                "snapeda",
-                                "samacsys"
-                            ]
+                        let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber ,  _component.package)))?.footprint;
+                        if ( PointKicadMod ){
+                            _component.hasFootprint = true;
+                            _component.footprint = PointKicadMod;
+                        }
 
-                            for ( let provider of model3dProvider){
-                                if ( _component.has3dModel == false) {
-                                    let model3D = (await props.dispatch(actions[provider].get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                                    if ( model3D && _component.has3dModel == false) {
-                                        _component.has3dModel = true;
-                                        _component.model3D = model3D;
-                                    }
-                                }
-                            }
+                        let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+                        if ( model3D ){
+                            _component.has3dModel = true;
+                            _component.model3D = model3D;
                         }
 
                         let _c = [...components];
@@ -257,7 +256,7 @@ function LibGeneratorPage(props) {
                             for (let footprint of footprints) {
                                 await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
                                 if (footprint.model3D && footprint.model3D.length > 0) {
-                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".step", footprint.model3D));
+                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.lib', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".stp", footprint.model3D));
                                 }
                             }
 

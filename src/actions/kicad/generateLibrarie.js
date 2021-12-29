@@ -8,6 +8,7 @@ export async function generateLibrarie(components , librarieName , { extra, getS
         let symbols = [];
 
         for ( let component of components){
+
             let definition = await utils.kicad.getSymbol(component , librarieName);
             symbols.push(definition);
         }

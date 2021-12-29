@@ -1,4 +1,4 @@
-import getComponent from "./get.sch";
+import getComponent from "./get.component";
 
 export default {
     getComponent
