@@ -1,13 +1,13 @@
 import createAction from '../../middleware/actions';
-
+import fs from 'fs';
+import path from 'path';
 export async function readFile(filepath , { extra, getState }) {
 
-    let api = extra.api;
-
     try {
-        let response = await api.post("/readFile", { filepath });
+        let data = fs.readFileSync(filepath, "utf-8");
+
         return {
-            fileData : response.data.data
+            fileData : data
         }
     } catch (err) {
         throw { message: err.message };

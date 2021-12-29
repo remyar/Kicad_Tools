@@ -6,7 +6,6 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
     let api = extra.api;
 
     try {
-        let model3d = undefined;
         let headers = new Headers();
 
         headers.append('Authorization', 'Basic ' + btoa(process.env.REACT_APP_SAMACSYS_LOGIN + ":" + process.env.REACT_APP_SAMACSYS_PASSWORD ));
@@ -30,7 +29,7 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
             //-- "https://componentsearchengine.com/ga/model.php?partID=" & partID & "&vrml=1"
         }
         return {
-            model3d: [model],
+            model3d: model,
         }
     } catch (err) {
         throw { message: err.message };

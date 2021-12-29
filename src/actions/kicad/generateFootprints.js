@@ -11,7 +11,7 @@ export async function generateFootprints(components, librarieName, { extra, getS
             let footprint = await utils.kicad.getFootprint(component, librarieName);
             let model3D = undefined;
             if ( component.has3dModel){
-                model3D = component.model3D[0];
+                model3D = component.model3D;
             }
             footprints.push({ name: component.manufacturerPartnumber, footprint: footprint , model3D });
 

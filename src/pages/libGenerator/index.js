@@ -95,16 +95,20 @@ function LibGeneratorPage(props) {
 
                         //-- get 3dPackage if exist
                         if (_component.package && _component.package != "") {
-                            let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
 
-                            // let model3D = (await props.dispatch(actions.snapeda.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                            if (model3D.length > 0) {
-                                _component.has3dModel = true;
-                                for (let _m of model3D) {
-                                    _component.model3D.push(_m);
+                            let model3dProvider = [
+                                "snapeda",
+                                "samacsys"
+                            ]
+
+                            for ( let provider of model3dProvider){
+                                if ( _component.has3dModel == false) {
+                                    let model3D = (await props.dispatch(actions[provider].get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+                                    if ( model3D && _component.has3dModel == false) {
+                                        _component.has3dModel = true;
+                                        _component.model3D = model3D;
+                                    }
                                 }
-                            } else {
-                                model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
                             }
                         }
 
@@ -211,12 +215,12 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.lib')))?.getFilenameForOpen?.data;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.lib')))?.getFilenameForOpen;
                         if (file.canceled == false) {
 
-                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePaths[0]))).fileData;
+                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePath))).fileData;
                             let _c = await utils.kicad.parseKicadLib(fileData);
-                            let footprintsPath = file.filePaths[0].replace('.lib', '.pretty');
+                            let footprintsPath = file.filePath.replace('.lib', '.pretty');
                             let ___c = [...components];
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData

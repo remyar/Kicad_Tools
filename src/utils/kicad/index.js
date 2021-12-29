@@ -143,7 +143,7 @@ async function getFootprint(component, librarieName) {
                         Tab.push("(model ./" + librarieName + ".pretty/" + component.manufacturerPartnumber.replace('\\', '_').replace('/', '_') + ".step");
                         Tab.push("(at (xyz 0 0 0))");
                         Tab.push("(scale (xyz 1 1 1))");
-                        Tab.push("(rotate (xyz -90 0 0))");
+                        Tab.push("(rotate (xyz 0 0 0))");
                         Tab.push(")");
                     }
                     Tab.push(")");
