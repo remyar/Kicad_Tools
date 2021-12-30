@@ -5,7 +5,6 @@ var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const axios = require('axios');
 const isDev = require('electron-is-dev');
 require('@electron/remote/main').initialize()
 

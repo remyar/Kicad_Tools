@@ -302,7 +302,7 @@ async function generateBom(components) {
         header.push('Datasheet');
         header.push('LCSC Part Number');
         header.push('PartNumber');
-        return header.join(',');
+        return header.join(';');
     }
     try {
         let lines = [];
@@ -317,7 +317,7 @@ async function generateBom(components) {
             });
 
             line.push(row);
-            line.push((component.Fields?.Description || "").replace(/,/g, ''));
+            line.push((component.Fields.find((f) => f.name == "Description")?.value || "").replace(/,/g, ''));
             line.push(component.RefPrefix);
             line.push(refs.join(' '));
             line.push(component.Value);
@@ -325,9 +325,9 @@ async function generateBom(components) {
             line.push(component.Count);
             line.push(component.Status || "");
             line.push(component.Datasheet || "");
-            line.push(component.Fields?.LCSC || "");
+            line.push(component.Fields.find((f) => f.name == "LCSC Part Number" )?.value || "");
             line.push(component.PartNumber || "");
-            lines.push(line.join(','));
+            lines.push(line.join(';'));
         });
         return lines.join('\r\n');
     } catch (err) {

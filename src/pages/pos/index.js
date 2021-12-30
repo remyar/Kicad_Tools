@@ -110,9 +110,9 @@ function PosPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.csv')))?.getFilenameForOpen?.data;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.csv')))?.getFilenameForOpen;
                         if (file.canceled == false) {
-                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePaths[0])))?.fileData;
+                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePath)))?.fileData;
                             setCsvFile(fileData);
                         }
                     } catch (err) {
@@ -129,7 +129,7 @@ function PosPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.csv')))?.getFilenameForSave?.data;
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.csv')))?.getFilenameForSave;
 
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');

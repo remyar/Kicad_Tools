@@ -70,12 +70,12 @@ function BomPage(props) {
                         <StyledTableCell>Footprint</StyledTableCell>
                         {components?.UniquePartList?.map((component) => {
                             let res = [];
-                            for (let field in component?.Fields) {
-                                if (fields.find((el) => el == field) == undefined) {
-                                    res.push(<StyledTableCell>{field}</StyledTableCell>);
+                            component?.Fields.map((field) => {
+                                if ( fields.find((f) => f.name == field.name) == undefined ){
+                                    res.push(<StyledTableCell>{field.name}</StyledTableCell>);
                                     fields.push(field);
                                 }
-                            }
+                            })
                             return res;
                         })}
                     </TableRow>
@@ -89,12 +89,12 @@ function BomPage(props) {
                         });
                         cells.push(<StyledTableCell >{refs.join(', ')}</StyledTableCell >);
                         cells.push(<StyledTableCell >{component.Count}</StyledTableCell >);
-                        cells.push(<StyledTableCell >{component.Value}</StyledTableCell >);
+                        cells.push(<StyledTableCell >{component.Value.toString()}</StyledTableCell >);
                         cells.push(<StyledTableCell >{component.Footprint}</StyledTableCell >);
                         fields.map((field) => {
-                            cells.push(<StyledTableCell >{component?.Fields && component?.Fields[field] || ""}</StyledTableCell >);
+                            cells.push(<StyledTableCell >{component?.Fields && component?.Fields?.find((f) => f.name == field.name)?.value || ""}</StyledTableCell >);
                         })
-                        return <StyledTableRow key={component.Value}>{cells}</StyledTableRow>;
+                        return <StyledTableRow key={component.Value.toString()}>{cells}</StyledTableRow>;
                     })}
                 </TableBody>
             </Table>
@@ -112,9 +112,9 @@ function BomPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.net')))?.getFilenameForOpen?.data;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.net')))?.getFilenameForOpen;
                         if (file.canceled == false) {
-                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePaths[0])))?.fileData;
+                            let fileData = (await props.dispatch(actions.electron.readFile(file.filePath)))?.fileData;
                             let _components = await utils.kicad.parseKicadNetlist(fileData);
                             setComponents(_components);
                         }
@@ -132,7 +132,7 @@ function BomPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.csv')))?.getFilenameForSave?.data;
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.csv')))?.getFilenameForSave;
 
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
