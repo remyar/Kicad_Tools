@@ -93,20 +93,20 @@ function LibGeneratorPage(props) {
                         //-- get symbol and footprint
                         let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim())))?.component;
 
-                        let PointLib = (await props.dispatch(actions.samacsys.getLibrarie(_component.manufacturerPartnumber ,  _component.package)))?.librarie;
-                        if ( PointLib ){
+                        let PointLib = (await props.dispatch(actions.samacsys.getLibrarie(_component.manufacturerPartnumber, _component.package)))?.librarie;
+                        if (PointLib) {
                             _component.hasSymbol = true;
                             _component.symbol = PointLib;
                         }
 
-                        let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber ,  _component.package)))?.footprint;
-                        if ( PointKicadMod ){
+                        let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber, _component.package)))?.footprint;
+                        if (PointKicadMod) {
                             _component.hasFootprint = true;
                             _component.footprint = PointKicadMod;
                         }
 
                         let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                        if ( model3D ){
+                        if (model3D) {
                             _component.has3dModel = true;
                             _component.model3D = model3D;
                         }
@@ -151,7 +151,15 @@ function LibGeneratorPage(props) {
                                                 color: component.hasSymbol ? "" : "LightGray",
                                                 cursor: component.hasSymbol ? "pointer" : "default"
                                             }}
-                                                onClick={() => { setModal(<Box dangerouslySetInnerHTML={{ __html: component.svgs.find((x) => x.docType == 2).svg }}></Box>) }}></SettingsInputSvideoIcon>
+                                                onClick={async () => {
+                                                    setDisplayLoader(true);
+                                                    let picture = (await props.dispatch(actions.samacsys.getImgSymbol(component.manufacturerPartnumber, component.package)))?.imgSymbol;
+                                                    if (picture) {
+                                                        setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
+                                                    }
+                                                    setDisplayLoader(false);
+                                                }
+                                                }></SettingsInputSvideoIcon>
                                         </Tooltip>
 
                                     </Grid>
@@ -161,7 +169,14 @@ function LibGeneratorPage(props) {
                                                 color: component.hasFootprint ? "" : "LightGray",
                                                 cursor: component.hasFootprint ? "pointer" : "default"
                                             }}
-                                                onClick={() => { setModal(<Box dangerouslySetInnerHTML={{ __html: component.svgs.find((x) => x.docType == 4).svg }}></Box>) }}></MemoryIcon>
+                                                onClick={async () => {
+                                                    setDisplayLoader(true);
+                                                    let picture = (await props.dispatch(actions.samacsys.getImgFootprint(component.manufacturerPartnumber, component.package)))?.imgFootprint;
+                                                    if (picture) {
+                                                        setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
+                                                    }
+                                                    setDisplayLoader(false);
+                                                }}></MemoryIcon>
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
