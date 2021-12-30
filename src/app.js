@@ -16,6 +16,7 @@ import LibGeneratorPage from './pages/libGenerator';
 import BomPage from './pages/bom';
 import PosPage from './pages/pos';
 
+import electron from 'electron';
 
 import actions from './actions'
 
@@ -32,44 +33,35 @@ function App(props) {
 
     const [drawerState, setDrawerState] = useState(false);
     const [newVerion, setNewVersion] = useState(false);
-/*
-    useEffect(async () => {
-        if (newVerion == true) {
+
+    useEffect(()=>{
+        electron.ipcRenderer.on('update-available', (event , message) => {
+            //console.log(message)
             props.snackbar.warning(intl.formatMessage({ id: 'update.available' }));
+        });
+    
+        electron.ipcRenderer.on('download-progress', (event , message) => {
+            //console.log(message)
+            props.snackbar.info(intl.formatMessage({ id: 'update.download' }) + ' : ' + parseInt(message?.percent || "0.0") + "%");           
+        });
+        
+        electron.ipcRenderer.on('update-downloaded', (event , message) => {
+            //console.log(message)
+            props.snackbar.info(intl.formatMessage({ id: 'update.downloaded' }));
 
-            const interval = setInterval(async () => {
-                try {
-                    let progress = await props.dispatch(actions.electron.getUpdateProgress());
-                    if (progress?.updateProgress?.percent) {
-                        props.snackbar.info(intl.formatMessage({ id: 'update.download' }) + ' : ' + parseInt(progress?.updateProgress?.percent || "0.0") + "%");
-                    } else {
-                        props.snackbar.info(intl.formatMessage({ id: 'update.downloaded' }));
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            props.snackbar.success(intl.formatMessage({ id: 'update.apply' }));
-                        }, 5000);
-                    }
-                } catch (err) {
-                    clearInterval(interval);
-                }
-            }, 5000);
-            return () => clearInterval(interval);
-        }
-    }, [newVerion]);
+        });
+    
+        electron.ipcRenderer.on('update-quitForApply', (event , message) => {
+            //console.log(message)
+            props.snackbar.success(intl.formatMessage({ id: 'update.apply' }));
+        });
+    
+        electron.ipcRenderer.on('update-error', (event , message) => {
+            //console.log(message)
+            props.snackbar.error(intl.formatMessage({ id: 'update.error' }));
 
-    useEffect(async () => {
-
-        const interval = setInterval(async () => {
-            let response = await props.dispatch(actions.electron.getUpdateAvailable());
-            if (response?.updateAvailable?.version != undefined) {
-                setNewVersion(true);
-            } else {
-                setNewVersion(false);
-            }
-        }, 2000);
-        return () => clearInterval(interval);
-    }, []);
-*/
+        });
+    },[])
     return <Box>
         <AppBar onClick={() => { setDrawerState(true) }} />
         <Box>

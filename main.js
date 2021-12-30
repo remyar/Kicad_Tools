@@ -92,7 +92,7 @@ app.on('activate', function () {
 autoUpdater.currentVersion = pjson.version
 
 let eventTab = [
-    { percent: 0, isSend: false },
+    { percent: 15, isSend: false },
     { percent: 25, isSend: false },
     { percent: 50, isSend: false },
     { percent: 75, isSend: false },
@@ -148,7 +148,7 @@ autoUpdater.on('download-progress', (progressObj) => {
 
         eventTab.map((e, idx) => {
             if (val >= e.percent && e.isSend == false) {
-                //mainWindow.webContents.send('download-progress', progressObj);
+                mainWindow.webContents.send('download-progress', progressObj);
                 eventTab[idx].isSend = true;
             }
         });
@@ -169,148 +169,3 @@ autoUpdater.on('update-downloaded', (info) => {
         }, 2000);
     }
 });
-
-
-
-/*
-async function _saveFile(p, filename, data) {
-    if (fs.existsSync(p) == false) {
-        fs.mkdirSync(p, { recursive: true });
-    }
-
-    if (fs.existsSync(p) == true) {
-        fs.writeFileSync(path.resolve(p, filename.replace('\\', '_').replace('/', '_')), data);
-    }
-
-    return;
-}
-
-const requestListener = async function (req, res) {
-
-    async function __waitBody() {
-        return new Promise((resolve, reject) => {
-            let body = ''
-            req.on('data', function (data) {
-                body += data;
-            })
-            req.on('end', function () {
-                //res.writeHead(200, { 'Content-Type': 'text/html' });
-                //res.end('post received');
-                resolve(JSON.parse(body));
-            })
-        });
-    }
-
-    if (req.url.startsWith('/update-progress')) {
-        let resp = JSON.stringify(progressObjAvailable ? progressObjAvailable : {});
-        res.writeHead(200);
-        res.write(resp);
-        res.end();
-    } else if (req.url.startsWith('/update-available')) {
-        let resp = JSON.stringify(updateAvailable?.version ? updateAvailable : {});
-        res.writeHead(200);
-        res.write(resp);
-        res.end();
-    } else if (req.url.startsWith('/fetch/')) {
-        let url = req.url.replace('/fetch/', '');
-        try {
-            let resp = await axios.get(url, req.params);
-            if (typeof resp.data != 'string') {
-                resp.data = JSON.stringify(resp.data);
-            }
-
-            res.writeHead(resp.status);
-            res.write(resp.data);
-            res.end();
-        } catch (err) {
-            res.writeHead(500);
-            res.end();
-        }
-    } else if (req.url.startsWith('/getFilenameForOpen')) {
-        try {
-            let postData = await __waitBody();
-            let filters = [];
-            for (let _ext of postData?.extensions) {
-                filters.push({
-                    name: _ext.replace('.', ''),
-                    extensions: [_ext.replace('.', '')]
-                })
-            }
-
-            let resp = await electron.dialog.showOpenDialog(mainWindow, {
-                properties: ['openFile'], filters: filters
-            });
-
-            res.writeHead(200);
-            res.write(JSON.stringify(resp));
-            res.end();
-
-        } catch (err) {
-            res.writeHead(500);
-            res.end();
-        }
-    } else if (req.url.startsWith('/getFilenameForSave')) {
-        try {
-            let postData = await __waitBody();
-            let filters = [];
-            for (let _ext of postData?.extensions) {
-                filters.push({
-                    name: _ext.replace('.', ''),
-                    extensions: [_ext.replace('.', '')]
-                })
-            }
-
-            let resp = await electron.dialog.showSaveDialog(mainWindow, {
-                title: "Save librarie file",
-                defaultPath: "librarie",
-                buttonLabel: "Save",
-
-                filters: filters
-            });
-
-            res.writeHead(200);
-            res.write(JSON.stringify(resp));
-            res.end();
-
-        } catch (err) {
-            res.writeHead(500);
-            res.end();
-        }
-    } else if (req.url.startsWith('/writeFile')) {
-        try {
-
-            let postData = await __waitBody();
-
-            postData.filename = postData.filepath.replace(/^.*[\\\/]/, '');
-            postData.filepath = postData.filepath.replace(postData.filename, '');
-            await _saveFile(postData.filepath, postData.filename, postData.data);
-
-            res.writeHead(200);
-            res.end();
-
-        } catch (err) {
-            res.writeHead(500);
-            res.end();
-        }
-    } else if (req.url.startsWith('/readFile')) {
-        try {
-
-            let postData = await __waitBody();
-            let data = "";
-            if (postData) {
-                data = fs.readFileSync(postData.filepath, "utf-8");
-            }
-            res.writeHead(200);
-            res.write(JSON.stringify({ data: data }));
-            res.end();
-
-        } catch (err) {
-            res.writeHead(500);
-            res.end();
-        }
-    }
-}
-
-const server = http.createServer(requestListener);
-server.listen(4000);
-*/
