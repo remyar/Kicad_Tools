@@ -1,6 +1,6 @@
 {
-    "nav.generate.bom": "Génération LCSC/JLCPCB BOM",
-    "nav.generate.bom.desc": "Génération d'une liste de composant pour LCSC/JLCPCB",
+    "nav.generate.bom": "Génération BOM",
+    "nav.generate.bom.desc": "Génération d'une liste de composant",
     "nav.generate.pos": "Génération fichier JLCPCB Position",
     "nav.generate.pos.desc" : "Génération d'un fichier position pour JLCPCB",
     "nav.generate.librarie": "Génération Kicad .lib",
@@ -38,5 +38,6 @@
     "lib.myLib": "Ma Librairie",
     "lib.new": "Créer une Librairie",
     "lib.save": "Enregistrer",
-    "lib.save.success": "Librairie sauvegardé"
+    "lib.save.success": "Librairie sauvegardé",
+    "settings.bom.title": "Configuration des champs pour la BOM"
 }

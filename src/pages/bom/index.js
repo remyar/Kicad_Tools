@@ -54,8 +54,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function BomPage(props) {
     const [displayLoader, setDisplayLoader] = useState(false);
     const [components, setComponents] = useState([]);
+    const settings = props.globalState.settings;
 
     let fields = [];
+
+    useEffect(() => {
+        let settings = props.globalState.settings;
+        let settingsBom = settings.bom || { fields : [] } ;
+
+        components?.UniquePartList?.map((component) => {
+            component?.Fields.map((field) => {
+                if (settingsBom.fields.find((f) => f.name == field.name) == undefined) {
+                    field.display = true;
+                    settingsBom.fields.push(field);
+                }
+            })
+        });
+        props.dispatch(actions.settings.set('bom' , {...settingsBom}));
+    }, [components]);
 
     return <Box>
         <Loader display={displayLoader} />
@@ -71,9 +87,12 @@ function BomPage(props) {
                         {components?.UniquePartList?.map((component) => {
                             let res = [];
                             component?.Fields.map((field) => {
-                                if ( fields.find((f) => f.name == field.name) == undefined ){
-                                    res.push(<StyledTableCell>{field.name}</StyledTableCell>);
-                                    fields.push(field);
+                                if (fields.find((f) => f.name == field.name) == undefined) {
+                                    let fieldSettings = settings?.bom?.fields?.find((f) => f.name == field.name)
+                                    if ( fieldSettings == undefined || fieldSettings.display == true ){
+                                        res.push(<StyledTableCell>{field.name}</StyledTableCell>);
+                                        fields.push(field);
+                                    }
                                 }
                             })
                             return res;
@@ -138,7 +157,7 @@ function BomPage(props) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                         }
 
-                        let bomFile = await utils.kicad.generateBom(components);
+                        let bomFile = await utils.kicad.generateBom(components , settings.bom.fields);
 
                         await props.dispatch(actions.electron.writeFile(filename.filePath, bomFile));
 

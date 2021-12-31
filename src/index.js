@@ -46,7 +46,7 @@ const messages = localeData[languageWithoutRegionCode] || localeData[language] |
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline />
-        <StoreProvider extra={{ api , electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" } }}>
+        <StoreProvider extra={{ api, electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields : [] } }}>
             <MemoryRouter>
                 <NavigationProvider>
                     <IntlProvider locale={language} messages={messages}>

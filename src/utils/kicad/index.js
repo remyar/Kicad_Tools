@@ -287,7 +287,7 @@ async function parseKicadNetlist(str) {
     }
 }
 
-async function generateBom(components) {
+async function generateBom(components , fields) {
     function generateHeader() {
         let header = [];
 

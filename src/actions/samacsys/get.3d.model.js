@@ -1,6 +1,4 @@
 import createAction from '../../middleware/actions';
-import HTMLParser from 'node-html-parser';
-import * as zip from "@zip.js/zip.js";
 
 export async function get3DModel(_mpn, _package, { extra, getState }) {
     let api = extra.api;

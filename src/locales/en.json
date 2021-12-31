@@ -1,6 +1,6 @@
 {
-    "nav.generate.bom": "Generate LCSC/JLCPCB BOM",
-    "nav.generate.bom.desc": "Generate bill of material for LCSC/JLCPCB",
+    "nav.generate.bom": "Generate BOM",
+    "nav.generate.bom.desc": "Generate bill of material",
     "nav.generate.pos": "Generate JLCPCB Pos File",
     "nav.generate.pos.desc": "Generate position file for JLCPCB",
     "nav.generate.librarie": "Generate Kicad .lib",
@@ -38,5 +38,6 @@
     "lib.myLib": "My Librarie",
     "lib.new": "New Librarie",
     "lib.save": "Save",
-    "lib.save.success": "Librarie saved"
+    "lib.save.success": "Librarie saved",
+    "settings.bom.title": "Fields settings fo BOM"
 }
