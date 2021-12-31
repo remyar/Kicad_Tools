@@ -12,6 +12,7 @@ import MemoryIcon from '@mui/icons-material/Memory';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import HomeIcon from '@mui/icons-material/Home';
 import EditLocationIcon from '@mui/icons-material/EditLocation';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import routeMdw from '../../middleware/route';
 
@@ -19,7 +20,7 @@ function MyDrawer(props) {
     const intl = props.intl;
     return <Drawer open={props.open} onClose={() => { props.onClose && props.onClose() }}>
         <List>
-            
+
             <ListItem button onClick={() => {
                 props.navigation.push(routeMdw.urlLibGenerator());
                 props.onClose && props.onClose();
@@ -55,6 +56,18 @@ function MyDrawer(props) {
                     <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary={intl.formatMessage({ id: 'nav.home' })} secondary={intl.formatMessage({ id: 'nav.home.desc' })} />
+            </ListItem>
+
+        </List>
+        <List sx={{ position: "absolute", bottom: "0px", width: "100%" }}>
+            <ListItem button onClick={() => {
+                props.navigation.push(routeMdw.urlSettings());
+                props.onClose && props.onClose();
+            }} >
+                <ListItemIcon>
+                    <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary={intl.formatMessage({ id: 'nav.settings' })} secondary={intl.formatMessage({ id: 'nav.settings.desc' })} />
             </ListItem>
         </List>
     </Drawer>;
