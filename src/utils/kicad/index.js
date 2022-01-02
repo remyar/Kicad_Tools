@@ -291,17 +291,12 @@ async function generateBom(components , fields) {
     function generateHeader() {
         let header = [];
 
-        header.push('Row');
-        header.push('Description');
-        header.push('Part');
-        header.push('References');
-        header.push('Value');
-        header.push('Footprint');
-        header.push('Quantity');
-        header.push('Status');
-        header.push('Datasheet');
-        header.push('LCSC Part Number');
-        header.push('PartNumber');
+        fields.map((f) => {
+            if ( f.display == true){
+                header.push(f.name);
+            }
+        });
+ 
         return header.join(';');
     }
     try {
@@ -316,8 +311,8 @@ async function generateBom(components , fields) {
                 refs.push(component.RefPrefix + element);
             });
 
-            line.push(row);
             line.push((component.Fields.find((f) => f.name == "Description")?.value || "").replace(/,/g, ''));
+            
             line.push(component.RefPrefix);
             line.push(refs.join(' '));
             line.push(component.Value);

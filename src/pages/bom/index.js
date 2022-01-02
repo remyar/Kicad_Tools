@@ -58,9 +58,23 @@ function BomPage(props) {
 
     let fields = [];
 
+    let standardField = [
+        { name: 'Ref', display: true, value: "" },
+        { name: 'Quantity', display: true, value: 0 },
+        { name: 'Value', display: true, value: "" },
+        { name: 'Footprint', display: true, value: "" },
+    ]
+
     useEffect(() => {
         let settings = props.globalState.settings;
-        let settingsBom = settings.bom || { fields : [] } ;
+        let settingsBom = settings.bom || { fields: [] };
+
+        standardField.map((field) => {
+            if (settingsBom.fields.find((f) => f.name == field.name) == undefined) {
+                field.display = true;
+                settingsBom.fields.push(field);
+            }
+        })
 
         components?.UniquePartList?.map((component) => {
             component?.Fields.map((field) => {
@@ -70,8 +84,9 @@ function BomPage(props) {
                 }
             })
         });
-        props.dispatch(actions.settings.set('bom' , {...settingsBom}));
+        props.dispatch(actions.settings.set('bom', { ...settingsBom }));
     }, [components]);
+
 
     return <Box>
         <Loader display={displayLoader} />
@@ -80,16 +95,21 @@ function BomPage(props) {
             <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Ref</StyledTableCell>
-                        <StyledTableCell>Qty</StyledTableCell>
-                        <StyledTableCell>Value</StyledTableCell>
-                        <StyledTableCell>Footprint</StyledTableCell>
+                        {standardField.map((field) => {
+                            if (fields.find((f) => f.name == field.name) == undefined) {
+                                let fieldSettings = settings?.bom?.fields?.find((f) => f.name == field.name);
+                                if (fieldSettings == undefined || fieldSettings.display == true) {
+                                    //fields.push(field);
+                                    return <StyledTableCell>{field.name}</StyledTableCell>
+                                }
+                            }
+                        })}
                         {components?.UniquePartList?.map((component) => {
                             let res = [];
                             component?.Fields.map((field) => {
                                 if (fields.find((f) => f.name == field.name) == undefined) {
                                     let fieldSettings = settings?.bom?.fields?.find((f) => f.name == field.name)
-                                    if ( fieldSettings == undefined || fieldSettings.display == true ){
+                                    if (fieldSettings == undefined || fieldSettings.display == true) {
                                         res.push(<StyledTableCell>{field.name}</StyledTableCell>);
                                         fields.push(field);
                                     }
@@ -103,15 +123,22 @@ function BomPage(props) {
                     {components?.UniquePartList?.map((component) => {
                         let cells = [];
                         let refs = [];
+
                         component.Ref.forEach(element => {
                             refs.push(component.RefPrefix + element);
                         });
-                        cells.push(<StyledTableCell >{refs.join(', ')}</StyledTableCell >);
-                        cells.push(<StyledTableCell >{component.Count}</StyledTableCell >);
-                        cells.push(<StyledTableCell >{component.Value.toString()}</StyledTableCell >);
-                        cells.push(<StyledTableCell >{component.Footprint}</StyledTableCell >);
+
+                        (standardField.find((f) => f.name == 'Ref')).value = refs.join(', ');
+                        (standardField.find((f) => f.name == 'Quantity')).value = component.Count;
+                        (standardField.find((f) => f.name == 'Value')).value = component.Value.toString();
+                        (standardField.find((f) => f.name == 'Footprint')).value = component.Footprint;
+
                         fields.map((field) => {
-                            cells.push(<StyledTableCell >{component?.Fields && component?.Fields?.find((f) => f.name == field.name)?.value || ""}</StyledTableCell >);
+                            let value = component?.Fields && component?.Fields?.find((f) => f.name == field.name)?.value;
+                            if (value == undefined) {
+                                value = standardField.find((f) => f.name == field.name)?.value || "";
+                            }
+                            cells.push(<StyledTableCell >{value}</StyledTableCell >);
                         })
                         return <StyledTableRow key={component.Value.toString()}>{cells}</StyledTableRow>;
                     })}
@@ -157,7 +184,7 @@ function BomPage(props) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                         }
 
-                        let bomFile = await utils.kicad.generateBom(components , settings.bom.fields);
+                        let bomFile = await utils.kicad.generateBom(components, [...settings.bom.fields , ...standardField]);
 
                         await props.dispatch(actions.electron.writeFile(filename.filePath, bomFile));
 
