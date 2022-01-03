@@ -3,7 +3,7 @@
     "nav.generate.bom.desc": "Génération d'une liste de composant",
     "nav.generate.pos": "Génération fichier JLCPCB Position",
     "nav.generate.pos.desc" : "Génération d'un fichier position pour JLCPCB",
-    "nav.generate.librarie": "Génération Kicad .lib",
+    "nav.generate.librarie": "Génération librairie Kicad",
     "nav.generate.librarie.desc": "Génération d'une librairie de composant",
     "nav.home": "Accueil",
     "nav.home.desc": "Revenir a l'accueil",

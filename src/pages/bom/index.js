@@ -133,6 +133,13 @@ function BomPage(props) {
                         (standardField.find((f) => f.name == 'Value')).value = component.Value.toString();
                         (standardField.find((f) => f.name == 'Footprint')).value = component.Footprint;
 
+                        standardField.map((field)=>{
+                            let fieldSettings = settings?.bom?.fields?.find((f) => f.name == field.name)
+                            if (fieldSettings == undefined || fieldSettings.display == true) {
+                                cells.push(<StyledTableCell >{field.value}</StyledTableCell >);
+                            }
+                        });
+
                         fields.map((field) => {
                             let value = component?.Fields && component?.Fields?.find((f) => f.name == field.name)?.value;
                             if (value == undefined) {
@@ -158,10 +165,16 @@ function BomPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.net')))?.getFilenameForOpen;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen(['.net', '.xml'])))?.getFilenameForOpen;
                         if (file.canceled == false) {
                             let fileData = (await props.dispatch(actions.electron.readFile(file.filePath)))?.fileData;
-                            let _components = await utils.kicad.parseKicadNetlist(fileData);
+                            let _components = undefined;
+                            if (file.filePath.endsWith('.net')) {
+                                _components = await utils.kicad5.parseKicadNetlist(fileData);
+                            }
+                            if (file.filePath.endsWith('.xml')) {
+                                _components = await utils.kicad6.parseKicadNetlist(fileData);
+                            }
                             setComponents(_components);
                         }
                     } catch (err) {
@@ -184,7 +197,7 @@ function BomPage(props) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                         }
 
-                        let bomFile = await utils.kicad.generateBom(components, [...settings.bom.fields , ...standardField]);
+                        let bomFile = await utils.kicad.generateBom(components, [...settings.bom.fields, ...standardField]);
 
                         await props.dispatch(actions.electron.writeFile(filename.filePath, bomFile));
 

@@ -253,8 +253,32 @@ function LibGeneratorPage(props) {
                 }}>
             </SpeedDialAction>
 
+            {/*<SpeedDialAction
+                key={'Save6'}
+                icon={<SaveIcon />}
+                tooltipTitle={'Save Kicad 6.x'}
+                onClick={async () => {
+                    setDisplayLoader(true);
+                    try {
+                        let filename = (await props.dispatch(actions.electron.getFilenameForSave('.kicad_sym')))?.getFilenameForSave;
+                        if (filename.canceled == false) {
+                            filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
+                            let librarie5File = (await props.dispatch(actions.kicad5.generateLibrarie(components, filename.name.replace('.kicad_sym', '')))).librarieContent;
+                            let librarie6File = (await props.dispatch(actions.kicad6.convertFormKicad5Librarie(librarie5File))).librarieContent
+
+
+                            props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
+                        }
+                        
+                    } catch (err) {
+                        props.snackbar.error(err.message);
+                    }
+                    setDisplayLoader(false);
+                }}
+            />*/}
+
             <SpeedDialAction
-                key={'Save'}
+                key={'Save5'}
                 icon={<SaveIcon />}
                 tooltipTitle={'Save'}
                 onClick={async () => {
@@ -264,8 +288,8 @@ function LibGeneratorPage(props) {
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
 
-                            let librarieFile = (await props.dispatch(actions.kicad.generateLibrarie(components, filename.name.replace('.lib', '')))).librarieContent;
-                            let footprints = (await props.dispatch(actions.kicad.generateFootprints(components, filename.name.replace('.lib', '')))).footprints;
+                            let librarieFile = (await props.dispatch(actions.kicad5.generateLibrarie(components, filename.name.replace('.lib', '')))).librarieContent;
+                            let footprints = (await props.dispatch(actions.kicad5.generateFootprints(components, filename.name.replace('.lib', '')))).footprints;
 
                             await props.dispatch(actions.electron.writeFile(filename.filePath, librarieFile));
                             for (let footprint of footprints) {

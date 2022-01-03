@@ -1,5 +1,7 @@
-import kicad from './kicad';
+import kicad5 from './kicad5';
+import kicad6 from './kicad6';
 
 export default {
-    kicad
+    kicad5,
+    kicad6
 }

@@ -9,11 +9,11 @@ export async function generateLibrarie(components , librarieName , { extra, getS
 
         for ( let component of components){
 
-            let definition = await utils.kicad.getSymbol(component , librarieName);
+            let definition = await utils.kicad5.getSymbol(component , librarieName);
             symbols.push(definition);
         }
 
-        let response = await utils.kicad.generateLib(symbols);
+        let response = await utils.kicad5.generateLib(symbols);
 
         return {
             librarieContent : response

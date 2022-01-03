@@ -3,7 +3,7 @@
     "nav.generate.bom.desc": "Generate bill of material",
     "nav.generate.pos": "Generate JLCPCB Pos File",
     "nav.generate.pos.desc": "Generate position file for JLCPCB",
-    "nav.generate.librarie": "Generate Kicad .lib",
+    "nav.generate.librarie": "Generate Kicad librarie",
     "nav.generate.librarie.desc": "Generate librarie of component",
     "nav.home": "Home",
     "nav.home.desc": "Got to home",
