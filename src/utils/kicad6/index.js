@@ -1,30 +1,40 @@
 import ComponentsLibs from './libs/component'
+import sch_legacy_plugin from './sch_legacy_plugin';
 
 async function convertFromkicad5Librarie(librarieFile) {
-    let file = [];
-    let factor = 39.37;
 
-    file.push("(kicad_symbol_lib (version 20211014) (generator kicad_tools)");
-    let lines = librarieFile.split('\n').map(line => { return line.replace('\r', '') });
+    try {
+        await sch_legacy_plugin.Load(librarieFile);
+    } catch (err) {
+        throw Error(err);
+    }
 
-    let openbracket = [];
-    lines.forEach((line) => {
-        if (line.startsWith("EESchema") || line.startsWith("#")) {
 
-        } else {
-            if (line.startsWith("DEF ")) {
-                openbracket.push(true);
-                let words = line.split(" ");
-                file.push('(symbol "' + words[1] + '" (pin_names (offset 0)) (in_bom yes) (on_board yes)');
-            } else if (line.startsWith("F")){
-                //-- properties
-            }
 
-        }
-    });
-
-    file.push(")");
-    return file.join('\n');
+    /* let file = [];
+     let factor = 39.37;
+ 
+     file.push("(kicad_symbol_lib (version 20211014) (generator kicad_tools)");
+     let lines = librarieFile.split('\n').map(line => { return line.replace('\r', '') });
+ 
+     let openbracket = [];
+     lines.forEach((line) => {
+         if (line.startsWith("EESchema") || line.startsWith("#")) {
+ 
+         } else {
+             if (line.startsWith("DEF ")) {
+                 openbracket.push(true);
+                 let words = line.split(" ");
+                 file.push('(symbol "' + words[1] + '" (pin_names (offset 0)) (in_bom yes) (on_board yes)');
+             } else if (line.startsWith("F")){
+                 //-- properties
+             }
+ 
+         }
+     });
+ 
+     file.push(")");
+     return file.join('\n');*/
 }
 
 async function parseKicadNetlist(str) {
@@ -41,5 +51,5 @@ async function parseKicadNetlist(str) {
 
 export default {
     convertFromkicad5Librarie,
-    parseKicadNetlist
+    parseKicadNetlist,
 }

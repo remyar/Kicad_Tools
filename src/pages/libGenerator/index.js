@@ -253,7 +253,7 @@ function LibGeneratorPage(props) {
                 }}>
             </SpeedDialAction>
 
-            {/*<SpeedDialAction
+            <SpeedDialAction
                 key={'Save6'}
                 icon={<SaveIcon />}
                 tooltipTitle={'Save Kicad 6.x'}
@@ -275,7 +275,7 @@ function LibGeneratorPage(props) {
                     }
                     setDisplayLoader(false);
                 }}
-            />*/}
+            />
 
             <SpeedDialAction
                 key={'Save5'}
