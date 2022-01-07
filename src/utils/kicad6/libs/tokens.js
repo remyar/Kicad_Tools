@@ -8,7 +8,7 @@ function generateTokens(line){
 
 function GetNextToken(){
     idxToken++;
-    return tokens[idxToken - 1];
+    return tokens[idxToken - 1].trim();
 }
 
 function length(){

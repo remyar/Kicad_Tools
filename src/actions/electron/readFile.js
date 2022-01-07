@@ -10,7 +10,9 @@ export async function readFile(filepath , { extra, getState }) {
             fileData : data
         }
     } catch (err) {
-        throw { message: err.message };
+        return {
+            fileData : undefined
+        }
     }
 }
 

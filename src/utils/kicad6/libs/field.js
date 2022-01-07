@@ -20,17 +20,26 @@ class Field {
     SetText(val) {
         this.value = val;
     }
+    GetText(){
+        return this.value;
+    }
     GetId() {
         return this.id;
     }
     SetPosition(p) {
         this.position = { ...p };
     }
+    GetPosition() {
+        return this.position;
+    }
     SetTextSize(t) {
         this.textSize = { ...t };
     }
     SetTextAngle(a){
         this.angle = a;
+    }
+    GetTextAngle(){
+        return this.angle;
     }
     SetHorizJustify(c){
         this.textHJustify = c;
@@ -46,6 +55,12 @@ class Field {
     }
     SetName(val){
         this.name = val;
+    }
+    GetName(){
+        return this.name;
+    }
+    Type(){
+        return 'LIB_FIELD_T';
     }
 }
 

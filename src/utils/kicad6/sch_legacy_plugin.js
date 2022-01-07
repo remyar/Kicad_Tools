@@ -4,6 +4,8 @@ import convert_to_biu from './libs/convert_to_biu';
 import tokens from './libs/tokens';
 import Symbol from './libs/symbol';
 import Field from './libs/field';
+import Pin from './libs/pin';
+import Shape from './libs/shape';
 
 let m_libType = undefined;
 let m_versionMinor;
@@ -13,7 +15,7 @@ const MANDATORY_FIELDS = 4;
 async function Load(librarieFile) {
 
     aReader.openFile(librarieFile);
-
+    let m_symbols = [];
     let line = aReader.Line();
     if (!line.startsWith("EESchema-LIBRARY Version")) {
         throw Error("file is not a valid symbol or symbol library file");
@@ -49,11 +51,14 @@ async function Load(librarieFile) {
             try {
                 aReader.rewind();
                 let symbol = await LoadPart(aReader, m_versionMajor, m_versionMinor);
+                m_symbols.push(symbol);
             } catch (err) {
                 throw Error(err);
             }
         }
     }
+
+    return m_symbols;
 }
 
 async function LoadPart(aReader, aMajorVersion, aMinorVersion, aMap) {
@@ -359,9 +364,10 @@ function loadDrawEntries(aSymbol, aReader, aMajorVersion, aMinorVersion) {
             case 'S':   // Square
                 break;
             case 'X':   // Pin Description
-                aSymbol.AddDrawItem(loadPin(aSymbol , aReader));
+                aSymbol.AddDrawItem(loadPin(aSymbol, aReader));
                 break;
             case 'P':    // Polyline
+                aSymbol.AddDrawItem(loadPolyLine(aSymbol, aReader));
                 break;
             case 'B':    // Bezier Curves
                 break;
@@ -381,13 +387,196 @@ function loadDrawEntries(aSymbol, aReader, aMajorVersion, aMinorVersion) {
 }
 
 
-function loadPin(aSymbol , aReader ){
+function loadPin(aSymbol, aReader) {
     aReader.rewind();
     let line = aReader.Line();
     if (!line.startsWith('X')) {
-        
-    }throw Error("Invalid LIB_PIN definition");
+        throw Error("Invalid LIB_PIN definition");
+    }
+
+    line = line.replace('X', '').trim();
+
+    tokens.generateTokens(line);
+
+    if (tokens.length() < 11) {
+        throw Error("invalid pin definition");
+    }
+
+    let name = tokens.GetNextToken();
+    let number = tokens.GetNextToken();
+    let num = parseFloat(tokens.GetNextToken());
+
+    if (num == NaN) {
+        throw Error("invalid pin X coordinate");
+    }
+
+    let position = {};
+    position.x = convert_to_biu.Mils2iu(num);
+
+    num = parseFloat(tokens.GetNextToken());
+
+    if (num == NaN) {
+        throw Error("invalid pin Y coordinate");
+    }
+
+    position.y = convert_to_biu.Mils2iu(num);
+
+    num = parseFloat(tokens.GetNextToken());
+
+    if (num == NaN) {
+        throw Error("invalid pin length");
+    }
+
+    let length = convert_to_biu.Mils2iu(num);
+
+    let orientation = tokens.GetNextToken();
+
+    if (orientation.length > 1) {
+        throw Error("invalid pin orientation");
+    }
+
+    num = parseFloat(tokens.GetNextToken());
+    if (num == NaN) {
+        throw Error("invalid pin number text size");
+    }
+
+    let numberTextSize = convert_to_biu.Mils2iu(num);
+
+    num = parseFloat(tokens.GetNextToken());
+    if (num == NaN) {
+        throw Error("invalid pin name text size");
+    }
+
+    let nameTextSize = convert_to_biu.Mils2iu(num);
+
+    num = parseFloat(tokens.GetNextToken());
+    if (num == NaN) {
+        throw Error("invalid pin unit");
+    }
+
+    let unit = num;
+
+    num = parseFloat(tokens.GetNextToken());
+    if (num == NaN) {
+        throw Error("invalid pin alternate body type");
+    }
+
+    let convert = num;
+
+    let type = tokens.GetNextToken();
+
+    if (type.length != 1) {
+        throw Error("invalid pin type");
+    }
+
+    let pinType = '';
+    switch (type) {
+        case 'I': pinType = 'input'; break;
+        case 'O': pinType = 'output'; break;
+        case 'B': pinType = 'bidirectional'; break;
+        case 'T': pinType = 'tri_state'; break;
+        case 'P': pinType = 'passive'; break;
+        case 'U': pinType = 'unspecified'; break;
+        case 'W': pinType = 'power_in'; break;
+        case 'w': pinType = 'power_out'; break;
+        case 'C': pinType = 'open_collector'; break;
+        case 'E': pinType = 'open_emitter'; break;
+        case 'N': pinType = 'no_connect'; break;
+        default: {
+            throw Error("unknown pin type");
+        }
+    }
+
+    let pin = new Pin(aSymbol, name, number, orientation, pinType, length, nameTextSize, numberTextSize, convert, position, unit);
+
+    // Optional
+    if (tokens.HasMoreTokens()) {
+        tmp = tokens.GetNextToken();
+
+        const INVERTED = 1;
+        const CLOCK = 2;
+        const LOWLEVEL_IN = 4;
+        const LOWLEVEL_OUT = 8;
+        const FALLING_EDGE = 16;
+        const NONLOGIC = 32;
+
+        let flags = 0;
+
+        for (let j = tmp.length; j > 0;) {
+            switch (tmp[--j]) {
+                case '~': break;
+                case 'N': pin.SetVisible(false); break;
+                case 'I': flags |= INVERTED; break;
+                case 'C': flags |= CLOCK; break;
+                case 'L': flags |= LOWLEVEL_IN; break;
+                case 'V': flags |= LOWLEVEL_OUT; break;
+                case 'F': flags |= FALLING_EDGE; break;
+                case 'X': flags |= NONLOGIC; break;
+                default: {
+                    throw Error("invalid pin attribut");
+                }
+            }
+        }
+    }
+
+    return pin;
 }
+
+function loadPolyLine(aSymbol, aReader) {
+    aReader.rewind();
+    let line = aReader.Line();
+    if (!line.startsWith('P')) {
+        throw Error("Invalid poly definition");
+    }
+
+    let polyLine = new Shape(aSymbol, 'POLY');
+    line = line.replace('P', '').trim();
+
+    let points = parseInt(line.split(' ')[0].trim());
+    line = line.replace(points, '').trim();
+    let unit = parseInt(line.split(' ')[0].trim());
+    polyLine.SetUnit(unit);
+    line = line.replace(unit, '').trim();
+    let convert = parseInt(line.split(' ')[0].trim());
+    polyLine.SetConvert(convert);
+    line = line.replace(convert, '').trim();
+    let stroke = parseInt(line.split(' ')[0].trim());
+    polyLine.SetStroke(convert_to_biu.Mils2iu(stroke), 'SOLID');
+    line = line.replace(stroke, '').trim();
+
+    for (let i = 0; i < points; i++) {
+        let pt = {};
+        let x = parseInt(line.split(' ')[0].trim());
+        line = line.replace(x, '').trim();
+        let y = parseInt(line.split(' ')[0].trim());
+        line = line.replace(y, '').trim();
+
+        pt.x = convert_to_biu.Mils2iu(x);
+        pt.y = convert_to_biu.Mils2iu(y);
+
+        polyLine.AddPoint(pt);
+    }
+
+    if (line.length > 0) {
+        let fillMode = line.split(' ')[0].trim();
+        line = line.replace(fillMode, '').trim();
+
+        polyLine.SetFillMode(parseFillMode(fillMode))
+    }
+
+    return polyLine;
+}
+
+function parseFillMode( aLine) {
+
+    switch (aLine) {
+        case 'F': return 'FILLED_SHAPE';
+        case 'f': return 'FILLED_WITH_BG_BODYCOLOR';
+        case 'N': return 'NO_FILL';
+        default: return 'NO_FILL';
+    }
+}
+
 
 export default {
     Load,

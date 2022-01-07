@@ -42,6 +42,7 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import utils from '../../utils';
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import { __ } from 'ramda';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -233,14 +234,18 @@ function LibGeneratorPage(props) {
                         if (file.canceled == false) {
 
                             let fileData = (await props.dispatch(actions.electron.readFile(file.filePath))).fileData;
-                            let _c = await utils.kicad.parseKicadLib(fileData);
+                            let _c = await utils.kicad5.parseKicadLib(fileData);
                             let footprintsPath = file.filePath.replace('.lib', '.pretty');
                             let ___c = [...components];
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
-                                __c.footprintData = footprintData;
-                                if (footprintData.includes('model')) {
-                                    __c.has3dModel = true;
+                                if ( footprintData ){
+                                    __c.footprintData = footprintData;
+                                    if (footprintData.includes('model')) {
+                                        __c.has3dModel = true;
+                                    }
+                                } else {
+                                    __.hasFootprint = false;
                                 }
                                 ___c.push(__c);
                             }
@@ -265,6 +270,7 @@ function LibGeneratorPage(props) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
                             let librarie5File = (await props.dispatch(actions.kicad5.generateLibrarie(components, filename.name.replace('.kicad_sym', '')))).librarieContent;
                             let librarie6File = (await props.dispatch(actions.kicad6.convertFormKicad5Librarie(librarie5File))).librarieContent
+                            await props.dispatch(actions.electron.writeFile(filename.filePath, librarie6File));
 
 
                             props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));

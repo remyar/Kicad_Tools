@@ -24,6 +24,11 @@ class Symbol {
     SetPinNameOffset(aOffset) {
         this.m_pinNameOffset = aOffset;
     }
+    GetPinNameOffset() {
+        return this.m_pinNameOffset;
+    }
+
+
     ShowPinNames() {
         return this.m_pinNameOffset;
     }
@@ -117,17 +122,68 @@ class Symbol {
     SetNormal() {
         this.m_options = ENTRY_NORMAL;
     }
+    IsPower() {
+        return this.m_options == ENTRY_POWER;
+    }
 
     GetFieldById(aId) {
         return this.fields.find((f) => f.id == aId);
     }
 
-    AddField(field){
+    AddField(field) {
         this.fields.push(field);
     }
 
-    AddDrawItem(item){
+    AddDrawItem(item) {
         this.m_drawings.push(item);
+    }
+
+    SetIncludeInBom(aIncludeInBom) { this.m_includeInBom = aIncludeInBom; }
+    GetIncludeInBom() { return this.m_includeInBom; }
+    SetIncludeOnBoard(aIncludeOnBoard) { this.m_includeOnBoard = aIncludeOnBoard; }
+    GetIncludeOnBoard() { return this.m_includeOnBoard; }
+    GetNextAvailableFieldId() {
+        return this.fields.length - 4;
+    }
+    GetUnitDrawItems(aUnit, aConvert) {
+        if (aUnit != undefined && aConvert != undefined) {
+            let unitItems = [];
+            for (let item of this.m_drawings) {
+                if (item.Type() == 'LIB_FIELD_T') {
+                    continue;
+                }
+
+                if (((aConvert == -1) && (item.GetUnit() == aUnit)) || (aUnit == -1 && item.GetConvert() == aConvert) || ((aUnit == item.GetUnit()) && (aConvert == item.GetConvert()))) {
+                    unitItems.push(item);
+                }
+            }
+            return unitItems;
+        } else {
+            let units = [];
+            for (let item of this.m_drawings) {
+                if (item.Type() == 'LIB_FIELD_T') {
+                    continue;
+                }
+
+                let unit = item.GetUnit();
+                let convert = item.GetConvert();
+
+                let it = units.find((a) => { return (a.m_unit == unit && a.m_convert == convert); });
+
+                if (it == undefined) {
+                    let newUnit = {
+                        m_unit: item.GetUnit(),
+                        m_convert: item.GetConvert(),
+                        m_items: []
+                    }
+                    newUnit.m_items.push(item);
+                    units.push(newUnit);
+                } else {
+                    it.m_items.push(item);
+                }
+            }
+            return units;
+        }
     }
 }
 
