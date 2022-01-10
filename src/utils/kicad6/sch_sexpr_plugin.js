@@ -1,4 +1,5 @@
 import convert_to_biu from './libs/convert_to_biu';
+import STROKE from './libs/stroke';
 
 let formatter = [];
 
@@ -117,7 +118,27 @@ async function savePin(aPin) {
     return lines;
 }
 
-async function saveText(aText){
+async function formatStroke(aStroke) {
+    let line = "(stroke (width " + aStroke.GetWidth() + ") (type " + aStroke.GetPlotStyle() + ") (color " + parseInt(aStroke.GetColor().r * 255.0) + " ";
+    line += parseInt(aStroke.GetColor().g * 255.0) + " " + parseInt(aStroke.GetColor().b * 255.0) + " " + parseFloat(aStroke.GetColor().a) + "))";
+    return line;
+}
+
+async function formatFill(aFillMode, aFillColor) {
+
+    let fillType = "none";
+    switch (aFillMode) {
+        default:
+        case 'NO_FILL': fillType = "none"; break;
+        case 'FILLED_SHAPE': fillType = "outline"; break;
+        case 'FILLED_WITH_BG_BODYCOLOR': fillType = "background"; break;
+    }
+
+    return "(fill (type " + fillType + "))";
+}
+
+
+async function saveText(aText) {
     if (aPin.Type() != 'LIB_TEXT_T') {
         throw Error("Invalid LIB_TEXT object.");
     }
@@ -125,7 +146,7 @@ async function saveText(aText){
     let lines = [];
 
     let line = "(text ";
-    line += '"'+aText.GetText()+'"';
+    line += '"' + aText.GetText() + '"';
     line += " (at ";
     line += aText.GetPosition().x / 25.4;
     line += " ";
@@ -137,15 +158,72 @@ async function saveText(aText){
     return lines;
 }
 
+async function formatPoly(aPolyLine, aStroke, aFillMode, aFillColor = { r: 0, g: 0, b: 0, a: 1 }) {
+    let lines = [];
+    let line = "";
+
+    lines.push("(polyline");
+
+    line = "(pts";
+
+    let newLine = 0;
+    let lineCount = 0;
+    for (let pt of aPolyLine.m_points) {
+        if (newLine == 4) {
+            lines.push(line);
+            line = "";
+            line += "(xy ";
+            line += pt.x / 25.4;
+            line += " ";
+            line += pt.y / 25.4;
+            line += ")";
+            newLine = 0;
+            lineCount += 1;
+        } else {
+            line += " (xy ";
+            line += pt.x / 25.4;
+            line += " ";
+            line += pt.y / 25.4;
+            line += ")";
+        }
+
+        newLine += 1;
+    }
+    lines.push(line);
+
+
+    if (lineCount == 1) {
+        lines.push(")");
+    }
+    else {
+        lines.push("");
+        lines.push(")");
+    }
+
+    lines.push(await formatStroke(aStroke));
+    lines.push(await formatFill(aFillMode, aFillColor));
+
+    lines.push(")");
+
+    return lines;
+}
+
 async function saveSymbolDrawItem(aItem) {
     let lines = [];
     switch (aItem.Type()) {
         case 'LIB_SHAPE_T':
             let shape = aItem;
             let fillMode = shape.GetFillMode();
-            let stroke;
-
-            
+            let stroke = new STROKE();
+            stroke.SetWidth(shape.GetWidth());
+            switch (shape.GetShape()) {
+                case 'POLY':
+                    lines = await formatPoly(shape, stroke, fillMode);
+                    break;
+                default: {
+                    throw Error("Shape not implemented");
+                }
+            }
             break;
         case 'LIB_PIN_T':
             lines = await savePin(aItem);

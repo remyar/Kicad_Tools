@@ -57,12 +57,8 @@ async function getSymbol(component, librarieName) {
                         fIndex = parseInt(line.split(' ')[0].replace('F', ''));
                     }
 
-                    if ( line.startsWith("F2 ")){
-                        line = line.replace(line.split(' ')[1],'"'+ librarieName + ':' + component.manufacturerPartnumber.replace('/', '_').replace('\\', '_') +'"');
-
-                        /*
-                        line = line.replace('F2 "' , 'F2 "' + librarieName + ':')
-                        */
+                    if (line.startsWith("F2 ")) {
+                        line = line.replace(line.split(' ')[1], '"' + librarieName + ':' + component.manufacturerPartnumber.replace('/', '_').replace('\\', '_') + '"');
                     }
                 }
 
@@ -155,52 +151,52 @@ async function getFootprint(component, librarieName) {
         } else {
 
             let Tab = [];
-            for ( let line of component.footprint ){
-                if ( line.startsWith("(model ") ){
-                    line = line.replace("(model " , "(model ./" + librarieName + ".pretty/");
+            for (let line of component.footprint) {
+                if (line.startsWith("(model ")) {
+                    line = line.replace("(model ", "(model ./" + librarieName + ".pretty/");
                 }
                 Tab.push(line);
             }
             let str = Tab.join("\n");
             return str;
-/*
-            let Tab = [];
-            let sch = component.svgs.find((x) => x.docType == 2);
-            let footprint = component.svgs.find((x) => x.docType == 4);
-            let svg = SVGJson.parse(sch.svg);
-            let _component = getChildrenWithParam(svg.children[0] || [], 'c_para');
-            if (footprint) {
-                let _indexComponent = "Q";
-                let _footprint = getChildrenWithParam(SVGJson.parse(footprint.svg).children[0] || [], 'c_para');
-                if (_footprint) {
-                    let kicadFootprint = await getFootprintFromSvg(_footprint);
-                    Tab = [];
-
-                    if (typeof _footprint.properties.c_para == "string") {
-                        let c_param = _component.properties.c_para;
-                        let result = c_param.match(/pre`([^`]*)?`/i);
-
-                        _indexComponent = result[1].replace("?", "**");
-                    }
-
-                    Tab.push("(module " + component.manufacturerPartnumber + " (layer F.Cu)");
-                    Tab.push("(fp_text reference " + _indexComponent + " (at 0 " + (-(footprint.bbox.height / 4) + 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
-                    Tab.push("(fp_text value " + component.manufacturerPartnumber + " (at 0 " + ((footprint.bbox.height / 4) - 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
-                    Tab.push(...kicadFootprint);
-
-                    if (component.has3dModel) {
-                        Tab.push("(model ./" + librarieName + ".pretty/" + component.manufacturerPartnumber.replace('\\', '_').replace('/', '_') + ".step");
-                        Tab.push("(at (xyz 0 0 0))");
-                        Tab.push("(scale (xyz 1 1 1))");
-                        Tab.push("(rotate (xyz 0 0 0))");
-                        Tab.push(")");
-                    }
-                    Tab.push(")");
-
-                    let str = Tab.join("\n");
-                    return str;
-                }
-            }*/
+            /*
+                        let Tab = [];
+                        let sch = component.svgs.find((x) => x.docType == 2);
+                        let footprint = component.svgs.find((x) => x.docType == 4);
+                        let svg = SVGJson.parse(sch.svg);
+                        let _component = getChildrenWithParam(svg.children[0] || [], 'c_para');
+                        if (footprint) {
+                            let _indexComponent = "Q";
+                            let _footprint = getChildrenWithParam(SVGJson.parse(footprint.svg).children[0] || [], 'c_para');
+                            if (_footprint) {
+                                let kicadFootprint = await getFootprintFromSvg(_footprint);
+                                Tab = [];
+            
+                                if (typeof _footprint.properties.c_para == "string") {
+                                    let c_param = _component.properties.c_para;
+                                    let result = c_param.match(/pre`([^`]*)?`/i);
+            
+                                    _indexComponent = result[1].replace("?", "**");
+                                }
+            
+                                Tab.push("(module " + component.manufacturerPartnumber + " (layer F.Cu)");
+                                Tab.push("(fp_text reference " + _indexComponent + " (at 0 " + (-(footprint.bbox.height / 4) + 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
+                                Tab.push("(fp_text value " + component.manufacturerPartnumber + " (at 0 " + ((footprint.bbox.height / 4) - 1.27) + ") (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))");
+                                Tab.push(...kicadFootprint);
+            
+                                if (component.has3dModel) {
+                                    Tab.push("(model ./" + librarieName + ".pretty/" + component.manufacturerPartnumber.replace('\\', '_').replace('/', '_') + ".step");
+                                    Tab.push("(at (xyz 0 0 0))");
+                                    Tab.push("(scale (xyz 1 1 1))");
+                                    Tab.push("(rotate (xyz 0 0 0))");
+                                    Tab.push(")");
+                                }
+                                Tab.push(")");
+            
+                                let str = Tab.join("\n");
+                                return str;
+                            }
+                        }*/
         }
     } catch (err) {
         throw Error(err)
@@ -287,16 +283,16 @@ async function parseKicadNetlist(str) {
     }
 }
 
-async function generateBom(components , fields) {
+async function generateBom(components, fields) {
     function generateHeader() {
         let header = [];
 
         fields.map((f) => {
-            if ( f.display == true){
+            if (f.display == true) {
                 header.push(f.name);
             }
         });
- 
+
         return header.join(';');
     }
     try {
@@ -312,7 +308,7 @@ async function generateBom(components , fields) {
             });
 
             line.push((component.Fields.find((f) => f.name == "Description")?.value || "").replace(/,/g, ''));
-            
+
             line.push(component.RefPrefix);
             line.push(refs.join(' '));
             line.push(component.Value);
@@ -320,7 +316,7 @@ async function generateBom(components , fields) {
             line.push(component.Count);
             line.push(component.Status || "");
             line.push(component.Datasheet || "");
-            line.push(component.Fields.find((f) => f.name == "LCSC Part Number" )?.value || "");
+            line.push(component.Fields.find((f) => f.name == "LCSC Part Number")?.value || "");
             line.push(component.PartNumber || "");
             lines.push(line.join(';'));
         });

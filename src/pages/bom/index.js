@@ -133,7 +133,7 @@ function BomPage(props) {
                         (standardField.find((f) => f.name == 'Value')).value = component.Value.toString();
                         (standardField.find((f) => f.name == 'Footprint')).value = component.Footprint;
 
-                        standardField.map((field)=>{
+                        standardField.map((field) => {
                             let fieldSettings = settings?.bom?.fields?.find((f) => f.name == field.name)
                             if (fieldSettings == undefined || fieldSettings.display == true) {
                                 cells.push(<StyledTableCell >{field.value}</StyledTableCell >);

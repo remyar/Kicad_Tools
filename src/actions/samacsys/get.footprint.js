@@ -8,7 +8,7 @@ export async function getFootprint(_mpn, _package, { extra, getState }) {
     try {
         let headers = new Headers();
 
-        headers.append('Authorization', 'Basic ' + btoa(process.env.REACT_APP_SAMACSYS_LOGIN + ":" + process.env.REACT_APP_SAMACSYS_PASSWORD ));
+        headers.append('Authorization', 'Basic ' + btoa(process.env.REACT_APP_SAMACSYS_LOGIN + ":" + process.env.REACT_APP_SAMACSYS_PASSWORD));
 
         let resp = await api.get("https://componentsearchengine.com/ga/auth.txt?", {
             headers
@@ -21,20 +21,20 @@ export async function getFootprint(_mpn, _package, { extra, getState }) {
         }
 
         let _comp = undefined;
-        for ( let _f of componentSearchApi.parts ){
-            if ( _f.PartNo == _mpn ){
+        for (let _f of componentSearchApi.parts) {
+            if (_f.PartNo == _mpn) {
                 _comp = _f;
             }
         }
-      
+
         let buffer = undefined;
         let model = undefined;
         buffer = await api.get("https://componentsearchengine.com/ga/model.php?partID=" + _comp.PartID + "", {
             headers,
-            responseType : 'arraybuffer'
+            responseType: 'arraybuffer'
         });
 
-        if ( buffer ){
+        if (buffer && buffer.byteLength > 100) {
             zip.configure({
                 useWebWorkers: false
             });
@@ -62,8 +62,8 @@ export async function getFootprint(_mpn, _package, { extra, getState }) {
 
                     let _text = text.split('\n');
                     model = [];
-                    for ( let line of _text){
-                        line = line.replace('\r','');
+                    for (let line of _text) {
+                        line = line.replace('\r', '');
                         model.push(line.trim());
                     }
                 }

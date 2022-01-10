@@ -34,7 +34,7 @@ export async function getLibrarie(_mpn, _package, { extra, getState }) {
             responseType: 'arraybuffer'
         });
 
-        if (buffer) {
+        if (buffer && buffer.byteLength > 100) {
             zip.configure({
                 useWebWorkers: false
             });
