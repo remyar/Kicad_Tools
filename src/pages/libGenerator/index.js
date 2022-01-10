@@ -311,7 +311,7 @@ function LibGeneratorPage(props) {
             <SpeedDialAction
                 key={'Save5'}
                 icon={<SaveIcon />}
-                tooltipTitle={'Save'}
+                tooltipTitle={'Save kicad 5.x'}
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
