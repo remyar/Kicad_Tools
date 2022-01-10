@@ -30,10 +30,12 @@ export async function getImgSymbol(_mpn, _package, { extra, getState }) {
       
         let buffer = undefined;
         let model = undefined;
-        buffer = await api.get("http://componentsearchengine.com/symbol.php?partID=" + _comp.PartID + "&u=0", {
-            headers,
-            responseType : 'arraybuffer'
-        });
+        if ( _comp && _comp.PartID ){
+            buffer = await api.get("http://componentsearchengine.com/symbol.php?partID=" + _comp.PartID + "&u=0", {
+                headers,
+                responseType : 'arraybuffer'
+            });
+        }
 
         if ( buffer ){
             model = Buffer.from(buffer).toString('base64')

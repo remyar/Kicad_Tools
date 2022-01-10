@@ -47,10 +47,13 @@ export default async (svg) => {
                                     break;;
                                 }
 
-                                element.children.forEach((el) => {
+                                element.children.forEach((el , idx) => {
                                     if (el.tagName == "text") {
                                         if (el.children && el.children[0].value != element.properties.c_spicepin.toString()) {
                                             pinName = el.children[0].value || "";
+                                        }
+                                        if (pinName.length == 0){
+                                            pinName = idx.toString();
                                         }
                                     }
                                     if (el.tagName == "path") {
@@ -66,7 +69,10 @@ export default async (svg) => {
                                         }
                                     }
                                 });
-                                if ( pinName.length == 0 || lineWidth == NaN){
+                                if (pinName.length == 0) {
+                                    pinName = ""
+                                }
+                                if (lineWidth == NaN) {
                                     break;
                                 }
                                 Tab.push("X");

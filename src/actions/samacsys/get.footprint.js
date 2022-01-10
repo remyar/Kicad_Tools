@@ -29,10 +29,13 @@ export async function getFootprint(_mpn, _package, { extra, getState }) {
 
         let buffer = undefined;
         let model = undefined;
-        buffer = await api.get("https://componentsearchengine.com/ga/model.php?partID=" + _comp.PartID + "", {
-            headers,
-            responseType: 'arraybuffer'
-        });
+
+        if (_comp && _comp.PartID) {
+            buffer = await api.get("https://componentsearchengine.com/ga/model.php?partID=" + _comp.PartID + "", {
+                headers,
+                responseType: 'arraybuffer'
+            });
+        }
 
         if (buffer && buffer.byteLength > 100) {
             zip.configure({

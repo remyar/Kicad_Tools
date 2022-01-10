@@ -11,6 +11,8 @@ class Symbol {
         this.fields.push(new Field('footprint', 2));
         this.fields.push(new Field('datasheet', 3));
         this.m_drawings = [];
+        this.m_includeInBom = true;
+        this.m_includeOnBoard = true;
     }
 
     /**

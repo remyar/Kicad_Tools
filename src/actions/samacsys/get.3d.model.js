@@ -20,11 +20,13 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
 
         let _comp = componentSearchApi.parts.find((_f) => _f.PartNo == _mpn);
         let model = undefined;
-        if (_comp.Has3D == 'Y') {
-            model = await api.get("https://componentsearchengine.com/ga/model.php?partID=" + _comp.PartID + "&step=1", {
-                headers
-            });
-            //-- "https://componentsearchengine.com/ga/model.php?partID=" & partID & "&vrml=1"
+        if (_comp && _comp.Has3D) {
+            if (_comp.Has3D == 'Y') {
+                model = await api.get("https://componentsearchengine.com/ga/model.php?partID=" + _comp.PartID + "&step=1", {
+                    headers
+                });
+                //-- "https://componentsearchengine.com/ga/model.php?partID=" & partID & "&vrml=1"
+            }
         }
         return {
             model3d: model,
