@@ -6,7 +6,7 @@ export default async (svg) => {
         let config = {
             offsetX: parseFloat(svg.properties.c_origin.split(',')[0]),
             offsetY: parseFloat(svg.properties.c_origin.split(',')[1]),
-            factor: 4
+            factor: 3.9376470588235294117647058823529
         }
         svg.children.forEach(element => {
             switch (element.tagName) {
@@ -255,9 +255,10 @@ export default async (svg) => {
                                 _str += padFormat;
                                 _str += " ";
                                 _str += "(at ";
-                                _str += (config.offsetX - parseFloat(element.properties.c_origin.replace(',', ' ').split(' ')[0])) / -config.factor;
+                                let num = parseFloat(((config.offsetX - parseFloat(element.properties.c_origin.replace(',', ' ').split(' ')[0])) / -config.factor).toString());
+                                _str += num.toFixed(2);
                                 _str += " ";
-                                _str += (config.offsetY - parseFloat(element.properties.c_origin.replace(',', ' ').split(' ')[1])) / -config.factor;
+                                _str += parseFloat(((config.offsetY - parseFloat(element.properties.c_origin.replace(',', ' ').split(' ')[1])) / -config.factor).toString()).toFixed(2);
                                 _str += ") ";
                                 _str += "(size ";
                                 _str += element.properties.c_width / config.factor;
