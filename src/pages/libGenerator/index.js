@@ -106,17 +106,18 @@ function LibGeneratorPage(props) {
                             }
                         }
 
-                        let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber, _component.package)))?.footprint;
+                        //let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber, _component.package)))?.footprint;
+                        let PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
                         if (PointKicadMod) {
                             _component.hasFootprint = true;
                             _component.footprint = PointKicadMod;
-                        } else {
+                        }/* else {
                             PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
                             if (PointKicadMod) {
                                 _component.hasFootprint = true;
                                 _component.footprint = PointKicadMod;
                             }
-                        }
+                        }*/
 
                         let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
                         if (model3D) {
