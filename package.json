@@ -56,6 +56,8 @@
         "@emotion/styled": "^11.6.0",
         "@mui/icons-material": "^5.2.4",
         "@mui/material": "^5.2.4",
+        "@react-three/fiber": "^7.0.26",
+        "@w3cub/electron-fetch": "^3.0.3",
         "@zip.js/zip.js": "^2.3.22",
         "electron-fetch": "^1.7.4",
         "electron-is-dev": "^2.0.0",
@@ -75,7 +77,8 @@
         "react-router-dom": "^5.2.0",
         "react-scripts": "^5.0.0",
         "s-expression": "^3.1.1",
-        "svg-parser": "^2.0.4"
+        "svg-parser": "^2.0.4",
+        "three": "^0.138.3"
     },
     "proxy": "http://localhost:4000",
     "homepage": ".",

@@ -7,6 +7,7 @@ import { withSnackBar } from '../../providers/snackBar';
 import Loader from '../../components/Loader';
 
 import Modal from '../../components/Modal';
+import Modal3D from '../../components/3DModal';
 
 import actions from '../../actions';
 
@@ -21,6 +22,8 @@ import { styled } from '@mui/material/styles';
 
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
@@ -43,7 +46,6 @@ import utils from '../../utils';
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { __ } from 'ramda';
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -72,6 +74,7 @@ function LibGeneratorPage(props) {
     const [components, setComponents] = useState([]);
     const [displayLoader, setDisplayLoader] = useState(false);
     const [modal, setModal] = useState();
+    const [_3DModal, set3DModal] = useState();
 
     return <Box>
 
@@ -80,6 +83,13 @@ function LibGeneratorPage(props) {
         <Modal display={modal ? true : false} onClose={() => { setModal(undefined) }}>
             {modal}
         </Modal>
+
+        <Modal3D display={_3DModal ? true : false} onClose={(model3D) => { 
+            _component.model3D = model3D;
+            set3DModal(undefined);
+        }} models3d={_3DModal}>
+        </Modal3D>
+
 
         <Grid container spacing={2}>
             <Grid item xs={8}>
@@ -119,10 +129,13 @@ function LibGeneratorPage(props) {
                             }
                         }*/
 
-                        let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                        if (model3D) {
+                        let models3D = (await props.dispatch(actions.lcsc.get3DModel(_component.manufacturerPartnumber, _component.package))).models3d;
+                        /*   let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
+                        */
+                        if (models3D) {
                             _component.has3dModel = true;
-                            _component.model3D = model3D;
+                            _component.model3D = models3D[0];
+                            _component.models3D = models3D;
                         }
 
                         let _c = [...components];
@@ -191,7 +204,7 @@ function LibGeneratorPage(props) {
                                                     let picture = (await props.dispatch(actions.samacsys.getImgFootprint(component.manufacturerPartnumber, component.package)))?.imgFootprint;
                                                     if (picture) {
                                                         setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
-                                                    }else {
+                                                    } else {
                                                         picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
                                                         setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
                                                     }
@@ -201,7 +214,15 @@ function LibGeneratorPage(props) {
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip title="3D">
-                                            <ThreeDRotationIcon sx={{ color: component.has3dModel ? "" : "LightGray" }}></ThreeDRotationIcon>
+                                            <ThreeDRotationIcon
+                                                sx={{
+                                                    color: component.has3dModel ? "" : "LightGray",
+                                                    cursor: component.hasFootprint ? "pointer" : "default"
+                                                }}
+                                                onClick={async () => {
+                                                    set3DModal(component.models3D);
+                                                }}
+                                            ></ThreeDRotationIcon>
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
@@ -258,7 +279,7 @@ function LibGeneratorPage(props) {
                             let ___c = [...components];
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
-                                if ( footprintData ){
+                                if (footprintData) {
                                     __c.footprintData = footprintData;
                                     if (footprintData.includes('model')) {
                                         __c.has3dModel = true;
@@ -301,7 +322,7 @@ function LibGeneratorPage(props) {
 
                             props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
                         }
-                        
+
                     } catch (err) {
                         props.snackbar.error(err.message);
                     }
