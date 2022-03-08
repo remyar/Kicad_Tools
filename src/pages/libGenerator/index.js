@@ -47,6 +47,8 @@ import utils from '../../utils';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { __ } from 'ramda';
 
+
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
@@ -76,19 +78,20 @@ function LibGeneratorPage(props) {
     const [modal, setModal] = useState();
     const [_3DModal, set3DModal] = useState();
 
+
     return <Box>
 
         <Loader display={displayLoader} />
 
-        <Modal display={modal ? true : false} onClose={() => { setModal(undefined) }}>
+        {modal && <Modal display={modal ? true : false} onClose={() => { setModal(undefined) }}>
             {modal}
-        </Modal>
+        </Modal>}
 
-        <Modal3D display={_3DModal ? true : false} onClose={(model3D) => { 
+        {_3DModal && <Modal3D display={_3DModal ? true : false} onClose={(model3D, _component) => {
             _component.model3D = model3D;
             set3DModal(undefined);
-        }} models3d={_3DModal}>
-        </Modal3D>
+        }} models3d={_3DModal?.models3D} component={_3DModal}>
+        </Modal3D>}
 
 
         <Grid container spacing={2}>
@@ -206,7 +209,7 @@ function LibGeneratorPage(props) {
                                                         setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
                                                     } else {
                                                         picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
-                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
+                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture , width : "50%"}}></Box>);
                                                     }
                                                     setDisplayLoader(false);
                                                 }}></MemoryIcon>
@@ -216,11 +219,11 @@ function LibGeneratorPage(props) {
                                         <Tooltip title="3D">
                                             <ThreeDRotationIcon
                                                 sx={{
-                                                    color: component.has3dModel ? "" : "LightGray",
+                                                    color: component.has3dModel ? (component.models3D.length > 1 ? "orange" : "") : "LightGray",
                                                     cursor: component.hasFootprint ? "pointer" : "default"
                                                 }}
                                                 onClick={async () => {
-                                                    set3DModal(component.models3D);
+                                                    set3DModal(component);
                                                 }}
                                             ></ThreeDRotationIcon>
                                         </Tooltip>
@@ -315,8 +318,10 @@ function LibGeneratorPage(props) {
                             await props.dispatch(actions.electron.writeFile(filename.filePath, librarie6File));
                             for (let footprint of footprints) {
                                 await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
-                                if (footprint.model3D && footprint.model3D.length > 0) {
+                                if (footprint.model3D && footprint.model3D.length > 0 && typeof footprint.model3D == "string") {
                                     await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".stp", footprint.model3D));
+                                } else if ( footprint.model3D ){
+
                                 }
                             }
 
