@@ -1,6 +1,6 @@
 import { PolyhedronGeometry } from './PolyhedronGeometry.js';
 
-class IcosahedronGeometry extends PolyhedronGeometry {
+export default class IcosahedronGeometry extends PolyhedronGeometry {
 
 	constructor( radius = 1, detail = 0 ) {
 

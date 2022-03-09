@@ -1,7 +1,7 @@
 import { Path } from './Path.js';
 import { LatheGeometry } from './LatheGeometry.js';
 
-class CapsuleGeometry extends LatheGeometry {
+export default class CapsuleGeometry extends LatheGeometry {
 
 	constructor( radius = 1, length = 1, capSegments = 4, radialSegments = 8 ) {
 

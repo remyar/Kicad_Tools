@@ -2,7 +2,7 @@ import { BufferGeometry } from './BufferGeometry.js';
 import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 
-class TorusGeometry extends BufferGeometry {
+export default class TorusGeometry extends BufferGeometry {
 
 	constructor( radius = 1, tube = 0.4, radialSegments = 8, tubularSegments = 6, arc = Math.PI * 2 ) {
 

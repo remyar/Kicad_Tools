@@ -17,8 +17,11 @@ import utils from '../../utils';
 
 function Modal3D(props) {
 
+    const ref = React.useRef(null);
     const models3d = props.models3d || [];
+    const component = props.component || {};
     const [SelectedModel, setSelectedModel] = useState(models3d[0]);
+    const [Load , setLoad] = useState(false);
 
     const [dimensions, setDimensions] = React.useState({
         height: window.innerHeight,
@@ -43,9 +46,14 @@ function Modal3D(props) {
 
     React.useEffect(async ()=>{
         if ( SelectedModel ){
-            await utils.ObjectLoader.Load("https://easyeda.com/" + SelectedModel?.dataStr?.head?.url);
+            setLoad(true);
+            let objResult = await utils.ObjectLoader.Load("https://easyeda.com/" + SelectedModel?.dataStr?.head?.url);
+            if ( component.model3D ){
+                component.model3D.wrl = objResult;
+            }
+            setLoad(false);
         }
-    },SelectedModel);
+    },[SelectedModel]);
 
     let heightModel = (dimensions.height * 0.6).toString() + "px"
     return <Backdrop
@@ -72,18 +80,21 @@ function Modal3D(props) {
                     })}
                 </Select>
                 <br /><br />
-                <iframe className="dlgLibs-thumb4 for3dview" width="100%" height={heightModel} src={"https://easyeda.com/editor/6.4.32/htm/editorpage15.html?version=6.4.32&url=" + SelectedModel?.dataStr?.head?.url}>
-                    <script src="https://easyeda.com/editor/6.4.32/js/jsapi.min.js"></script>
+                <iframe ref={ref} className="dlgLibs-thumb4 for3dview" width="100%" height={heightModel} src={"https://easyeda.com/editor/6.4.32/htm/editorpage15.html?version=6.4.32&url=" + SelectedModel?.dataStr?.head?.url}>
                     <div id="canvas">
                         <canvas width="100%" height="100%" sx={{ width: "100%", height: "100%", backgroundColor: "white" }}></canvas>
-                    </div>
+                    </div>        
                 </iframe>
 
                 <Button
+                    disabled={Load}
                     sx={{
                         width: '100%'
                     }}
-                    variant="contained" onClick={async () => { props.onClose && props.onClose(SelectedModel, props.component); }}> Select This Model</Button>
+                    variant="contained" onClick={async () => { 
+                        //console.log(await ref.current.contentWindow.JSAPI.easyeda2step("" , "output"));
+                        props.onClose && props.onClose(SelectedModel, component); 
+                    }}> Select This Model</Button>
             </Paper>
         </Box>
     </Backdrop>

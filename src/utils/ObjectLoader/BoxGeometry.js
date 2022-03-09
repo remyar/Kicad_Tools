@@ -2,7 +2,7 @@ import { BufferGeometry } from './BufferGeometry.js';
 import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 
-class BoxGeometry extends BufferGeometry {
+export default class BoxGeometry extends BufferGeometry {
 
 	constructor( width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1 ) {
 

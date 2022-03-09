@@ -11,7 +11,7 @@ import Group from './Group';
 import LineSegments from './LineSegments';
 import Mesh from './Mesh';
 import STLExporter from './STLExporter.js';
-
+import WRLExporter from './WRLExporter.js';
 
 const _object_pattern = /^[og]\s*(.+)?/; // mtllib file_reference
 const _material_use_pattern = /^usemtl /; // usemap map_name
@@ -401,11 +401,34 @@ async function parse(text) {
 
     const trimLeft = typeof ''.trimLeft === 'function';
 
+    let materialColors=[];
+    let materialBlock = false;
+
     for (let i = 0, l = lines.length; i < l; i++) {
         line = lines[i];
         line = trimLeft ? line.trimLeft() : line.trim();
         lineLength = line.length;
         if (lineLength === 0) continue;
+
+        if ( line.startsWith("newmtl") == true ){
+            materialBlock = true;
+            continue;
+        }
+
+        if ( line.startsWith("endmtl") == true ){
+            materialBlock = false;
+            continue;
+        }
+
+        if ( materialBlock ){
+            const data = line.split(/\s+/);
+            if ( data[0] == "Kd"){
+                _color.setRGB(parseFloat(data[1]), parseFloat(data[2]), parseFloat(data[3]));
+                materialColors.push(_color.clone());
+            }
+            continue;
+        }
+
         lineFirstChar = line.charAt(0); // @todo invoke passed in handler if any
 
         if (lineFirstChar === '#') continue;
@@ -420,16 +443,11 @@ async function parse(text) {
                     state.vertices.push(parseFloat(data[1]), parseFloat(data[2]), parseFloat(data[3]));
 
                     if (data.length >= 7) {
-
                         _color.setRGB(parseFloat(data[4]), parseFloat(data[5]), parseFloat(data[6])).convertSRGBToLinear();
-
                         state.colors.push(_color.r, _color.g, _color.b);
-
                     } else {
-
                         // if no colors are defined, add placeholders so color and vertex indices match
                         state.colors.push(undefined, undefined, undefined);
-
                     }
 
                     break;
@@ -630,6 +648,7 @@ async function parse(text) {
                     material.name = sourceMaterial.name;
                     material.flatShading = sourceMaterial.smooth ? false : true;
                     material.vertexColors = hasVertexColors;
+                    material.color = materialColors[mi];
                     state.materials[materialHash] = material;
                 }
 
@@ -700,9 +719,10 @@ async function Load(url) {
     let resp = await api.get(url);
     let scene = await parse(resp);
 
-    let exporter = new STLExporter();
+    let exporter = new WRLExporter();
 
     const result = exporter.parse( scene );
+    return result;
 }
 
 export default {

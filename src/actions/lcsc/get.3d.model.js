@@ -6,7 +6,7 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
     try {
 
         let url = "https://easyeda.com/api/components/search/footprintManager?";
-        url += "doctype=16&uid=user&returnListStyle=classifyarr&wd=" + _mpn + "&version=6.4.32";
+        url += "doctype=16&returnListStyle=classifyarr&wd=" + _mpn + "&version=6.4.32";
 
         let resp = await api.post(url, {});
         if (typeof resp == 'string') {
@@ -27,7 +27,7 @@ export async function get3DModel(_mpn, _package, { extra, getState }) {
         }
 
         url = "https://easyeda.com/api/components/search/footprintManager?";
-        url += "doctype=16&uid=user&returnListStyle=classifyarr&wd=" + _package + "&version=6.4.32";
+        url += "doctype=16&returnListStyle=classifyarr&wd=" + _package + "&version=6.4.32";
         
         resp = await api.post(url, {});
         if (typeof resp == 'string') {

@@ -3,7 +3,7 @@ import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 import { Vector2 } from './Vector2.js';
 
-class CylinderGeometry extends BufferGeometry {
+export default class CylinderGeometry extends BufferGeometry {
 
 	constructor( radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 8, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2 ) {
 

@@ -107,37 +107,28 @@ function LibGeneratorPage(props) {
                         //-- get symbol and footprint
                         let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim())))?.component;
 
-                        let PointLib = (await props.dispatch(actions.samacsys.getLibrarie(_component.manufacturerPartnumber, _component.package)))?.librarie;
+                        let PointLib = (await props.dispatch(actions.lcsc.getSymbol(_component)))?.librarie;
                         if (PointLib) {
                             _component.hasSymbol = true;
                             _component.symbol = PointLib;
-                        } else {
-                            PointLib = (await props.dispatch(actions.lcsc.getSymbol(_component)))?.librarie;
-                            if (PointLib) {
-                                _component.hasSymbol = true;
-                                _component.symbol = PointLib;
-                            }
                         }
-
-                        //let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber, _component.package)))?.footprint;
+                        
                         let PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
                         if (PointKicadMod) {
                             _component.hasFootprint = true;
                             _component.footprint = PointKicadMod;
-                        }/* else {
-                            PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
-                            if (PointKicadMod) {
-                                _component.hasFootprint = true;
-                                _component.footprint = PointKicadMod;
-                            }
-                        }*/
+                        }
 
                         let models3D = (await props.dispatch(actions.lcsc.get3DModel(_component.manufacturerPartnumber, _component.package))).models3d;
-                        /*   let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                        */
-                        if (models3D) {
+                        if (models3D && models3D.length > 0) {
                             _component.has3dModel = true;
                             _component.model3D = models3D[0];
+
+                            let objResult = await utils.ObjectLoader.Load("https://easyeda.com/" + _component.model3D?.dataStr?.head?.url);
+                            if ( _component.model3D ){
+                                _component.model3D.wrl = objResult;
+                            }
+
                             _component.models3D = models3D;
                         }
 
@@ -317,11 +308,9 @@ function LibGeneratorPage(props) {
 
                             await props.dispatch(actions.electron.writeFile(filename.filePath, librarie6File));
                             for (let footprint of footprints) {
-                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace(':' , '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
                                 if (footprint.model3D && footprint.model3D.length > 0 && typeof footprint.model3D == "string") {
-                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".stp", footprint.model3D));
-                                } else if ( footprint.model3D ){
-
+                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace(':' , '_').replace('/', '_') + ".wrl", footprint.model3D));
                                 }
                             }
 

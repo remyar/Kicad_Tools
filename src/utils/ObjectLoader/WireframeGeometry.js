@@ -2,7 +2,7 @@ import { BufferGeometry } from './BufferGeometry.js';
 import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 
-class WireframeGeometry extends BufferGeometry {
+export default class WireframeGeometry extends BufferGeometry {
 
 	constructor( geometry = null ) {
 

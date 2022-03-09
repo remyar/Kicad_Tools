@@ -3,7 +3,7 @@ import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 import { Vector2 } from './Vector2.js';
 
-class PolyhedronGeometry extends BufferGeometry {
+export default class PolyhedronGeometry extends BufferGeometry {
 
 	constructor( vertices = [], indices = [], radius = 1, detail = 0 ) {
 

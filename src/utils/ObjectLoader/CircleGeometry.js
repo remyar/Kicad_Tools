@@ -3,7 +3,7 @@ import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 import { Vector2 } from './Vector2.js';
 
-class CircleGeometry extends BufferGeometry {
+export default class CircleGeometry extends BufferGeometry {
 
 	constructor( radius = 1, segments = 8, thetaStart = 0, thetaLength = Math.PI * 2 ) {
 

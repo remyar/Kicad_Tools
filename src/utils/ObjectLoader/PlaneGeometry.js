@@ -1,7 +1,7 @@
 import { BufferGeometry } from './BufferGeometry.js';
 import { Float32BufferAttribute } from './BufferAttribute.js';
 
-class PlaneGeometry extends BufferGeometry {
+export default class PlaneGeometry extends BufferGeometry {
 
 	constructor( width = 1, height = 1, widthSegments = 1, heightSegments = 1 ) {
 

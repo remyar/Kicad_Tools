@@ -4,7 +4,7 @@ import { Shape } from './Shape.js';
 import { ShapeUtils } from './ShapeUtils.js';
 import { Vector2 } from './Vector2.js';
 
-class ShapeGeometry extends BufferGeometry {
+export default class ShapeGeometry extends BufferGeometry {
 
 	constructor( shapes = new Shape( [ new Vector2( 0, 0.5 ), new Vector2( - 0.5, - 0.5 ), new Vector2( 0.5, - 0.5 ) ] ), curveSegments = 12 ) {
 

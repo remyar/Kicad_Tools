@@ -28,7 +28,7 @@ import { Vector3 } from './Vector3.js';
 import { Shape } from './Shape.js';
 import { ShapeUtils } from './ShapeUtils.js';
 
-class ExtrudeGeometry extends BufferGeometry {
+export default class ExtrudeGeometry extends BufferGeometry {
 
 	constructor( shapes = new Shape( [ new Vector2( 0.5, 0.5 ), new Vector2( - 0.5, 0.5 ), new Vector2( - 0.5, - 0.5 ), new Vector2( 0.5, - 0.5 ) ] ), options = {} ) {
 

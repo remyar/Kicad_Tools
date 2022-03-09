@@ -1,21 +1,47 @@
-export * from './BoxGeometry.js';
-export * from './CapsuleGeometry.js';
-export * from './CircleGeometry.js';
-export * from './ConeGeometry.js';
-export * from './CylinderGeometry.js';
-export * from './DodecahedronGeometry.js';
-export * from './EdgesGeometry.js';
-export * from './ExtrudeGeometry.js';
-export * from './IcosahedronGeometry.js';
-export * from './LatheGeometry.js';
-export * from './OctahedronGeometry.js';
-export * from './PlaneGeometry.js';
-export * from './PolyhedronGeometry.js';
-export * from './RingGeometry.js';
-export * from './ShapeGeometry.js';
-export * from './SphereGeometry.js';
-export * from './TetrahedronGeometry.js';
-export * from './TorusGeometry.js';
-export * from './TorusKnotGeometry.js';
-export * from './TubeGeometry.js';
-export * from './WireframeGeometry.js';
+import BoxGeometry from './BoxGeometry.js';
+import CapsuleGeometry from './CapsuleGeometry.js';
+import CircleGeometry from './CircleGeometry.js';
+import CylinderGeometry from './CylinderGeometry.js';
+import DodecahedronGeometry from './DodecahedronGeometry.js';
+import ConeGeometry from './ConeGeometry.js';
+import EdgesGeometry from './EdgesGeometry.js';
+import ExtrudeGeometry from './ExtrudeGeometry.js';
+import IcosahedronGeometry from './IcosahedronGeometry.js';
+import LatheGeometry from './LatheGeometry.js';
+import OctahedronGeometry from './OctahedronGeometry.js';
+import PlaneGeometry from './PlaneGeometry.js';
+import PolyhedronGeometry from './PolyhedronGeometry.js';
+import RingGeometry from './RingGeometry.js';
+import ShapeGeometry from './ShapeGeometry.js';
+import SphereGeometry from './SphereGeometry.js';
+import TetrahedronGeometry from './TetrahedronGeometry.js';
+import TorusGeometry from './TorusGeometry.js';
+import TorusKnotGeometry from './TorusKnotGeometry.js';
+import TubeGeometry from './TubeGeometry.js';
+import WireframeGeometry from './WireframeGeometry.js';
+
+export default {
+    BoxGeometry,
+    CapsuleGeometry,
+    CircleGeometry,
+    CylinderGeometry,
+    DodecahedronGeometry,
+    ConeGeometry,
+    EdgesGeometry,
+    ExtrudeGeometry,
+    IcosahedronGeometry,
+    LatheGeometry,
+    OctahedronGeometry,
+    PlaneGeometry,
+    PolyhedronGeometry,
+    RingGeometry,
+    ShapeGeometry,
+    SphereGeometry,
+    TetrahedronGeometry,
+    TorusGeometry,
+    TorusKnotGeometry,
+    TubeGeometry,
+    WireframeGeometry
+}
+
+

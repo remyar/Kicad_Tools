@@ -9,7 +9,7 @@ const _v1 = new Vector3();
 const _normal = new Vector3();
 const _triangle = new Triangle();
 
-class EdgesGeometry extends BufferGeometry {
+export default class EdgesGeometry extends BufferGeometry {
 
 	constructor( geometry = null, thresholdAngle = 1 ) {
 

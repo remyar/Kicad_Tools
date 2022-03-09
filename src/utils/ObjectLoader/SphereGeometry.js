@@ -2,7 +2,7 @@ import { BufferGeometry } from './BufferGeometry.js';
 import { Float32BufferAttribute } from './BufferAttribute.js';
 import { Vector3 } from './Vector3.js';
 
-class SphereGeometry extends BufferGeometry {
+export default class SphereGeometry extends BufferGeometry {
 
 	constructor( radius = 1, widthSegments = 32, heightSegments = 16, phiStart = 0, phiLength = Math.PI * 2, thetaStart = 0, thetaLength = Math.PI ) {
 
