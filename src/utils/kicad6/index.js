@@ -1,31 +1,29 @@
-import ComponentsLibs from './libs/component'
-import sch_legacy_plugin from './sch_legacy_plugin';
-import sch_sexpr_plugin from './sch_sexpr_plugin';
+import { ExporterSymbolKicad } from "./export_kicad_symbol";
 
-async function convertFromkicad5Librarie(librarieFile) {
+async function getSymbol(component) {
+    return new Promise(async (resolve, reject) => {
+        try{
+            let exporter = new ExporterSymbolKicad(component.symbol);
+            let  kicad_symbol_lib = exporter.export(false , )
 
-    try {
-        let symbols = await sch_legacy_plugin.Load(librarieFile);
-        let str = await sch_sexpr_plugin.Save(symbols);
-        return str;
-    } catch (err) {
-        throw Error(err);
-    }
+            console.log(
+                "Created Kicad symbol for ID : {component_id}\n",
+                "       Symbol name : {easyeda_symbol.info.name}\n",
+                "       Library path : {arguments['output']}.{sym_lib_ext}"
+            );
+        }catch(err){
+            reject(err);
+        }
+    })
 }
 
-async function parseKicadNetlist(str) {
-    try {
-        let netlistParsed = await ComponentsLibs.LoadComponentFromNET(str);
-        let res = await ComponentsLibs.ExtractAndSortComponents(netlistParsed);
-        let components = await ComponentsLibs.ApplaySort(res);
-        return components;
-    } catch (err) {
-        throw Error(err)
-    }
-}
+async function generateLib(component) {
+    return new Promise((resolve, reject) => {
 
+    })
+}
 
 export default {
-    convertFromkicad5Librarie,
-    parseKicadNetlist,
+    generateLib,
+    getSymbol
 }

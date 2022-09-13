@@ -4,8 +4,7 @@
     "description": "A lot of tools for Kicad",
     "main": "./main.js",
     "scripts": {
-        "start": "electron main.js",
-        "run": "craco start",
+        "start": "craco start",
         "build": "craco build",
         "dist": "electron-builder"
     },
