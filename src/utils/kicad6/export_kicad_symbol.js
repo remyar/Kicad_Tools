@@ -1,5 +1,6 @@
-import { KiPinType, KiPinStyle, KiSymbolPin, KiSymbolInfo, KiSymbol, KiSymbolRectangle , KiSymbolCircle} from "./parameters_kicad_symbol";
-
+import { KiPinType, KiPinStyle, KiSymbolPin, KiSymbolInfo, KiSymbol, KiSymbolRectangle, KiSymbolCircle, KiSymbolArc, KiSymbolPolygon } from "./parameters_kicad_symbol";
+import { compute_arc } from './export_kicad_footprint';
+import { get_middle_arc_pos } from '../easyeda/helpers';
 
 const ee_pin_type_to_ki_pin_type = {
     unspecified: KiPinType.unspecified,
@@ -55,9 +56,11 @@ export class ExporterSymbolKicad {
             ki_info,
             this.convert_ee_pins(ee_symbol.pins, ee_symbol.bbox, kicad_version),
             this.convert_ee_rectangles(ee_symbol.rectangles, ee_symbol.bbox, kicad_version),
-            this.convert_ee_circles(ee_symbol.circles , ee_symbol.bbox, kicad_version),
+            this.convert_ee_circles(ee_symbol.circles, ee_symbol.bbox, kicad_version),
+            this.convert_ee_arcs(ee_symbol.arcs, ee_symbol.bbox, kicad_version),
         )
 
+        kicad_symbol.polygons = [...kicad_symbol.polygons, ...this.convert_ee_polylines(ee_symbol.polylines, ee_symbol.bbox, kicad_version)];
 
         return kicad_symbol;
     }
@@ -124,10 +127,10 @@ export class ExporterSymbolKicad {
         return kicad_rectangles;
     }
 
-    convert_ee_circles(ee_circles , ee_bbox , kicad_version = 6){
+    convert_ee_circles(ee_circles, ee_bbox, kicad_version = 6) {
         let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
         let kicad_circles = [];
-        for (let ee_circle  of ee_circles) {
+        for (let ee_circle of ee_circles) {
             let ki_circle = new KiSymbolCircle(
                 to_ki(parseInt(ee_circle.center_x) - parseInt(ee_bbox.x)),
                 -to_ki(parseInt(ee_circle.center_y) - parseInt(ee_bbox.y)),
@@ -137,5 +140,91 @@ export class ExporterSymbolKicad {
             kicad_circles.push(ki_circle);
         }
         return kicad_circles;
+    }
+
+    convert_ee_arcs(ee_arcs, ee_bbox, kicad_version = 6) {
+        let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
+        let kicad_arcs = [];
+        for (let ee_arc of ee_arcs) {
+            let ki_arc = new KiSymbolArc(
+                0.0,
+                0.0,
+                to_ki(Math.max(ee_arc.path[1].radius_x, ee_arc.path[1].radius_y)),
+                ee_arc.path[1].x_axis_rotation,
+                0.0,
+                to_ki(ee_arc.path[0].start_x - ee_bbox.x),
+                to_ki(ee_arc.path[0].start_y - ee_bbox.y),
+                0.0,
+                0.0,
+                to_ki(ee_arc.path[1].end_x - ee_bbox.x),
+                to_ki(ee_arc.path[1].end_y - ee_bbox.y)
+            );
+
+            let r = compute_arc(
+                ki_arc.start_x,
+                ki_arc.start_y,
+                to_ki(ee_arc.path[1].radius_x),
+                to_ki(ee_arc.path[1].radius_y),
+                ki_arc.angle_start,
+                ee_arc.path[1].flag_large_arc,
+                ee_arc.path[1].flag_sweep,
+                ki_arc.end_x,
+                ki_arc.end_y,
+            )
+
+            ki_arc.center_x = r.center_x;
+            ki_arc.center_y = ee_arc.path[1].flag_large_arc ? r.center_y : -r.center_y;
+            ki_arc.angle_end = ee_arc.path[1].flag_large_arc ? (360 - r.angle_end) : r.angle_end;
+
+            let s = get_middle_arc_pos(
+                ki_arc.center_x,
+                ki_arc.center_y,
+                ki_arc.radius,
+                ki_arc.angle_start,
+                ki_arc.angle_end,
+            );
+
+            ki_arc.middle_x = s.middle_x;
+            ki_arc.middle_y = s.middle_y;
+
+            ki_arc.start_y = ee_arc.path[1].flag_large_arc ? ki_arc.start_y : -ki_arc.start_y;
+            ki_arc.end_y = ee_arc.path[1].flag_large_arc ? ki_arc.end_y : -ki_arc.end_y;
+
+            kicad_arcs.push(ki_arc);
+        }
+
+        return kicad_arcs;
+    }
+
+    convert_ee_polylines(ee_polylines, ee_bbox, kicad_version = 6) {
+        let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
+        let kicad_polygons = [];
+        for (let ee_polyline of ee_polylines) {
+            let raw_pts = ee_polyline.points.split(" ");
+            let x_points = [];
+            let y_points = [];
+            for (let i = 0; i < raw_pts.length; i += 2) {
+                x_points.push(to_ki(parseInt(parseFloat(raw_pts[i])) - parseInt(ee_bbox.x)));
+                y_points.push(-to_ki(parseInt(parseFloat(raw_pts[i + 1])) - parseInt(ee_bbox.y)));
+            }
+
+            if ((typeof ee_polyline == "EeSymbolPolygon") || ee_polyline.fill_color) {
+                x_points.push(x_points[0]);
+                y_points.push(y_points[0]);
+            }
+
+            let points = [];
+            for (let i = 0; i < Math.min(x_points.length, y_points.length); i++) {
+                points.push([x_points[i], y_points[i]]);
+            }
+            let kicad_polygon = new KiSymbolPolygon(
+                points,
+                Math.min(x_points.length, y_points.length),
+                ((x_points[0] == x_points[-1]) && (y_points[0] == y_points[-1])) ? true : false
+            )
+
+            kicad_polygons.push(kicad_polygon);
+        }
+        return kicad_polygons;
     }
 }

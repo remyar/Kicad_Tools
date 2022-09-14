@@ -1,15 +1,13 @@
 import { ExporterSymbolKicad } from "./export_kicad_symbol";
 
-async function getSymbol(component) {
+async function getSymbol(component , librarieName) {
     return new Promise(async (resolve, reject) => {
         try{
             let exporter = new ExporterSymbolKicad(component.symbol);
-            let  kicad_symbol_lib = exporter.export(false , )
+            let  kicad_symbol_lib = exporter.export(false , librarieName);
 
-            console.log(
-                "Created Kicad symbol for ID : {component_id}\n",
-                "       Symbol name : {easyeda_symbol.info.name}\n",
-                "       Library path : {arguments['output']}.{sym_lib_ext}"
+            resolve(
+                kicad_symbol_lib
             );
         }catch(err){
             reject(err);

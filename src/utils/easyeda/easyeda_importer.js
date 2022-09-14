@@ -8,23 +8,26 @@ import {
     EeSymbolPinPath,
     EeSymbolPinDotBis,
     EeSymbolPinClock,
-    EeSymbolPin
+    EeSymbolPin,
+    EeSymbolRectangle,
+    EeSymbolArc,
+    EeSymbolPolyline
 } from "./parameters_easyeda";
 
 export default class EasyedaSymbolImporter {
 
     input = {};
     output = {};
-    
+
     easyeda_handlers = {
         "P": this.add_easyeda_pin,
-        /*   "R": add_easyeda_rectangle,
-           "E": add_easyeda_ellipse,
-           "C": add_easyeda_circle,
-           "A": add_easyeda_arc,
-           "PL": add_easyeda_polyline,
-           "PG": add_easyeda_polygon,
-           "PT": add_easyeda_path,*/
+        "R": this.add_easyeda_rectangle,
+        "E": this.add_easyeda_ellipse,
+        "C": this.add_easyeda_circle,
+        "A": this.add_easyeda_arc,
+        "PL": this.add_easyeda_polyline,
+        "PG": this.add_easyeda_polygon,
+        "PT": this.add_easyeda_path,
         // "PI" : Pie, Elliptical arc seems to be not supported in Kicad
     }
 
@@ -34,7 +37,7 @@ export default class EasyedaSymbolImporter {
         this.output = this.extract_easyeda_data(easyeda_cp_cad_data, easyeda_cp_cad_data?.dataStr?.head?.c_para);
     }
 
-    get_symbol(){
+    get_symbol() {
         return this.output;
     }
 
@@ -88,5 +91,58 @@ export default class EasyedaSymbolImporter {
         ee_symbol.pins.push(
             new EeSymbolPin(pin_settings, pin_dot, pin_path, pin_name, pin_dot_bis, pin_clock)
         );
+    }
+
+    add_easyeda_rectangle(rectangle_data, ee_symbol) {
+        let _obj = rectangle_data.split("~");
+        let obj = new EeSymbolRectangle(
+
+        );
+        ee_symbol.circles.push(obj);
+    }
+
+    add_easyeda_ellipse(ellipse_data, ee_symbol) {
+
+    }
+
+    add_easyeda_circle(circle_data, ee_symbol) {
+
+    }
+
+    add_easyeda_arc(arc_data, ee_symbol) {
+        let _obj = arc_data.split("~").slice(1);
+        let obj = new EeSymbolArc(
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6],
+            _obj[7]
+        );
+        ee_symbol.arcs.push(obj);
+    }
+
+    add_easyeda_polyline(polyline_data, ee_symbol) {
+        let _obj = polyline_data.split("~").slice(1);
+        let obj = new EeSymbolPolyline(
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6]
+        );
+        ee_symbol.polylines.push(obj);
+    }
+
+    add_easyeda_polygon(polygon_data, ee_symbol) {
+
+    }
+
+    add_easyeda_path(path_data, ee_symbol) {
+
     }
 }

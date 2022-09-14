@@ -1,3 +1,5 @@
+import parse_svg_path from "./svg_path_parser";
+
 export const EasyedaPinType = {
     unspecified: 0,
     _input: 1,
@@ -167,7 +169,7 @@ export class EeSymbolPin {
     dot = {};
     clock = {};
 
-    constructor(settings , pin_dot , pin_path , name , dot , clock) {
+    constructor(settings, pin_dot, pin_path, name, dot, clock) {
         this.settings = settings;
         this.pin_dot = pin_dot;
         this.pin_path = pin_path;
@@ -186,5 +188,77 @@ export class EeFootprintInfo {
         this.name = name;
         this.fp_type = fp_type;
         this.model_3d_name = model_3d_name;
+    }
+}
+
+export class EeSymbolRectangle {
+    pos_x = 0.0;
+    pos_y = 0.0;
+    rx = 0.0;
+    ry = 0.0;
+    width = 0.0;
+    height = 0.0;
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = "";
+    id = "";
+    is_locked = false;
+
+    constructor(pos_x, pos_y, rx, ry, width, height, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.pos_x = pos_x;
+        this.pos_y = pos_y;
+        this.rx = rx;
+        this.ry = ry;
+        this.width = width;
+        this.height = height;
+        this.stroke_color = stroke_color;
+        this.stroke_width = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color;
+        this.id = id;
+        this.is_locked = is_locked;
+    }
+}
+
+export class EeSymbolArc {
+    path = [];
+    helper_dots = "";
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(path, helper_dots, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.path = parse_svg_path(path);
+        this.helper_dots = helper_dots;
+        this.stroke_color = stroke_color;
+        this.stroke_width = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
+    }
+}
+
+export class EeSymbolPolyline {
+    points = "";
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(points, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.points = points;
+        this.stroke_color = stroke_color;
+        this.stroke_style = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
     }
 }
