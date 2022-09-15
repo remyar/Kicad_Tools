@@ -249,11 +249,40 @@ export class KiSymbolCircle {
     radius = 0.0;
     background_filling = false;
 
-    constructor(pos_x, pos_y, radius, background_filling) {
+    constructor(pos_x, pos_y, radius, background_filling = false) {
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.radius = radius;
         this.background_filling = background_filling;
+    }
+
+    export_v6() {
+        let template = '(circle\r\n';
+        template += '\t';
+        template += '(center {pos_x} {pos_y})\r\n';
+        template += '\t';
+        template += '(radius {radius})\r\n';
+        template += '\t';
+        template += '(stroke (width {line_width}) (type default) (color 0 0 0 0))\r\n';
+        template += '\t';
+        template += '(fill (type {fill}))\r\n';
+        template += ')';
+
+        template = template.replace("{pos_x}", this.pos_x.toFixed(2));
+        template = template.replace("{pos_y}", this.pos_y.toFixed(2));
+        template = template.replace("{radius}", this.radius.toFixed(2));
+        template = template.replace("{line_width}", 0);
+        template = template.replace("{fill}", this.background_filling ? "background" : "none");
+
+        return template;
+    }
+
+    export_v5() {
+
+    }
+
+    export(kicad_version) {
+        return kicad_version == 6 ? this.export_v6() : this.export_v5();
     }
 }
 

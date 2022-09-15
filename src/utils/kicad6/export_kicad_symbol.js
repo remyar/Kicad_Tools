@@ -60,8 +60,12 @@ export class ExporterSymbolKicad {
             this.convert_ee_arcs(ee_symbol.arcs, ee_symbol.bbox, kicad_version),
         )
 
+        kicad_symbol.circles = [...kicad_symbol.circles, ...this.convert_ee_ellipses(ee_symbol.ellipses, ee_symbol.bbox, kicad_version)];
+        let val = this.convert_ee_paths(ee_symbol.paths, ee_symbol.bbox, kicad_version);
+        kicad_symbol.polygons = [...kicad_symbol.polygons, ...val.kicad_polygons];
+        kicad_symbol.polygons = [...kicad_symbol.polygons, ...val.kicad_beziers];
         kicad_symbol.polygons = [...kicad_symbol.polygons, ...this.convert_ee_polylines(ee_symbol.polylines, ee_symbol.bbox, kicad_version)];
-
+        kicad_symbol.polygons = [...kicad_symbol.polygons, ...this.convert_ee_polygons(ee_symbol.polygons, ee_symbol.bbox, kicad_version)];
         return kicad_symbol;
     }
 
@@ -226,5 +230,40 @@ export class ExporterSymbolKicad {
             kicad_polygons.push(kicad_polygon);
         }
         return kicad_polygons;
+    }
+
+    convert_ee_ellipses(ee_ellipses, ee_bbox, kicad_version = 6) {
+        let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
+        let kicad_circles = [];
+        for (let ee_ellipse of ee_ellipses) {
+            if (ee_ellipses.radius_x == ee_ellipses.radius_y) {
+                let ki_ellipse = new KiSymbolCircle(
+                    to_ki(parseInt(ee_ellipse.center_x) - parseInt(ee_bbox.x)),
+                    -to_ki(parseInt(ee_ellipse.center_y) - parseInt(ee_bbox.y)),
+                    to_ki(ee_ellipse.radius_x)
+                );
+                kicad_circles.push(ki_ellipse);
+            }
+        }
+        return kicad_circles;
+    }
+
+    convert_ee_polygons(ee_polygons , ee_bbox , kicad_version = 6){
+        return this.convert_ee_polylines(ee_polygons , ee_bbox , kicad_version);
+    }
+
+    convert_ee_paths(ee_paths , ee_bbox , kicad_version = 6){
+        let kicad_polygons = [];
+        let kicad_beziers = [];
+
+        let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
+        for (let ee_path of ee_paths) {
+            let raw_pts = ee_path.paths.split(" ")
+        }
+
+        return {
+            kicad_polygons,
+            kicad_beziers
+        }
     }
 }

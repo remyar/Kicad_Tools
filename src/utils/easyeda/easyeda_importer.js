@@ -11,7 +11,11 @@ import {
     EeSymbolPin,
     EeSymbolRectangle,
     EeSymbolArc,
-    EeSymbolPolyline
+    EeSymbolPolyline,
+    EeSymbolPolygon,
+    EeSymbolEllipse,
+    EeSymbolCircle,
+    EeSymbolPath
 } from "./parameters_easyeda";
 
 export default class EasyedaSymbolImporter {
@@ -94,19 +98,56 @@ export default class EasyedaSymbolImporter {
     }
 
     add_easyeda_rectangle(rectangle_data, ee_symbol) {
-        let _obj = rectangle_data.split("~");
+        let _obj = rectangle_data.split("~").slice(1);
         let obj = new EeSymbolRectangle(
-
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6],
+            _obj[7],
+            _obj[8],
+            _obj[9],
+            _obj[10],
+            _obj[11],
+            _obj[12],
         );
-        ee_symbol.circles.push(obj);
+        ee_symbol.rectangles.push(obj);
     }
 
     add_easyeda_ellipse(ellipse_data, ee_symbol) {
-
+        let _obj = ellipse_data.split("~").slice(1);
+        let obj = new EeSymbolEllipse(
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6],
+            _obj[7],
+            _obj[8],
+            _obj[9]
+        );
+        ee_symbol.ellipses.push(obj);
     }
 
     add_easyeda_circle(circle_data, ee_symbol) {
-
+        let _obj = circle_data.split("~").slice(1);
+        let obj = new EeSymbolCircle(
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6],
+            _obj[7],
+            _obj[8]
+        );
+        ee_symbol.circles.push(obj);
     }
 
     add_easyeda_arc(arc_data, ee_symbol) {
@@ -139,10 +180,22 @@ export default class EasyedaSymbolImporter {
     }
 
     add_easyeda_polygon(polygon_data, ee_symbol) {
-
+        let _obj = polygon_data.split("~").slice(1);
+        let obj = new  EeSymbolPolygon();
+        ee_symbol.polylines.push(obj);
     }
 
     add_easyeda_path(path_data, ee_symbol) {
-
+        let _obj = path_data.split("~").slice(1);
+        let obj = new  EeSymbolPath(
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6]
+        );
+        ee_symbol.paths.push(obj);
     }
 }

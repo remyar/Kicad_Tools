@@ -215,9 +215,9 @@ export class EeSymbolRectangle {
         this.stroke_color = stroke_color;
         this.stroke_width = stroke_width;
         this.stroke_style = stroke_style;
-        this.fill_color = fill_color;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
         this.id = id;
-        this.is_locked = is_locked;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
     }
 }
 
@@ -254,6 +254,81 @@ export class EeSymbolPolyline {
 
     constructor(points, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
         this.points = points;
+        this.stroke_color = stroke_color;
+        this.stroke_style = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
+    }
+}
+
+export class EeSymbolPolygon {
+    constructor() {
+    }
+}
+
+export class EeSymbolEllipse {
+    center_x = 0.0;
+    center_y = 0.0;
+    radius_x = 0.0;
+    radius_y = 0.0;
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(center_x, center_y, radius_x, radius_y, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.center_x = center_x;
+        this.center_y = center_y;
+        this.radius_x = radius_x;
+        this.radius_y = radius_y;
+        this.stroke_color = stroke_color;
+        this.stroke_style = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
+    }
+}
+
+export class EeSymbolCircle {
+    center_x = 0.0;
+    center_y = 0.0;
+    radius = 0.0;
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(center_x, center_y, radius, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.center_x = center_x;
+        this.center_y = center_y;
+        this.radius = radius;
+        this.stroke_color = stroke_color;
+        this.stroke_style = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
+    }
+}
+
+export class EeSymbolPath {
+    paths = "";
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(paths, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.paths = paths;
         this.stroke_color = stroke_color;
         this.stroke_style = stroke_width;
         this.stroke_style = stroke_style;
