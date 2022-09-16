@@ -4,7 +4,7 @@ function sanitize_fields(name) {
 }
 
 export const KiPinType = {
-    _input: 0,
+    input: 0,
     output: 1,
     bidirectional: 2,
     tri_state: 3,
@@ -95,11 +95,11 @@ export class KiSymbolPin {
         template += '(number "{pin_num}" (effects (font (size {num_size} {num_size}))))\r\n';
         template += ')';
 
-        template = template.replace("{pin_type}", _getKeyFromValue(KiPinType, this.type).replace("_", ""));
+        template = template.replace("{pin_type}", _getKeyFromValue(KiPinType, this.type)/*.replace("_", "")*/);
         template = template.replace("{pin_style}", _getKeyFromValue(KiPinStyle, this.style).replace("_", ""));
         template = template.replace("{x}", this.pos_x.toFixed(2));
         template = template.replace("{y}", this.pos_y.toFixed(2));
-        template = template.replace("{orientation}", (180.0 - this.orientation) % 360);
+        template = template.replace("{orientation}", (180.0 + this.orientation) % 360);
         template = template.replace("{pin_length}", 2.54);
         template = template.replace("{pin_name}", this.name.replace(" ", ""));
         template = template.replace("{name_size}", 1.27);
@@ -159,7 +159,7 @@ export class KiSymbolInfo {
         header.push(property_template.replace("{key}", "Value")
             .replace("{value}", this.name)
             .replace("{id_}", 1)
-            .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+            .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
             .replace("{font_size}", 1.27)
             .replace("{font_size}", 1.27)
             .replace("{style}", "")
@@ -171,7 +171,7 @@ export class KiSymbolInfo {
             header.push(property_template.replace("{key}", "Footprint")
                 .replace("{value}", this.package)
                 .replace("{id_}", 2)
-                .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
                 .replace("{font_size}", 1.27)
                 .replace("{font_size}", 1.27)
                 .replace("{style}", "")
@@ -184,7 +184,7 @@ export class KiSymbolInfo {
             header.push(property_template.replace("{key}", "Datasheet")
                 .replace("{value}", this.datasheet)
                 .replace("{id_}", 3)
-                .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
                 .replace("{font_size}", 1.27)
                 .replace("{font_size}", 1.27)
                 .replace("{style}", "")
@@ -197,7 +197,7 @@ export class KiSymbolInfo {
             header.push(property_template.replace("{key}", "Manufacturer")
                 .replace("{value}", this.manufacturer)
                 .replace("{id_}", 4)
-                .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
                 .replace("{font_size}", 1.27)
                 .replace("{font_size}", 1.27)
                 .replace("{style}", "")
@@ -210,7 +210,7 @@ export class KiSymbolInfo {
             header.push(property_template.replace("{key}", "LCSC Part")
                 .replace("{value}", this.lcsc_id)
                 .replace("{id_}", 5)
-                .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
                 .replace("{font_size}", 1.27)
                 .replace("{font_size}", 1.27)
                 .replace("{style}", "")
@@ -223,7 +223,7 @@ export class KiSymbolInfo {
             header.push(property_template.replace("{key}", "JLC Part")
                 .replace("{value}", this.jlc_id)
                 .replace("{id_}", 6)
-                .replace("{pos_y}", (this.y_low + field_offset_y).toFixed(2))
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
                 .replace("{font_size}", 1.27)
                 .replace("{font_size}", 1.27)
                 .replace("{style}", "")

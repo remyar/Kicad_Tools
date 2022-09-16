@@ -2,10 +2,20 @@ import parse_svg_path from "./svg_path_parser";
 
 export const EasyedaPinType = {
     unspecified: 0,
-    _input: 1,
+    input: 1,
     output: 2,
     bidirectional: 3,
-    ôwer: 4
+    power: 4
+}
+
+function _getKeyFromValue(obj, value) {
+    let result = "";
+    Object.keys(obj).forEach((key) => {
+        if (obj[key] == value) {
+            result = key;
+        }
+    });
+    return result;
 }
 
 export class EeSymbolPinDot {
@@ -85,7 +95,7 @@ export class EeSymbolPinSettings {
 
     constructor(input) {
         this.is_displayed = input[0] == "show" ? true : false;
-        this.type = parseInt(input[1]);
+        this.type =  input[1] == '' ? 0 : parseInt(input[1]);
         this.spice_pin_number = input[2];
         this.pos_x = parseFloat(input[3]);
         this.pos_y = parseFloat(input[4]);

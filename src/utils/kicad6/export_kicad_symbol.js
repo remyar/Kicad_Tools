@@ -41,7 +41,7 @@ export class ExporterSymbolKicad {
         return 10.0 * dim * 0.0254;
     }
 
-    convert_to_kicad(ee_symbol, kicad_version) {
+    convert_to_kicad(ee_symbol, kicad_version = 6) {
         let ki_info = new KiSymbolInfo(
             ee_symbol.info.name,
             ee_symbol.info.prefix,
