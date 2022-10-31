@@ -1,54 +1,26 @@
 import createAction from '../../middleware/actions';
+import easyeda from '../../utils/easyeda';
 
-export async function get3DModel(_mpn, _package, { extra, getState }) {
+export async function get3DModel(component, { extra, getState }) {
     let api = extra.api;
-    let models = [];
     try {
+        if (component.footprint.model_3d.uuid != undefined) {
+            let res = await api.get("https://easyeda.com/analyzer/api/3dmodel/" + component.footprint.model_3d.uuid);
+            component.footprint.model_3d.raw_obj = res;
 
-        let url = "https://easyeda.com/api/components/search/footprintManager?";
-        url += "doctype=16&returnListStyle=classifyarr&wd=" + _mpn + "&version=6.4.32";
+            if (res != undefined) {
+                let _res = await easyeda.get3DModel(component.footprint.model_3d.raw_obj);
+                return {
+                    model3d: _res,
+                }
+            } else {
+                throw { message: "Symbol not found" }
+            }
 
-        let resp = await api.post(url, {});
-        if (typeof resp == 'string') {
-            resp = JSON.parse(resp);
-        }
-
-        if (resp && resp.result && resp.result.lists) {
-            let lists = resp.result.lists;
-            if (lists.lcsc.length > 0) {
-                models = [...models, ...lists.lcsc];
+        } else {
+            return {
+                model3d : undefined,
             }
-            if (lists.easyeda.length > 0) {
-                models = [...models, ...lists.easyeda];
-            }
-            if (lists.user.length > 0) {
-                models = [...models, ...lists.user];
-            }
-        }
-
-        url = "https://easyeda.com/api/components/search/footprintManager?";
-        url += "doctype=16&returnListStyle=classifyarr&wd=" + _package + "&version=6.4.32";
-        
-        resp = await api.post(url, {});
-        if (typeof resp == 'string') {
-            resp = JSON.parse(resp);
-        }
-
-        if (resp && resp.result && resp.result.lists) {
-            let lists = resp.result.lists;
-            if (lists.lcsc.length > 0) {
-                models = [...models, ...lists.lcsc];
-            }
-            if (lists.easyeda.length > 0) {
-                models = [...models, ...lists.easyeda];
-            }
-            if (lists.user.length > 0) {
-                models = [...models, ...lists.user];
-            }
-        }
-
-        return {
-            models3d: models,
         }
     } catch (err) {
         throw { message: err.message };

@@ -82,7 +82,7 @@ export class ExporterSymbolKicad {
                 ee_pin.settings.type,
                 ee_pin.settings.rotation,
                 to_ki(parseInt(ee_pin.settings.pos_x) - parseInt(ee_bbox.x)),
-                to_ki(parseInt(ee_pin.settings.pos_y) - parseInt(ee_bbox.y))
+                -to_ki(parseInt(ee_pin.settings.pos_y) - parseInt(ee_bbox.y))
             );
 
             if ((ee_pin.dot.is_displayed == true) && (ee_pin.clock.is_displayed == true)) {

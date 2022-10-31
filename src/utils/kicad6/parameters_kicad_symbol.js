@@ -52,7 +52,25 @@ export class KiSymbolRectangle {
     }
 
     export_v6() {
+        let template = '(rectangle\r\n';
+        template += '\t\t\t';
+        template += '(start {x0} {y0})\r\n';
+        template += '\t\t\t';
+        template += '(end {x1} {y1})\r\n';
+        template += '\t\t\t';
+        template += '(stroke (width {line_width}) (type default) (color 0 0 0 0))\r\n';
+        template += '\t\t\t';
+        template += '(fill (type {fill}))\r\n';
+        template += '\t\t)';
 
+        template = template.replace("{x0}", this.pos_x0.toFixed(2));
+        template = template.replace("{y0}", this.pos_y0.toFixed(2));
+        template = template.replace("{x1}", this.pos_x1.toFixed(2));
+        template = template.replace("{y1}", this.pos_y1.toFixed(2));
+        template = template.replace("{line_width}", 0);
+        template = template.replace("{fill}", "background");
+
+        return template;
     }
 
     export_v5() {
@@ -85,15 +103,15 @@ export class KiSymbolPin {
 
     export_v6() {
         let template = '(pin {pin_type} {pin_style}\r\n';
-        template += '\t';
+        template += '\t\t\t';
         template += '(at {x} {y} {orientation})\r\n';
-        template += '\t';
+        template += '\t\t\t';
         template += '(length {pin_length})\r\n';
-        template += '\t';
+        template += '\t\t\t';
         template += '(name "{pin_name}" (effects (font (size {name_size} {name_size}))))\r\n';
-        template += '\t';
+        template += '\t\t\t';
         template += '(number "{pin_num}" (effects (font (size {num_size} {num_size}))))\r\n';
-        template += ')';
+        template += '\t\t)';
 
         template = template.replace("{pin_type}", _getKeyFromValue(KiPinType, this.type)/*.replace("_", "")*/);
         template = template.replace("{pin_style}", _getKeyFromValue(KiPinStyle, this.style).replace("_", ""));
@@ -150,7 +168,7 @@ export class KiSymbolInfo {
         header.push(property_template.replace("{key}", "Reference")
             .replace("{value}", this.prefix)
             .replace("{id_}", 0)
-            .replace("{pos_y}", this.y_high + field_offset_y)
+            .replace("{pos_y}", (this.y_high + field_offset_y).toFixed(2))
             .replace("{font_size}", 1.27)
             .replace("{font_size}", 1.27)
             .replace("{style}", "")
@@ -393,6 +411,7 @@ export class KiSymbolPolygon {
         return kicad_version == 6 ? this.export_v6() : this.export_v5();
     }
 }
+
 export class KiSymbol {
     info = {};
     pins = [];
@@ -468,7 +487,7 @@ export class KiSymbol {
 
         template = template.replace("{library_id}", sanitize_fields(this.info.name));
         template = template.replace("{library_id}", sanitize_fields(this.info.name));
-        template = template.replace("{symbol_properties}", sym_export_data.info.join("\r\n"));
+        template = template.replace("{symbol_properties}", sym_export_data.info.join("\r\n\t"));
 
         let graphicItems = [];
         Object.keys(sym_export_data).forEach((key) => {
@@ -478,7 +497,7 @@ export class KiSymbol {
         });
 
         template = template.replace("{graphic_items}", graphicItems.join("\r\n"));
-        template = template.replace("{pins}", sym_export_data.pins.join("\r\n"));
+        template = template.replace("{pins}", sym_export_data.pins.join("\r\n\t\t"));
 
         return template;
     }
