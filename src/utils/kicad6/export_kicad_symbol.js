@@ -204,7 +204,7 @@ export class ExporterSymbolKicad {
         let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
         let kicad_polygons = [];
         for (let ee_polyline of ee_polylines) {
-            let raw_pts = ee_polyline.points.split(" ");
+            let raw_pts = ee_polyline.points?.split(" ") || [];
             let x_points = [];
             let y_points = [];
             for (let i = 0; i < raw_pts.length; i += 2) {

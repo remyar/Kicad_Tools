@@ -42,12 +42,31 @@ function generate_wrl_model(model_3d) {
     let shapes = model_3d.split("usemtl").splice(1);
     for ( let shape of shapes){
         let lines = shape.replace("\r\n" , "\n").replace("\r","\n").split("\n").filter(r => r != undefined);
-        let material = materials[lines[0].replace(" " , "")];
+        let material = materials[lines[0].replace(" " , "").trim()];
         let index_counter = 0;
         let link_dict = {};
         let coord_index = [];
         let points = [];
 
+        for ( let line of lines.slice(1) ){
+            if ( line.length > 0){
+                let face = [...line.split(" ").map(e => parseInt(e.replace("//", "")))].slice(1);
+                let face_index = [];
+                for ( let index of face){
+                    if ( face_index.find(e => e == index) == undefined){
+                        link_dict[index] = index_counter;
+                        face_index.push(index_counter.toString());
+                        points.push(vertices[index - 1]);
+                        index_counter += 1;
+                    } else {
+                        face_index.push(link_dict[index].toString());
+                    }
+                }
+                face_index.push("-1");
+                coord_index.push(face_index.join(",") + ",");
+            }
+        }
+        points.()
         console.log(lines);
     }
 }
