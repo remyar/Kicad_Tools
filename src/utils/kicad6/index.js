@@ -36,7 +36,9 @@ async function getFootprint(component, librarieName) {
 async function get3DModel(component , librarieName ){
     return new Promise(async (resolve, reject) => {
         try {
-            let exporter = new Exporter3dModelKicad(component.model3D)
+            let exporter = new Exporter3dModelKicad(component.model3D);
+            let kicad_3d_model = exporter.export();
+            resolve(kicad_3d_model);
         } catch (err) {
             reject(err);
         }
