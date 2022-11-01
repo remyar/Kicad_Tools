@@ -9,6 +9,7 @@ const isDev = require('electron-is-dev');
 require('@electron/remote/main').initialize()
 
 
+
 logger.transports.file.level = 'info';
 logger.transports.file.maxSize = 1048576;
 logger.transports.file.clear();
@@ -16,6 +17,8 @@ autoUpdater.logger = logger;
 
 // Module to control application life.
 const app = electron.app
+
+app.commandLine.appendSwitch('disable-site-isolation-trials');
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
@@ -34,6 +37,7 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,
+            webSecurity: false
         },
         //toolbar: false,
         //skipTaskbar: true,

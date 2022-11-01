@@ -7,6 +7,7 @@ import { withSnackBar } from '../../providers/snackBar';
 import Loader from '../../components/Loader';
 
 import Modal from '../../components/Modal';
+import Modal3D from '../../components/3DModal';
 
 import actions from '../../actions';
 
@@ -21,6 +22,8 @@ import { styled } from '@mui/material/styles';
 
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
@@ -42,7 +45,8 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import utils from '../../utils';
 
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import { __ } from 'ramda';
+//import { path, __ } from 'ramda';
+import path from 'path';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -72,14 +76,23 @@ function LibGeneratorPage(props) {
     const [components, setComponents] = useState([]);
     const [displayLoader, setDisplayLoader] = useState(false);
     const [modal, setModal] = useState();
+    const [_3DModal, set3DModal] = useState();
+
 
     return <Box>
 
         <Loader display={displayLoader} />
 
-        <Modal display={modal ? true : false} onClose={() => { setModal(undefined) }}>
+        {modal && <Modal display={modal ? true : false} onClose={() => { setModal(undefined) }}>
             {modal}
-        </Modal>
+        </Modal>}
+
+        {_3DModal && <Modal3D display={_3DModal ? true : false} onClose={(model3D, _component) => {
+            _component.model3D = model3D;
+            set3DModal(undefined);
+        }} models3d={_3DModal?.models3D} component={_3DModal}>
+        </Modal3D>}
+
 
         <Grid container spacing={2}>
             <Grid item xs={8}>
@@ -94,34 +107,22 @@ function LibGeneratorPage(props) {
                         //-- get symbol and footprint
                         let _component = (await props.dispatch(actions.lcsc.getComponent(url.trim())))?.component;
 
-                        let PointLib = (await props.dispatch(actions.samacsys.getLibrarie(_component.manufacturerPartnumber, _component.package)))?.librarie;
+                        let PointLib = (await props.dispatch(actions.lcsc.getSymbol(_component)))?.librarie;
                         if (PointLib) {
                             _component.hasSymbol = true;
                             _component.symbol = PointLib;
-                        } else {
-                            PointLib = (await props.dispatch(actions.lcsc.getSymbol(_component)))?.librarie;
-                            if (PointLib) {
-                                _component.hasSymbol = true;
-                                _component.symbol = PointLib;
-                            }
                         }
 
-                        let PointKicadMod = (await props.dispatch(actions.samacsys.getFootprint(_component.manufacturerPartnumber, _component.package)))?.footprint;
+                        let PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
                         if (PointKicadMod) {
                             _component.hasFootprint = true;
                             _component.footprint = PointKicadMod;
-                        } else {
-                            PointKicadMod = (await props.dispatch(actions.lcsc.getFootprint(_component)))?.footprint;
-                            if (PointKicadMod) {
-                                _component.hasFootprint = true;
-                                _component.footprint = PointKicadMod;
-                            }
                         }
 
-                        let model3D = (await props.dispatch(actions.samacsys.get3DModel(_component.manufacturerPartnumber, _component.package))).model3d;
-                        if (model3D) {
+                        await props.dispatch(actions.lcsc.get3DModel(_component));
+                        if (_component?.footprint?.model_3d?.raw_obj && _component.footprint.model_3d.raw_obj != '') {
                             _component.has3dModel = true;
-                            _component.model3D = model3D;
+                            _component.model3D = _component.footprint.model_3d.raw_obj;
                         }
 
                         let _c = [...components];
@@ -166,12 +167,16 @@ function LibGeneratorPage(props) {
                                             }}
                                                 onClick={async () => {
                                                     setDisplayLoader(true);
-                                                    let picture = (await props.dispatch(actions.samacsys.getImgSymbol(component.manufacturerPartnumber, component.package)))?.imgSymbol;
-                                                    if (picture) {
-                                                        setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
-                                                    } else {
-                                                        picture = (await props.dispatch(actions.lcsc.getImgSymbol(component))).imgSymbol;
-                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
+                                                    try {
+                                                        let picture = (await props.dispatch(actions.samacsys.getImgSymbol(component.manufacturerPartnumber, component.package)))?.imgSymbol;
+                                                        if (picture) {
+                                                            setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
+                                                        } else {
+                                                            picture = (await props.dispatch(actions.lcsc.getImgSymbol(component))).imgSymbol;
+                                                            setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
+                                                        }
+                                                    } catch (err) {
+
                                                     }
                                                     setDisplayLoader(false);
                                                 }
@@ -187,12 +192,16 @@ function LibGeneratorPage(props) {
                                             }}
                                                 onClick={async () => {
                                                     setDisplayLoader(true);
-                                                    let picture = (await props.dispatch(actions.samacsys.getImgFootprint(component.manufacturerPartnumber, component.package)))?.imgFootprint;
-                                                    if (picture) {
-                                                        setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
-                                                    }else {
-                                                        picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
-                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
+                                                    try {
+                                                        let picture = (await props.dispatch(actions.samacsys.getImgFootprint(component.manufacturerPartnumber, component.package)))?.imgFootprint;
+                                                        if (picture) {
+                                                            setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
+                                                        } else {
+                                                            picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
+                                                            setModal(<Box dangerouslySetInnerHTML={{ __html: picture, width: "50%" }}></Box>);
+                                                        }
+                                                    } catch (err) {
+
                                                     }
                                                     setDisplayLoader(false);
                                                 }}></MemoryIcon>
@@ -200,7 +209,15 @@ function LibGeneratorPage(props) {
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip title="3D">
-                                            <ThreeDRotationIcon sx={{ color: component.has3dModel ? "" : "LightGray" }}></ThreeDRotationIcon>
+                                            <ThreeDRotationIcon
+                                                sx={{
+                                                    color: component.has3dModel ? "" : "LightGray",
+                                                    cursor: component.has3dModel ? "pointer" : "default"
+                                                }}
+                                                onClick={async () => {
+                                                    set3DModal(component);
+                                                }}
+                                            ></ThreeDRotationIcon>
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
@@ -257,7 +274,7 @@ function LibGeneratorPage(props) {
                             let ___c = [...components];
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
-                                if ( footprintData ){
+                                if (footprintData) {
                                     __c.footprintData = footprintData;
                                     if (footprintData.includes('model')) {
                                         __c.has3dModel = true;
@@ -286,21 +303,21 @@ function LibGeneratorPage(props) {
                         let filename = (await props.dispatch(actions.electron.getFilenameForSave('.kicad_sym')))?.getFilenameForSave;
                         if (filename.canceled == false) {
                             filename.name = filename.filePath.replace(/^.*[\\\/]/, '');
-                            let librarie5File = (await props.dispatch(actions.kicad5.generateLibrarie(components, filename.name.replace('.kicad_sym', '')))).librarieContent;
-                            let librarie6File = (await props.dispatch(actions.kicad6.convertFormKicad5Librarie(librarie5File))).librarieContent;
-                            let footprints = (await props.dispatch(actions.kicad5.generateFootprints(components, filename.name.replace('.kicad_sym', '')))).footprints;
-
+                            let librarie6File = (await props.dispatch(actions.kicad6.generateLibrarie(components, filename.name.replace('.kicad_sym', '')))).librarieContent;
                             await props.dispatch(actions.electron.writeFile(filename.filePath, librarie6File));
+
+                            let footprints = (await props.dispatch(actions.kicad6.generateFootprints(components, filename.name.replace('.kicad_sym', '')))).footprints;
                             for (let footprint of footprints) {
-                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".kicad_mod", footprint.footprint));
-                                if (footprint.model3D && footprint.model3D.length > 0) {
-                                    await props.dispatch(actions.electron.writeFile(filename.filePath.replace(filename.name, '') + '/' + filename.name.replace('.kicad_sym', '.pretty') + '/' + footprint.name.replace('\\', '_').replace('/', '_') + ".stp", footprint.model3D));
-                                }
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.pretty') + path.sep + footprint.name + '.kicad_mod', footprint.footprint));
                             }
 
+                            let models3d = (await props.dispatch(actions.kicad6.generate3DModels(components,filename.name.replace('.kicad_sym', '')))).models3d;
+                            for (let model3d of models3d) {
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.3d') + path.sep + model3d.name + '.wrl', model3d.model3d));
+                            }
                             props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
                         }
-                        
+
                     } catch (err) {
                         props.snackbar.error(err.message);
                     }
@@ -308,7 +325,7 @@ function LibGeneratorPage(props) {
                 }}
             />
 
-            <SpeedDialAction
+            {/*  <SpeedDialAction
                 key={'Save5'}
                 icon={<SaveIcon />}
                 tooltipTitle={'Save kicad 5.x'}
@@ -338,6 +355,7 @@ function LibGeneratorPage(props) {
                     setDisplayLoader(false);
                 }}
             />
+            */}
         </SpeedDial>
     </Box >
 }
