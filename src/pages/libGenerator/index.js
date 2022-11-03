@@ -313,7 +313,7 @@ function LibGeneratorPage(props) {
 
                             let models3d = (await props.dispatch(actions.kicad6.generate3DModels(components,filename.name.replace('.kicad_sym', '')))).models3d;
                             for (let model3d of models3d) {
-                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.3d') + path.sep + model3d.name + '.wrl', model3d.model3d));
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.3dshapes') + path.sep + model3d.name + '.wrl', model3d.model3d));
                             }
                             props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
                         }
