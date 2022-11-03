@@ -265,12 +265,14 @@ function LibGeneratorPage(props) {
                 onClick={async () => {
                     setDisplayLoader(true);
                     try {
-                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.lib')))?.getFilenameForOpen;
+                        let file = (await props.dispatch(actions.electron.getFilenameForOpen('.kicad_sym')))?.getFilenameForOpen;
                         if (file.canceled == false) {
 
                             let fileData = (await props.dispatch(actions.electron.readFile(file.filePath))).fileData;
-                            let _c = await utils.kicad5.parseKicadLib(fileData);
-                            let footprintsPath = file.filePath.replace('.lib', '.pretty');
+
+
+                            let _c = await utils.kicad6.parseKicadLib(fileData);
+                            let footprintsPath = file.filePath.replace('.kicad_sym', '.pretty');
                             let ___c = [...components];
                             for (let __c of _c) {
                                 let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData

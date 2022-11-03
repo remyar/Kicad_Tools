@@ -45,8 +45,18 @@ async function get3DModel(component , librarieName ){
     });
 }
 
+async function parseKicadLib(librarieContent){
+    return new Promise(async (resolve,reject)=>{
+        try{
+
+        }catch(err){
+            reject(err); 
+        }
+    });
+}
 export default {
     getSymbol,
     getFootprint,
-    get3DModel
+    get3DModel,
+    parseKicadLib
 }
