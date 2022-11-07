@@ -144,6 +144,7 @@ export class KiSymbolInfo {
     package = "";
     manufacturer = "";
     datasheet = "";
+    description = "";
     lcsc_id = "";
     jlc_id = "";
     y_low = 0.0;
@@ -249,6 +250,18 @@ export class KiSymbolInfo {
             );
         }
 
+        if (this.description) {
+            field_offset_y += 2.54;
+            header.push(property_template.replace("{key}", "Description")
+                .replace("{value}", this.description)
+                .replace("{id_}", 7)
+                .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
+                .replace("{font_size}", 1.27)
+                .replace("{font_size}", 1.27)
+                .replace("{style}", "")
+                .replace("{hide}", "hide")
+            );
+        }
         return header;
     }
 

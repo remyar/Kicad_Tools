@@ -154,8 +154,8 @@ function LibGeneratorPage(props) {
                         return <StyledTableRow key={'_libraire_component_' + idx}>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "Manufacturer"))[2].toString() : component.manufacturer}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component[1].toString() : component.manufacturerPartnumber}</StyledTableCell>
-                            <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"))[2].split(":")[1].toString() : component.package}</StyledTableCell>
-                            <StyledTableCell>{component.description}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"))[2].split(":")[1].toString() : component?.footprint?.info?.name ? component?.footprint?.info?.name : component.package}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Description"))[2].toString() : component.description}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2].toString() :component.lcscPartNumber}</StyledTableCell>
                             <StyledTableCell>
                                 <Grid container spacing={2}>
@@ -168,15 +168,13 @@ function LibGeneratorPage(props) {
                                                 onClick={async () => {
                                                     setDisplayLoader(true);
                                                     try {
-                                                        let picture = (await props.dispatch(actions.samacsys.getImgSymbol(component.manufacturerPartnumber, component.package)))?.imgSymbol;
-                                                        if (picture) {
-                                                            setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
-                                                        } else {
-                                                            picture = (await props.dispatch(actions.lcsc.getImgSymbol(component))).imgSymbol;
-                                                            setModal(<Box dangerouslySetInnerHTML={{ __html: picture }}></Box>);
+                                                        if ( component.isAlreadyLibraire ){
+                                                            component.lcscPartNumber = component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2]?.toString();
                                                         }
+                                                        let picture = (await props.dispatch(actions.lcsc.getImgSymbol(component))).imgSymbol;
+                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture , width: "50%"}}></Box>);
                                                     } catch (err) {
-
+                                                        setDisplayLoader(false);
                                                     }
                                                     setDisplayLoader(false);
                                                 }
@@ -193,15 +191,13 @@ function LibGeneratorPage(props) {
                                                 onClick={async () => {
                                                     setDisplayLoader(true);
                                                     try {
-                                                        let picture = (await props.dispatch(actions.samacsys.getImgFootprint(component.manufacturerPartnumber, component.package)))?.imgFootprint;
-                                                        if (picture) {
-                                                            setModal(<Box > <img alt="Embedded Image" src={"data:image/png;base64," + picture} /> </Box>);
-                                                        } else {
-                                                            picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
-                                                            setModal(<Box dangerouslySetInnerHTML={{ __html: picture, width: "50%" }}></Box>);
+                                                        if ( component.isAlreadyLibraire ){
+                                                            component.lcscPartNumber = component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2]?.toString();
                                                         }
+                                                        let picture = (await props.dispatch(actions.lcsc.getImgFootprint(component))).imgFootprint;
+                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture, width: "50%" }}></Box>);
                                                     } catch (err) {
-
+                                                        setDisplayLoader(false);
                                                     }
                                                     setDisplayLoader(false);
                                                 }}></MemoryIcon>
@@ -224,7 +220,8 @@ function LibGeneratorPage(props) {
                                         <Tooltip title="Datasheet">
                                             <PictureAsPdfOutlinedIcon
                                                 sx={{
-                                                    color: component.isAlreadyLibraire ? (component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Datasheet"))[2].split(":")[1].toString() ? "" : "LightGray") : (component.datasheet ? "" : "LightGray")
+                                                    color: component.isAlreadyLibraire ? (
+                                                        (component.find((e) => e[0] == "property" && (e[1] && e[1]?.toString() == "Datasheet")) || [0,0,undefined] )[2]?.split(":")[1]?.toString() ? "" : "LightGray") : (component.datasheet ? "" : "LightGray")
                                                 }}
                                                 onClick={() => {
                                                     setModal(<Box>

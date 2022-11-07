@@ -6,6 +6,9 @@ import sExpression from 's-expression';
 async function getSymbol(component, librarieName) {
     return new Promise(async (resolve, reject) => {
         try {
+            if ( component.description ){
+                component.symbol.info.description = component.description;
+            }
             let exporter = new ExporterSymbolKicad(component.symbol);
             let kicad_symbol_lib = exporter.export(false, librarieName);
 

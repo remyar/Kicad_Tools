@@ -52,6 +52,8 @@ export class ExporterSymbolKicad {
             ee_symbol.info.jlc_id
         );
 
+        ki_info.description = ee_symbol.info.description;
+        
         let kicad_symbol = new KiSymbol(
             ki_info,
             this.convert_ee_pins(ee_symbol.pins, ee_symbol.bbox, kicad_version),

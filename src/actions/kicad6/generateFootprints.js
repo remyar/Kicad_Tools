@@ -9,9 +9,12 @@ export async function generateFootprints(components, librarieName, { extra, getS
 
         for (let component of components) {
 
-            let footprint = await utils.kicad6.getFootprint(component, librarieName);
+            if ( component?.isAlreadyLibraire && (component?.isAlreadyLibraire == true)){
 
-            footprints.push({ name: component.footprint.info.name, footprint: footprint });
+            }else {
+                let footprint = await utils.kicad6.getFootprint(component, librarieName);
+                footprints.push({ name: component.footprint.info.name, footprint: footprint });
+            }
         }
 
         return {

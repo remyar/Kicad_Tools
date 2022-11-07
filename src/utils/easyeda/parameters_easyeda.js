@@ -113,6 +113,7 @@ export class EeSymbolInfo {
     name = "";
     prefix = "";
     package = "";
+    desciption = "";
     manufacturer = "";
     datasheet = "";
     lcsc_id = "";

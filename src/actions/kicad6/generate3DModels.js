@@ -9,9 +9,12 @@ export async function generate3DModels(components, librarieName, { extra, getSta
 
         for (let component of components) {
 
-            let model3d = await utils.kicad6.get3DModel(component, librarieName);
+            if (component?.isAlreadyLibraire && (component?.isAlreadyLibraire == true)) {
 
-            models3d.push({ name: component.footprint.model_3d.name, model3d: model3d });
+            } else {
+                let model3d = await utils.kicad6.get3DModel(component, librarieName);
+                models3d.push({ name: component.footprint.model_3d.name, model3d: model3d });
+            }
         }
 
         return {
