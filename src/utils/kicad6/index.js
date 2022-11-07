@@ -1,7 +1,7 @@
-import { CallToActionSharp } from "@mui/icons-material";
 import { ExporterSymbolKicad } from "./export_kicad_symbol";
 import { ExporterFootprintKicad } from "./export_kicad_footprint";
 import { Exporter3dModelKicad } from "./export_kicad_3d_model";
+import sExpression from 's-expression';
 
 async function getSymbol(component, librarieName) {
     return new Promise(async (resolve, reject) => {
@@ -48,12 +48,19 @@ async function get3DModel(component , librarieName ){
 async function parseKicadLib(librarieContent){
     return new Promise(async (resolve,reject)=>{
         try{
+            let result = sExpression(librarieContent);
 
+            result = result.filter((e) => {
+                return e[0] == "symbol";
+            });
+
+            resolve(result);
         }catch(err){
             reject(err); 
         }
     });
 }
+
 export default {
     getSymbol,
     getFootprint,

@@ -8,8 +8,12 @@ export async function generateLibrarie(components, librarieName, { extra, getSta
         let definition = "(kicad_symbol_lib (version 20211014) (generator kicad_symbol_editor)\r\n";
 
         for (let component of components) {
-            definition += await utils.kicad6.getSymbol(component, librarieName);
-            definition +="\r\n";
+            if ( component?.isAlreadyLibraire && (component?.isAlreadyLibraire == true)){
+                definition += await utils.sexp.getSymbol(component ,librarieName );
+            } else {
+                definition += await utils.kicad6.getSymbol(component, librarieName);
+                definition +="\r\n";
+            }
         }
 
         definition += ")";

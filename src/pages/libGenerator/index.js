@@ -152,11 +152,11 @@ function LibGeneratorPage(props) {
                 <TableBody>
                     {components.map((component, idx) => {
                         return <StyledTableRow key={'_libraire_component_' + idx}>
-                            <StyledTableCell>{component.manufacturer}</StyledTableCell>
-                            <StyledTableCell>{component.manufacturerPartnumber}</StyledTableCell>
-                            <StyledTableCell>{component.package}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "Manufacturer"))[2].toString() : component.manufacturer}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component[1].toString() : component.manufacturerPartnumber}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"))[2].split(":")[1].toString() : component.package}</StyledTableCell>
                             <StyledTableCell>{component.description}</StyledTableCell>
-                            <StyledTableCell>{component.lcscPartNumber}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2].toString() :component.lcscPartNumber}</StyledTableCell>
                             <StyledTableCell>
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
@@ -224,11 +224,10 @@ function LibGeneratorPage(props) {
                                         <Tooltip title="Datasheet">
                                             <PictureAsPdfOutlinedIcon
                                                 sx={{
-                                                    color: component.datasheet ? "" : "LightGray"
+                                                    color: component.isAlreadyLibraire ? (component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Datasheet"))[2].split(":")[1].toString() ? "" : "LightGray") : (component.datasheet ? "" : "LightGray")
                                                 }}
                                                 onClick={() => {
                                                     setModal(<Box>
-
                                                     </Box>)
                                                 }}
                                             ></PictureAsPdfOutlinedIcon>
@@ -269,21 +268,29 @@ function LibGeneratorPage(props) {
                         if (file.canceled == false) {
 
                             let fileData = (await props.dispatch(actions.electron.readFile(file.filePath))).fileData;
-
-
                             let _c = await utils.kicad6.parseKicadLib(fileData);
+
                             let footprintsPath = file.filePath.replace('.kicad_sym', '.pretty');
                             let ___c = [...components];
                             for (let __c of _c) {
-                                let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + __c.footprint.split(':')[1] + '.kicad_mod'))).fileData
-                                if (footprintData) {
-                                    __c.footprintData = footprintData;
-                                    if (footprintData.includes('model')) {
-                                        __c.has3dModel = true;
-                                    }
-                                } else {
-                                    __.hasFootprint = false;
+                                __c.hasSymbol = false;
+                                __c.isAlreadyLibraire = true;
+                                let __f = __c.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"));
+                                __c.hasFootprint = false;
+                                __c.has3dModel = false;
+                                if ( __f ){
+                                    __c.hasSymbol = true;
+                                    let footprint = __f[2].toString().split(':')[1];
+                                    let footprintData = (await props.dispatch(actions.electron.readFile(footprintsPath + '/' + footprint + '.kicad_mod'))).fileData
+                                    if (footprintData) {
+                                        __c.hasFootprint = true;
+                                        __c.footprintData = footprintData;
+                                        if (footprintData.includes('model')) {
+                                            __c.has3dModel = true;
+                                        }
+                                    } 
                                 }
+                                
                                 ___c.push(__c);
                             }
                             setComponents(___c);
