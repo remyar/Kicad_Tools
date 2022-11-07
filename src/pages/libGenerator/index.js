@@ -87,12 +87,7 @@ function LibGeneratorPage(props) {
             {modal}
         </Modal>}
 
-        {_3DModal && <Modal3D display={_3DModal ? true : false} onClose={(model3D, _component) => {
-            _component.model3D = model3D;
-            set3DModal(undefined);
-        }} models3d={_3DModal?.models3D} component={_3DModal}>
-        </Modal3D>}
-
+        {_3DModal && <Modal3D display={_3DModal ? true : false} onClose={() => { set3DModal(undefined); }} models3d={_3DModal?.models3D} component={_3DModal}></Modal3D>}
 
         <Grid container spacing={2}>
             <Grid item xs={8}>
