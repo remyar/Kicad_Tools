@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
-
+import { AccumulativeShadows, RandomizedLight, OrbitControls, Environment, Lightformer } from '@react-three/drei'
 import Button from '@mui/material/Button';
 
 import Backdrop from '@mui/material/Backdrop';
@@ -21,35 +21,29 @@ import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 function Modal3D(props) {
 
     const ref = React.useRef(null);
+    const [zoom, setZoom] = useState(false)
+    const [focus, setFocus] = useState({})
+
+    let component = props.component;
+    let loader = new VRMLLoader();
+    let scene = loader.parse(component.wrl)
 
     const [dimensions, setDimensions] = React.useState({
         height: window.innerHeight,
         width: window.innerWidth
     });
 
-    let heightModel = (dimensions.height * 0.6).toString() + "px"
-
-    const Model = () => {
-        const gltf = useLoader(VRMLLoader, props.component.model3D);
-        return (
-            <>
-                <primitive object={gltf.scene} scale={0.4} />
-            </>
-        );
-    };
-
     return <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
         open={props.display}
-        onClick={() => { props.onClose && props.onClose(); }}
+        
     >
-        <Box sx={{ width: "100vh", height: { heightModel } }}>
-            <Paper sx={{ padding: "15px", height: { heightModel } }}>
-                <iframe ref={ref} className="dlgLibs-thumb4 for3dview" width="100%" height={heightModel} src={"https://easyeda.com/editor/6.5.22/htm/editorpage15.html?version=6.5.22&url=%2Fanalyzer%2Fapi%2F3dmodel%2Fc7b44f5b49c24f00bad2c3ef95fd0285%2FPIC16F628.obj"}>
-                    <div id="canvas">
-                        <canvas width="100%" height="100%" sx={{ width: "100%", height: "100%", backgroundColor: "white" }}></canvas>
-                    </div>
-                </iframe>
+        <Box sx={{ width: "100vh", height: "60vh" }}>
+            <Paper sx={{ padding: "15px", height: "60vh" }}>
+                <Canvas ref={ref} orthographic={true} camera={{ position: [0, 0, 5], fov: 45 }}>
+                    <primitive object={scene} />
+                    <OrbitControls />
+                </Canvas>
             </Paper>
         </Box>
     </Backdrop>

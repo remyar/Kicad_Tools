@@ -118,6 +118,7 @@ function LibGeneratorPage(props) {
                         if (_component?.footprint?.model_3d?.raw_obj && _component.footprint.model_3d.raw_obj != '') {
                             _component.has3dModel = true;
                             _component.model3D = _component.footprint.model_3d.raw_obj;
+                            _component.wrl =  (await props.dispatch(actions.kicad6.generate3DModel(_component))).model3d
                         }
 
                         let _c = [...components];

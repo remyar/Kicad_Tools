@@ -1,7 +1,7 @@
 import createAction from '../../middleware/actions';
 import utils from '../../utils';
 
-export async function generate3DModels(components, librarieName, { extra, getState }) {
+export async function generate3DModels(components, librarieName = "", { extra, getState }) {
 
     try {
 
