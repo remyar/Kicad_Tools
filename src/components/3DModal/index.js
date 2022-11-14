@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
+import PropTypes from 'prop-types';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { AccumulativeShadows, RandomizedLight, OrbitControls, Environment, Lightformer } from '@react-three/drei'
 import Button from '@mui/material/Button';
@@ -6,131 +7,74 @@ import Button from '@mui/material/Button';
 import Backdrop from '@mui/material/Backdrop';
 import TableContainer from '@mui/material/TableContainer';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TableHead from '@mui/material/TableHead';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
 
 import utils from '../../utils';
 
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
+
+function BootstrapDialogTitle(props) {
+    const { children, onClose, ...other } = props;
+
+    return (
+        <DialogTitle sx={{ m: 0, p: 2 , maxWidth : "inherit"}} {...other}>
+            {children}
+            {onClose ? (
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </DialogTitle>
+    );
+}
+
+BootstrapDialogTitle.propTypes = {
+    children: PropTypes.node,
+    onClose: PropTypes.func.isRequired,
+};
 
 function Modal3D(props) {
 
     const ref = React.useRef(null);
-    const [zoom, setZoom] = useState(false)
-    const [focus, setFocus] = useState({})
 
     let component = props.component;
     let loader = new VRMLLoader();
     let scene = loader.parse(component.wrl)
 
-    const [dimensions, setDimensions] = React.useState({
-        height: window.innerHeight,
-        width: window.innerWidth
-    });
-
-    return <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
-        open={props.display}
-        
+    return <Dialog
+        onClose={() => { props.onClose && props.onClose(); }}
+        aria-labelledby="customized-dialog-title"
+        open={true}
+        sx={{maxWidth : "inherit"}}
     >
-        <Box sx={{ width: "100vh", height: "60vh" }}>
-            <Paper sx={{ padding: "15px", height: "60vh" }}>
-                <Canvas ref={ref} orthographic={true} camera={{ position: [0, 0, 5], fov: 45 }}>
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={() => { props.onClose && props.onClose(); }}>
+            {component?.package}
+        </BootstrapDialogTitle>
+        <DialogContent dividers >
+            <Box sx={{ width : "550px" , height: "60vh" }}>
+            <Canvas ref={ref} orthographic={true} camera={{ zoom: 50, position: [0, 0, 100] }}>
                     <primitive object={scene} />
                     <OrbitControls />
                 </Canvas>
-            </Paper>
-        </Box>
-    </Backdrop>
-    /*
-        const ref = React.useRef(null);
-        const models3d = props.models3d || [];
-        const component = props.component || {};
-        const [SelectedModel, setSelectedModel] = useState(models3d[0]);
-        const [Load , setLoad] = useState(false);
-    
-        const [dimensions, setDimensions] = React.useState({
-            height: window.innerHeight,
-            width: window.innerWidth
-        });
-    
-        React.useEffect(() => {
-            function handleResize() {
-                setDimensions({
-                    height: window.innerHeight,
-                    width: window.innerWidth
-                });
-            }
-    
-            window.addEventListener('resize', handleResize)
-    
-            return _ => {
-                window.removeEventListener('resize', handleResize)
-    
-            }
-        });
-    
-        React.useEffect(async ()=>{
-            if ( SelectedModel ){
-                setLoad(true);
-                let objResult = await utils.ObjectLoader.Load("https://easyeda.com/" + SelectedModel?.dataStr?.head?.url);
-                if ( component.model3D ){
-                    component.model3D.wrl = objResult;
-                }
-                setLoad(false);
-            }
-        },[SelectedModel]);
-    
-        let heightModel = (dimensions.height * 0.6).toString() + "px"
-        return <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={props.display}
-            onClick={() => { }}
-    
-        >
-            <Box sx={{ width: "100vh", height: { heightModel } }}>
-                <Paper sx={{ padding: "15px", height: { heightModel } }}>
-                    <Select
-                        onChange={(event) => {
-                            let uuid = event.target.value;
-                            let __m = models3d.find((_m) => _m.uuid == uuid);
-                            setSelectedModel(__m);
-                        }}
-                        sx={{
-                            width: '100%'
-                        }}
-                        defaultValue={SelectedModel?.uuid}
-                    >
-                        {models3d.map((model) => {
-                            return <MenuItem key={model.uuid} value={model.uuid}>{model.title || ""}</MenuItem >
-                        })}
-                    </Select>
-                    <br /><br />
-                    <iframe ref={ref} className="dlgLibs-thumb4 for3dview" width="100%" height={heightModel} src={"https://easyeda.com/editor/6.4.32/htm/editorpage15.html?version=6.4.32&url=" + SelectedModel?.dataStr?.head?.url}>
-                        <div id="canvas">
-                            <canvas width="100%" height="100%" sx={{ width: "100%", height: "100%", backgroundColor: "white" }}></canvas>
-                        </div>        
-                    </iframe>
-    
-                    <Button
-                        disabled={Load}
-                        sx={{
-                            width: '100%'
-                        }}
-                        variant="contained" onClick={async () => { 
-                            //console.log(await ref.current.contentWindow.JSAPI.easyeda2step("" , "output"));
-                            props.onClose && props.onClose(SelectedModel, component); 
-                        }}> Select This Model</Button>
-                </Paper>
             </Box>
-        </Backdrop>
-    
-        */
+        </DialogContent>
+    </Dialog>
 }
 
 export default Modal3D;
