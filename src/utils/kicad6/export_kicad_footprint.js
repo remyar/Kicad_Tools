@@ -411,7 +411,7 @@ export class ExporterFootprintKicad {
 
         //-- For texts
         for (let ee_text of this.input.texts) {
-            let ki_text = KiFootprintText(
+            let ki_text = new KiFootprintText(
                 ee_text.center_x - this.input.bbox.x,
                 ee_text.center_y - this.input.bbox.y,
                 angle_to_ki(ee_text.rotation),
