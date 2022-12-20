@@ -279,7 +279,22 @@ export class EeSymbolPolyline {
 }
 
 export class EeSymbolPolygon {
-    constructor() {
+    points = "";
+    stroke_color = "";
+    stroke_width = "";
+    stroke_style = "";
+    fill_color = false;
+    id = "";
+    is_locked = false;
+
+    constructor(points, stroke_color, stroke_width, stroke_style, fill_color, id, is_locked) {
+        this.points = points;
+        this.stroke_color = stroke_color;
+        this.stroke_style = stroke_width;
+        this.stroke_style = stroke_style;
+        this.fill_color = fill_color?.toLowerCase() != "none" ? true : false;
+        this.id = id;
+        this.is_locked = (is_locked == "true" || is_locked == "1") ? true : false;
     }
 }
 

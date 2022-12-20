@@ -193,8 +193,15 @@ export class EasyedaSymbolImporter {
 
     add_easyeda_polygon(polygon_data, ee_symbol) {
         let _obj = polygon_data.split("~").slice(1);
-        let obj = new EeSymbolPolygon();
-        ee_symbol.polylines.push(obj);
+        let obj = new EeSymbolPolygon(            
+            _obj[0],
+            _obj[1],
+            _obj[2],
+            _obj[3],
+            _obj[4],
+            _obj[5],
+            _obj[6]);
+        ee_symbol.polygons.push(obj);
     }
 
     add_easyeda_path(path_data, ee_symbol) {
