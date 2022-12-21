@@ -8,6 +8,7 @@ import Loader from '../../components/Loader';
 
 import Modal from '../../components/Modal';
 import Modal3D from '../../components/3DModal';
+import ModalSVG from '../../components/SVGModal';
 
 import actions from '../../actions';
 
@@ -77,7 +78,7 @@ function LibGeneratorPage(props) {
     const [displayLoader, setDisplayLoader] = useState(false);
     const [modal, setModal] = useState();
     const [_3DModal, set3DModal] = useState();
-
+    const [_SVGModal, setSVGModal] = useState();
 
     return <Box>
 
@@ -88,7 +89,8 @@ function LibGeneratorPage(props) {
         </Modal>}
 
         {_3DModal && <Modal3D display={_3DModal ? true : false} onClose={() => { set3DModal(undefined); }} models3d={_3DModal?.models3D} component={_3DModal}></Modal3D>}
-
+        {_SVGModal && <ModalSVG display={_SVGModal ? true : false} onClose={() => { setSVGModal(undefined); }} component={_SVGModal}/>}
+        
         <Grid container spacing={2}>
             <Grid item xs={8}>
                 <TextField id="standard-basic" label="lcsc Url" variant="outlined" placeholder={url} defaultValue={"https://lcsc.com/product-detail/Aluminum-Electrolytic-Capacitors-Leaded_Rubycon-35YXJ470M10x16_C88732.html"} sx={{ width: '100%' }} onChange={(event) => {
@@ -168,7 +170,7 @@ function LibGeneratorPage(props) {
                                                             component.lcscPartNumber = component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2]?.toString();
                                                         }
                                                         let picture = (await props.dispatch(actions.lcsc.getImgSymbol(component))).imgSymbol;
-                                                        setModal(<Box dangerouslySetInnerHTML={{ __html: picture , width: "50%"}}></Box>);
+                                                        setSVGModal(picture);
                                                     } catch (err) {
                                                         setDisplayLoader(false);
                                                     }

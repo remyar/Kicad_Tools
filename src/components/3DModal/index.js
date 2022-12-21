@@ -24,7 +24,7 @@ function BootstrapDialogTitle(props) {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 , maxWidth : "inherit"}} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2, maxWidth: "inherit" }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -55,20 +55,20 @@ function Modal3D(props) {
 
     let component = props.component;
     let loader = new VRMLLoader();
-    let scene = loader.parse(component.wrl)
+    let scene = loader.parse(component.wrl);
 
     return <Dialog
         onClose={() => { props.onClose && props.onClose(); }}
         aria-labelledby="customized-dialog-title"
         open={true}
-        sx={{maxWidth : "inherit"}}
+        sx={{ maxWidth: "inherit" }}
     >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={() => { props.onClose && props.onClose(); }}>
             {component?.package}
         </BootstrapDialogTitle>
         <DialogContent dividers >
-            <Box sx={{ width : "550px" , height: "60vh" }}>
-            <Canvas ref={ref} orthographic={true} camera={{ zoom: 50, position: [0, 0, 100] }}>
+            <Box sx={{ width: "550px", height: "60vh" }}>
+                <Canvas ref={ref} orthographic={true} camera={{ zoom: 50, position: [0, 0, 100] }}>
                     <primitive object={scene} />
                     <OrbitControls />
                 </Canvas>
