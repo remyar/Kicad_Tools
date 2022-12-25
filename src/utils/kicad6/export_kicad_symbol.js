@@ -53,7 +53,7 @@ export class ExporterSymbolKicad {
         );
 
         ki_info.description = ee_symbol.info.description;
-        
+
         let kicad_symbol = new KiSymbol(
             ki_info,
             this.convert_ee_pins(ee_symbol.pins, ee_symbol.bbox, kicad_version),
@@ -250,17 +250,45 @@ export class ExporterSymbolKicad {
         return kicad_circles;
     }
 
-    convert_ee_polygons(ee_polygons , ee_bbox , kicad_version = 6){
-        return this.convert_ee_polylines(ee_polygons , ee_bbox , kicad_version);
+    convert_ee_polygons(ee_polygons, ee_bbox, kicad_version = 6) {
+        return this.convert_ee_polylines(ee_polygons, ee_bbox, kicad_version);
     }
 
-    convert_ee_paths(ee_paths , ee_bbox , kicad_version = 6){
+
+    convert_ee_paths(ee_paths, ee_bbox, kicad_version = 6) {
         let kicad_polygons = [];
         let kicad_beziers = [];
 
         let to_ki = kicad_version == 5 ? this.px_to_mil : this.px_to_mm;
         for (let ee_path of ee_paths) {
-            let raw_pts = ee_path.paths.split(" ")
+            let raw_pts = ee_path.paths.split(" ");
+            let x_points = [];
+            let y_points = [];
+
+            for (let i = 0; i < raw_pts.length; i++) {
+                if ((raw_pts[i] == "M") || (raw_pts[i] == "L")) {
+                    x_points.push(to_ki(parseInt(parseFloat(raw_pts[i + 1])) - parseInt(ee_bbox.x)));
+                    y_points.push(-to_ki(parseInt(parseFloat(raw_pts[i + 2])) - parseInt(ee_bbox.y)));
+                    i += 2;
+                } else if (raw_pts[i] == "Z") {
+                    x_points.push(x_points[0])
+                    y_points.push(y_points[0])
+                } else if (raw_pts[i] == "C") {
+
+                }
+            }
+
+            let poly = [];
+            for (let i = 0; i < x_points.length; i++) {
+                poly.push([x_points[i], y_points[i]]);
+            }
+
+            let ki_polygon = new KiSymbolPolygon([...poly],
+                poly.length,
+                x_points[0] == x_points[x_points.length - 1] && y_points[0] == y_points[y_points.length - 1]
+            );
+
+            kicad_polygons.push(ki_polygon);
         }
 
         return {
