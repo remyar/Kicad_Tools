@@ -239,7 +239,7 @@ export class KiSymbolInfo {
 
         if (this.jlc_id) {
             field_offset_y += 2.54;
-            header.push(property_template.replace("{key}", "JLC Part")
+            header.push(property_template.replace("{key}", "JLC Part #")
                 .replace("{value}", this.jlc_id)
                 .replace("{id_}", 6)
                 .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))

@@ -154,7 +154,7 @@ function LibGeneratorPage(props) {
                             <StyledTableCell>{component.isAlreadyLibraire ? component[1].toString() : component.manufacturerPartnumber}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"))[2].split(":")[1].toString() : component?.footprint?.info?.name ? component?.footprint?.info?.name : component.package}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Description"))[2].toString() : component.description}</StyledTableCell>
-                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "LCSC Part"))[2].toString() :component.lcscPartNumber}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString().includes("LCSC Part")))[2].toString() :component.lcscPartNumber}</StyledTableCell>
                             <StyledTableCell>
                                 <Grid container spacing={2}>
                                     <Grid item xs={3}>
