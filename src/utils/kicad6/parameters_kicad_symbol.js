@@ -226,7 +226,7 @@ export class KiSymbolInfo {
 
         if (this.lcsc_id) {
             field_offset_y += 2.54;
-            header.push(property_template.replace("{key}", "LCSC Part")
+            header.push(property_template.replace("{key}", "LCSC Part #")
                 .replace("{value}", this.lcsc_id)
                 .replace("{id_}", 5)
                 .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
