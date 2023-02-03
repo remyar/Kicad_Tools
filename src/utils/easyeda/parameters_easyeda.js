@@ -522,7 +522,13 @@ export class EeFootprintHole {
         this.center_y = parseFloat(center_y);
         this.radius = parseFloat(radius);
         this.id = id;
-        this.is_locked = is_locked == "0" || is_locked == "false" ? true : false;
+        this.is_locked = is_locked == "0" || is_locked == "false" ? false : true;
+    }
+
+    convert_to_mm() {
+        this.center_x = convert_to_mm(this.center_x);
+        this.center_y = convert_to_mm(this.center_y);
+        this.radius = convert_to_mm(this.radius);
     }
 }
 

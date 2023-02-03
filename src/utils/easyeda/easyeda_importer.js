@@ -290,7 +290,11 @@ export class EasyedaFootprintImporter {
                 }
                 case "HOLE": {
                     let ee_hole = new EeFootprintHole(
-
+                        ee_fields[0],
+                        ee_fields[1],
+                        ee_fields[2],
+                        ee_fields[3],
+                        ee_fields[4]
                     );
                     new_ee_footprint.holes.push(ee_hole);
                     break;
