@@ -1,6 +1,6 @@
 
 function sanitize_fields(name) {
-    return name.replace(" ", "").replace("/", "_");
+    return name.split(' ').join("").split("/").join("_");
 }
 
 export const KiPinType = {
