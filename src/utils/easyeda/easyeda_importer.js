@@ -66,7 +66,8 @@ export class EasyedaSymbolImporter {
                 ee_data_info.BOM_Manufacturer || "",
                 ee_data.lcsc?.url || "",
                 ee_data.lcsc?.number || "",
-                ee_data_info["BOM_JLCPCB Part Class"] || ""
+                ee_data_info["BOM_JLCPCB Part Class"] || "",
+                ee_data_info.Value || ee_data_info.name || ""
             ),
             bbox: new EeSymbolBbox(
                 ee_data.dataStr.head.x,

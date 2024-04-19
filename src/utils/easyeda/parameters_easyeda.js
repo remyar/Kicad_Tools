@@ -111,6 +111,7 @@ export class EeSymbolPinSettings {
 
 export class EeSymbolInfo {
     name = "";
+    value = "";
     prefix = "";
     package = "";
     desciption = "";
@@ -119,7 +120,8 @@ export class EeSymbolInfo {
     lcsc_id = "";
     jlc_id = "";
 
-    constructor(name, prefix, _package, manufacturer, datasheet, lcsc_id, jlc_id) {
+    constructor(name, prefix, _package, manufacturer, datasheet, lcsc_id, jlc_id , value) {
+        this.value = value;
         this.name = name;
         this.prefix = prefix;
         this.package = _package;
@@ -153,6 +155,7 @@ export class EeSymbol {
                     input.info.datasheet,
                     input.info.lcsc_id,
                     input.info.jlc_id,
+                    input.info.value,
                 );
             }
             if (input.bbox != undefined) {

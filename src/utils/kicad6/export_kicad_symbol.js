@@ -49,7 +49,10 @@ export class ExporterSymbolKicad {
             ee_symbol.info.manufacturer,
             ee_symbol.info.datasheet,
             ee_symbol.info.lcsc_id,
-            ee_symbol.info.jlc_id
+            ee_symbol.info.jlc_id,
+            undefined,
+            undefined,
+            ee_symbol.info.value
         );
 
         ki_info.description = ee_symbol.info.description;

@@ -140,6 +140,7 @@ export class KiSymbolPin {
 
 export class KiSymbolInfo {
     name = "";
+    value = "";
     prefix = "";
     package = "";
     manufacturer = "";
@@ -150,8 +151,9 @@ export class KiSymbolInfo {
     y_low = 0.0;
     y_high = 0.0;
 
-    constructor(name, prefix, _package, manufacturer, datasheet, lcsc_id, jlc_id, y_low = 0.0, y_high = 0.0) {
+    constructor(name, prefix, _package, manufacturer, datasheet, lcsc_id, jlc_id, y_low = 0.0, y_high = 0.0 , value) {
         this.name = name;
+        this.value = value;
         this.prefix = prefix;
         this.package = _package;
         this.manufacturer = manufacturer;
@@ -176,7 +178,7 @@ export class KiSymbolInfo {
             .replace("{hide}", "")
         );
         header.push(property_template.replace("{key}", "Value")
-            .replace("{value}", this.name)
+            .replace("{value}", this.value)
             .replace("{id_}", 1)
             .replace("{pos_y}", (this.y_low - field_offset_y).toFixed(2))
             .replace("{font_size}", 1.27)
@@ -498,7 +500,7 @@ export class KiSymbol {
         template += ')\r\n';
         template += ')';
 
-        template = template.replace("{library_id}", sanitize_fields(this.info.name));
+        template = template.replace("{library_id}", sanitize_fields(this.info.value));
         template = template.replace("{library_id}", sanitize_fields(this.info.name));
         template = template.replace("{symbol_properties}", sym_export_data.info.join("\r\n\t"));
 
