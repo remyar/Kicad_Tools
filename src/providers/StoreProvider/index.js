@@ -13,8 +13,8 @@ class Provider extends Component {
         super(props);
         this.state = this.props.globalState;
         this.persistConfig = { persist: false, key: "root", ...this.props.persistConfig };
-        if (this.persistConfig.persist) {
-            this.state = {...this.state , ...JSON.parse(localStorage.getItem("persist:" + this.persistConfig.key))};
+        if (this.persistConfig.persist && this.persistConfig.load ) {
+           this.persistConfig.load();
         }
     }
 
@@ -26,23 +26,29 @@ class Provider extends Component {
         });
     }
 
-    async __dispatch(updater , ...args){
+    async __dispatch(updater, ...args) {
         if (updater && updater.constructor && updater.call && updater.apply) {
-            let u = await updater(...args, async (d , ...a) => { 
-                return await this.__dispatch(d,...a);
-            }, () => { 
-                return this.state; 
+            let u = await updater(...args, async (d, ...a) => {
+                return await this.__dispatch(d, ...a);
+            }, () => {
+                return this.state;
             }, this.props.extra);
             await this.setStateAsync({ ...this.state, ...u });
-            if (this.persistConfig.persist) {
+            if (this.persistConfig.persist && this.persistConfig.store) {
                 if (this.persistConfig.whitelist !== undefined) {
-                    let toSave = {};
-                    this.persistConfig.whitelist.map((key) => {
-                        toSave[key] = this.state[key] || {};
+                    let toSave = undefined;
+                    this.persistConfig.whitelist.forEach((key) => {
+                        if ( u[key] != undefined){
+                            if ( toSave == undefined){
+                                toSave = {};
+                            }
+                            toSave[key] = u[key];
+                        }
                     });
-                    localStorage.setItem("persist:" + this.persistConfig.key, JSON.stringify(toSave));
-                } else {
-                    localStorage.setItem("persist:" + this.persistConfig.key, JSON.stringify(this.state));
+
+                    if ( toSave != undefined ){
+                        this.persistConfig.store(toSave);
+                    }
                 }
             }
             return u;

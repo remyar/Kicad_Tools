@@ -5,14 +5,13 @@ var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const isDev = require('electron-is-dev');
+const isDev = require('electron-is-dev').default;
 require('@electron/remote/main').initialize()
 
 
+// It makes a renderer logger available trough a global electronLog instance
+logger.initialize({ spyRendererConsole: true });
 
-logger.transports.file.level = 'info';
-logger.transports.file.maxSize = 1048576;
-logger.transports.file.clear();
 autoUpdater.logger = logger;
 
 // Module to control application life.

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import GlobalState from './GlobalState'
 
 class Broadcast extends Component {
-    static displayName = 'GlobalStateBroadcast'
 
     static propTypes = {
         globalState: PropTypes.object.isRequired,
@@ -24,11 +23,12 @@ class Broadcast extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+   /* componentWillReceiveProps(nextProps) {
         this.globalState.setState(nextProps.globalState)
-    }
+    }*/
 
     render() {
+        this.globalState.setState(this.props.globalState)
         return this.props.children
     }
 }

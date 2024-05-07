@@ -1,28 +1,29 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import ReactNavigationContext from './context';
 import withNavigation from './withNavigation';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 function NavigationProvider(props) {
 
-    let history = useHistory();
+    let navigate = useNavigate();
 
     window.onpopstate = () => {
         _goBack()
     }
 
     function _push(_link, _state) {
-        history.push(_link , _state);
+
+        navigate(_link , _state);
         window.history.pushState(_state, "state");
     }
 
     function _goBack() {
-        history.goBack();
+        navigate(-1);
     }
 
     function _getPath(){
-        return history.location.pathname;
+        return window.history.location.pathname;
     }
 
     return <ReactNavigationContext.Provider value={{

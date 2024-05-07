@@ -1,35 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const withStoreProvider = WrappedComponent => {
     class withStoreProvider extends Component {
-        static displayName = `withStoreProvider(${WrappedComponent.displayName || WrappedComponent.name || 'Component'
-            })`
 
         static contextTypes = {
             globalState: PropTypes.object.isRequired,
             createSetGlobalState: PropTypes.func.isRequired
         }
 
-        state = null
+        state = null;
 
         syncStateWithGlobalState = globalState => {
             this.setState(globalState)
         }
 
-        componentWillMount() {
-            this.setState(this.context.globalState.getState())
-        }
-
-        componentDidMount() {
-            this.context.globalState.subscribe(this.syncStateWithGlobalState)
-        }
-
-        componentWillUnmount() {
-            this.context.globalState.unsubscribe(this.syncStateWithGlobalState)
-        }
-
         render() {
+            if (this.state == null) {
+                this.state = this.context.globalState.getState();
+                this.context.globalState.subscribe(this.syncStateWithGlobalState);
+            }
             return (
                 <WrappedComponent
                     {...this.props}

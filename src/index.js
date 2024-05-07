@@ -10,7 +10,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import api from "./api";
 
-const electron = require('@electron/remote')
+const electron = require('@electron/remote');
 
 // i18n datas
 import localeData from './locales';
@@ -23,8 +23,6 @@ const persistConfig = {
         "settings"
     ]
 };
-
-
 
 // Define user's language. Different browsers have the user locale defined
 // on different fields on the `navigator` object, so we make sure to account
@@ -46,7 +44,7 @@ const messages = localeData[languageWithoutRegionCode] || localeData[language] |
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline />
-        <StoreProvider extra={{ api, electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields : [] } }}>
+        <StoreProvider extra={{ api, electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields: [] } }}>
             <MemoryRouter>
                 <NavigationProvider>
                     <IntlProvider locale={language} messages={messages}>
