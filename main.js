@@ -5,9 +5,9 @@ var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const isDev = require('electron-is-dev').default;
+const backend = require('./src_backend');
 require('@electron/remote/main').initialize()
-
+let isDev = !electron.app.isPackaged;
 
 // It makes a renderer logger available trough a global electronLog instance
 logger.initialize({ spyRendererConsole: true });
@@ -18,6 +18,7 @@ autoUpdater.logger = logger;
 const app = electron.app
 
 app.commandLine.appendSwitch('disable-site-isolation-trials');
+
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
@@ -62,6 +63,9 @@ function createWindow() {
     })
 
     require("@electron/remote/main").enable(mainWindow.webContents);
+
+    backend.setMainWindows(mainWindow);
+    backend.start();
 }
 
 // This method will be called when Electron has finished

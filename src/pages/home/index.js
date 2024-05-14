@@ -18,6 +18,9 @@ function HomePage(props) {
         textAlign: 'center'
     }}>
         <Box >
+            <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlParts()) }}>{intl.formatMessage({ id: 'nav.generate.parts' })}</Button>
+        </Box>
+        <Box sx={{ paddingTop: "10px" }}>
             <Button variant="contained" sx={{ width: '100%' }} onClick={() => { props.navigation.push(routeMdw.urlLibGenerator()) }}>{intl.formatMessage({ id: 'nav.generate.librarie' })}</Button>
         </Box>
         <Box sx={{ paddingTop: "10px" }}>

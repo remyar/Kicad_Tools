@@ -1,7 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber'
-import { AccumulativeShadows, RandomizedLight, OrbitControls, Environment, Lightformer } from '@react-three/drei'
 import Button from '@mui/material/Button';
 
 import Backdrop from '@mui/material/Backdrop';
@@ -17,8 +15,6 @@ import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
-import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 
 function BootstrapDialogTitle(props) {
     const { children, onClose, ...other } = props;
@@ -51,11 +47,7 @@ BootstrapDialogTitle.propTypes = {
 
 function Modal3D(props) {
 
-    const ref = React.useRef(null);
-
     let component = props.component;
-    let loader = new VRMLLoader();
-    let scene = loader.parse(component.wrl);
 
     return <Dialog
         onClose={() => { props.onClose && props.onClose(); }}
@@ -68,10 +60,7 @@ function Modal3D(props) {
         </BootstrapDialogTitle>
         <DialogContent dividers >
             <Box sx={{ width: "550px", height: "60vh" }}>
-                <Canvas ref={ref} orthographic={true} camera={{ zoom: 50, position: [0, 0, 100] }}>
-                    <primitive object={scene} />
-                    <OrbitControls />
-                </Canvas>
+
             </Box>
         </DialogContent>
     </Dialog>

@@ -7,7 +7,7 @@ import NavigationProvider from './providers/navigation';
 import StoreProvider from './providers/StoreProvider';
 import SnackBarGenerator from './providers/snackBar';
 import CssBaseline from '@mui/material/CssBaseline';
-
+import { ipcRenderer } from 'electron';
 import api from "./api";
 
 const electron = require('@electron/remote');
@@ -44,7 +44,7 @@ const messages = localeData[languageWithoutRegionCode] || localeData[language] |
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline />
-        <StoreProvider extra={{ api, electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields: [] } }}>
+        <StoreProvider extra={{ api, electron, ipcRenderer }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields: [] } }}>
             <MemoryRouter>
                 <NavigationProvider>
                     <IntlProvider locale={language} messages={messages}>

@@ -24,7 +24,7 @@ function SettingsPage(props) {
         </Box>
         <Divider></Divider>
         <List>
-            {settings.bom.fields.map((field, idx) => {
+            {settings?.bom?.fields.map((field, idx) => {
                 return <ListItem>
                     <ListItemText id="switch-list-label-wifi" >{field.name}</ListItemText>
                     <Switch defaultChecked={field.display ? true : false} onChange={async (event) => {
