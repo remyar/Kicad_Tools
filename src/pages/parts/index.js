@@ -47,14 +47,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function PartsPage(props) {
 
     const intl = props.intl;
-    const categories = props.globalState.categories || [];
+    const categories = [{ sortUuid: 'abc', sortName: "ALL" }, ...props.globalState.categories || []];
     let parts = props.globalState.parts || [];
     const [filter, setFilter] = useState("");
     const [displayLoader, setDisplayLoader] = useState(false);
-    const [selectedCategorie, setSelectedCategorie] = useState(undefined);
+    const [selectedCategorie, setSelectedCategorie] = useState(categories[0]);
     const [selectedSubCategorie, setSelectedSubCategorie] = useState(undefined);
 
-    const subCategories = selectedCategorie?.childSortList || [];
+    const subCategories = [{ sortUuid: 'abc', sortName: "ALL" }, ...selectedCategorie?.childSortList || []];
 
     async function getAllCategories() {
         try {
@@ -84,7 +84,7 @@ function PartsPage(props) {
         try {
             setDisplayLoader(true);
             if (selectedSubCategorie != undefined) {
-                await props.dispatch(actions.database.getPartsByCategorieId(selectedSubCategorie.componentSortKeyId));
+               // await props.dispatch(actions.database.getPartsWithCategorieIdAndFilter(selectedCategorie.componentSortKeyId));
             }
         } catch (err) {
 
@@ -106,6 +106,16 @@ function PartsPage(props) {
         getPartsWithCategorieIdAndFilter();
     }, [filter]);
 
+    parts = parts.filter(e => e.stockCount > 0);
+    
+    parts.sort((a, b) => {
+        if (a.componentModelEn < b.componentModelEn) return -1;
+        if (a.componentModelEn > b.componentModelEn) return 1;
+        return 0;
+    });
+
+    parts = parts.filter(e => e.componentModelEn.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filter.toLowerCase()))
+
     return <Box>
 
         <Loader display={displayLoader} />
@@ -116,7 +126,7 @@ function PartsPage(props) {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={selectedCategorie ? selectedCategorie.sortUuid : ''}
+                        value={selectedCategorie ? selectedCategorie.sortUuid : 'abc'}
                         onChange={(event) => {
                             setSelectedCategorie(categories.find((c) => c.sortUuid == event.target.value));
                             setSelectedSubCategorie(categories.find((c) => c.sortUuid == event.target.value)?.childSortList[0] || {})
@@ -133,7 +143,7 @@ function PartsPage(props) {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={selectedSubCategorie ? selectedSubCategorie.sortUuid : ''}
+                        value={selectedSubCategorie ? selectedSubCategorie.sortUuid : 'abc'}
                         onChange={(event) => {
                             setSelectedSubCategorie(subCategories.find((c) => c.sortUuid == event.target.value))
                         }}
@@ -155,7 +165,7 @@ function PartsPage(props) {
             <Table sx={{ minWidth: '100%' }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Part+</StyledTableCell>
+                        <StyledTableCell>Part</StyledTableCell>
                         <StyledTableCell>Description</StyledTableCell>
                         <StyledTableCell></StyledTableCell>
                         <StyledTableCell>Manufacturer</StyledTableCell>
