@@ -4,14 +4,15 @@ import { injectIntl } from 'react-intl';
 
 function SearchComponent(props){
     const intl = props.intl;
-    const [field, setField] = useState("");
-
-    useEffect(() => {
-        props.onChange && props.onChange(field);
-    }, [field]);
-
+    let timeout = undefined;
     return <TextField label={intl.formatMessage({ id: 'Search' })} variant="outlined" sx={{ width: "100%", textAlign: "center" }} onChange={(event) => {
-        setField(event.target.value);
+        if (timeout != undefined) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            props.onChange && props.onChange(event.target.value);
+            clearTimeout(timeout);
+        }, 1000);
     }}/>
 }
 

@@ -1,7 +1,8 @@
 const { app, ipcMain } = require('electron');
-const database = require('./database');
+const myfetch = require('./fetch');
 
 let mainWindow = undefined;
+
 let isDev = !app.isPackaged;
 
 module.exports = {
@@ -11,8 +12,6 @@ module.exports = {
     },
     start: async () => {
         try {
-            await database.setdbPath(isDev ? "./assets/database.zip" : path.join(process.resourcesPath, "database.zip"));
-
             ipcMain.handle('OPEN_DEV_TOOLS', (event, value) => {
                 if (value) {
                     mainWindow.webContents.openDevTools();
@@ -21,9 +20,9 @@ module.exports = {
                 }
             });
 
-            Object.keys(database).forEach((key) => {
-                ipcMain.handle('database.' + key, async (event, value) => {
-                    return (await database[key](value));
+            Object.keys(myfetch).forEach((key) => {
+                ipcMain.handle('fetch.' + key, async (event, value) => {
+                    return (await myfetch[key](value));
                 });
             });
 

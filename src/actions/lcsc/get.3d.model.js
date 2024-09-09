@@ -5,10 +5,11 @@ export async function get3DModel(component, { extra, getState }) {
     let api = extra.api;
     try {
         if (component.footprint.model_3d.uuid != undefined) {
-            let res = await api.get("https://easyeda.com/analyzer/api/3dmodel/" + component.footprint.model_3d.uuid);
-            component.footprint.model_3d.raw_obj = res;
 
-            if (res != undefined) {
+            component.footprint.model_3d.raw_obj = await api.get("https://easyeda.com/analyzer/api/3dmodel/" + component.footprint.model_3d.uuid);;
+            component.footprint.model_3d.step = await api.get("https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y/" + component.footprint.model_3d.uuid);;
+
+            if (component.footprint.model_3d.raw_obj != undefined) {
                 let _res = await easyeda.get3DModel(component.footprint.model_3d.raw_obj);
                 return {
                     model3d: _res,

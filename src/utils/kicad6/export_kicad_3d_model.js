@@ -122,6 +122,7 @@ export class Exporter3dModelKicad {
         }
         else {
             this.output = undefined;
+            this.output_step = undefined;
         }
     }
 

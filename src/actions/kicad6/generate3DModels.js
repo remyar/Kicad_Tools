@@ -13,7 +13,9 @@ export async function generate3DModels(components, librarieName = "", { extra, g
 
             } else {
                 let model3d = await utils.kicad6.get3DModel(component, librarieName);
-                models3d.push({ name: component.footprint.model_3d.name, model3d: model3d });
+
+
+                models3d.push({ name: component.footprint.model_3d.name, model3d: model3d, model3dStep: component .step});
             }
         }
 

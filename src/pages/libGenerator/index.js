@@ -120,7 +120,8 @@ function LibGeneratorPage(props) {
                         if (_component?.footprint?.model_3d?.raw_obj && _component.footprint.model_3d.raw_obj != '') {
                             _component.has3dModel = true;
                             _component.model3D = _component.footprint.model_3d.raw_obj;
-                            _component.wrl =  (await props.dispatch(actions.kicad6.generate3DModel(_component))).model3d
+                            _component.step = _component.footprint.model_3d.step;
+                            _component.wrl =  (await props.dispatch(actions.kicad6.generate3DModel(_component))).model3d;
                         }
 
                         let _c = [...components];
@@ -318,7 +319,11 @@ function LibGeneratorPage(props) {
                             let models3d = (await props.dispatch(actions.kicad6.generate3DModels(components,filename.name.replace('.kicad_sym', '')))).models3d;
                             for (let model3d of models3d) {
                                 await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.3dshapes') + path.sep + model3d.name + '.wrl', model3d.model3d));
+                                await props.dispatch(actions.electron.writeFile(filename.filePath.replace('.kicad_sym', '.3dshapes') + path.sep + model3d.name + '.stp', model3d.model3dStep));
+
                             }
+
+
                             props.snackbar.success(intl.formatMessage({ id: 'lib.save.success' }));
                         }
 
