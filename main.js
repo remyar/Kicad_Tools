@@ -5,14 +5,9 @@ var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const isDev = require('electron-is-dev');
+const isDev = true;
 require('@electron/remote/main').initialize()
 
-
-
-logger.transports.file.level = 'info';
-logger.transports.file.maxSize = 1048576;
-logger.transports.file.clear();
 autoUpdater.logger = logger;
 
 // Module to control application life.

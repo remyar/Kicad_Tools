@@ -1,20 +1,17 @@
 /**
  * Load locales, send back object
  */
-import { registerLocale, setDefaultLocale } from "react-datepicker";
-import frDatepicker from 'date-fns/esm/locale/fr';
-import enDatepicker from 'date-fns/esm/locale/en-US';
-import esDatepicker from 'date-fns/esm/locale/es';
-import itDatepicker from 'date-fns/esm/locale/it';
+//import { registerLocale } from "react-datepicker";
+
+//import esDatepicker from 'date-fns/locale/es';
+//import itDatepicker from 'date-fns/locale/it';
 
 import en from './en.json';
 import fr from './fr.json';
 
-let actualLocale = 'en';
+let actualLocale = 'fr';
 
 let DatePickerLang = [
-    frDatepicker,
-    enDatepicker,
 ];
 
 const data = [
@@ -23,9 +20,17 @@ const data = [
 ]
 
 function setLanguage(language) {
-    let d = data.find((el) => el.language == language);
-    setLocale( d ? d.code : 'en' );
+    let d = data.find((el) => el.language === language);
+    setLocale(d ? d.code : 'fr');
     return actualLocale;
+}
+
+function getLanguage(){
+    return data?.find((e) => e.code === actualLocale)?.language || "French";
+}
+
+function getCode(){
+    return data?.find((e) => e.code === actualLocale)?.code || "fr";
 }
 
 function getLanguages() {
@@ -33,7 +38,7 @@ function getLanguages() {
 }
 
 function setLocale(code) {
-    registerLocale(code, DatePickerLang.find((el) => el.code === code));
+   // registerLocale(code, DatePickerLang.find((el) => el.code === code));
     actualLocale = code;
 }
 
@@ -46,6 +51,8 @@ export default {
     getLocale,
     setLanguage,
     getLanguages,
+    getLanguage,
+    getCode,
     en,
     fr,
 };

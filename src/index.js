@@ -1,62 +1,69 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './app';
-import { IntlProvider } from 'react-intl';
+import React, { useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from "react-router-dom";
-import NavigationProvider from './providers/navigation';
-import StoreProvider from './providers/StoreProvider';
-import SnackBarGenerator from './providers/snackBar';
-import CssBaseline from '@mui/material/CssBaseline';
+import { StoreProvider } from '@remyar/react-store';
+import { NavigationProvider } from '@remyar/react-navigation';
+import { IntlProvider } from 'react-intl';
+import { SnackbarProvider } from '@remyar/react-snackbar';
 
-import api from "./api";
-
-const electron = require('@electron/remote')
-
-// i18n datas
 import localeData from './locales';
 
-// WHITELIST
-const persistConfig = {
-    key: 'kicadTools',
-    persist: true,
-    whitelist: [
-        "settings"
-    ]
-};
+import App from "./app";
+import api from './api';
 
+(async () => {
 
+    // Define user's language. Different browsers have the user locale defined
+    // on different fields on the `navigator` object, so we make sure to account
+    // for these different by checking all of them
+    const language = (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        navigator.userLanguage;
 
-// Define user's language. Different browsers have the user locale defined
-// on different fields on the `navigator` object, so we make sure to account
-// for these different by checking all of them
-const language = (navigator.languages && navigator.languages[0]) ||
-    navigator.language ||
-    navigator.userLanguage;
+    window.userLocale = language;
 
-window.userLocale = language;
+    // Split locales with a region code
+    let languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
 
-// Split locales with a region code
-let languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
+    window.userLocaleWithoutRegionCode = languageWithoutRegionCode;
+    localeData.setLocale(languageWithoutRegionCode);
+    // Try full locale, try locale without region code, fallback to 'en'
+    // const messages = localeData[languageWithoutRegionCode] || localeData[language] || localeData.fr;
 
-window.userLocaleWithoutRegionCode = languageWithoutRegionCode;
-localeData.setLocale(languageWithoutRegionCode);
-// Try full locale, try locale without region code, fallback to 'en'
-const messages = localeData[languageWithoutRegionCode] || localeData[language] || localeData.en;
+    const root = createRoot(document.getElementById('root'));
 
-ReactDOM.render(
-    <React.StrictMode>
-        <CssBaseline />
-        <StoreProvider extra={{ api, electron }} persistConfig={persistConfig} globalState={{ settings: { locale: "en" }, bom: { fields : [] } }}>
-            <MemoryRouter>
-                <NavigationProvider>
-                    <IntlProvider locale={language} messages={messages}>
-                        <SnackBarGenerator>
-                            <App />
-                        </SnackBarGenerator>
-                    </IntlProvider>
-                </NavigationProvider>
-            </MemoryRouter>
-        </StoreProvider>
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+    function LocalizationWrapper() {
+
+        const [locale, setLocale] = useState(languageWithoutRegionCode);
+
+        return <IntlProvider locale={languageWithoutRegionCode} messages={localeData[locale] || localeData[language] || localeData.fr}>
+            <SnackbarProvider>
+                <App
+                    onLocaleChange={(locale) => { setLocale(locale) }}
+                />
+            </SnackbarProvider>
+        </IntlProvider>
+    }
+
+    root.render(
+        <React.Fragment>
+            <StoreProvider
+                extra={{
+                    api
+                }}
+                globalState={{
+                    user: {
+                        translateInLocale: true,
+                        locale: "en"
+                    }
+                }}>
+                <MemoryRouter>
+                    <NavigationProvider>
+                        <LocalizationWrapper />
+                    </NavigationProvider>
+                </MemoryRouter>
+            </StoreProvider>
+        </React.Fragment>
+    );
+
+})();
