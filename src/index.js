@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { StoreProvider } from '@remyar/react-store';
 import { NavigationProvider } from '@remyar/react-navigation';
 import { IntlProvider } from 'react-intl';
@@ -9,7 +9,6 @@ import { SnackbarProvider } from '@remyar/react-snackbar';
 import localeData from './locales';
 
 import App from "./app";
-import api from './api';
 
 (async () => {
 
@@ -48,9 +47,6 @@ import api from './api';
     root.render(
         <React.Fragment>
             <StoreProvider
-                extra={{
-                    api
-                }}
                 globalState={{
                     user: {
                         translateInLocale: true,
