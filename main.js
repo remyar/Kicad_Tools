@@ -5,7 +5,7 @@ var logger = require('electron-log');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const isDev = true;
+const isDev = false;
 require('@electron/remote/main').initialize()
 
 autoUpdater.logger = logger;

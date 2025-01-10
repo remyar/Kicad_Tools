@@ -10,6 +10,9 @@ async function getSymbol(component, librarieName) {
             if ( component.description ){
                 component.symbol.info.description = component.description;
             }
+            if (component.manufacturer) {
+                component.symbol.info.manufacturer = component.manufacturer;
+            }
             let exporter = new ExporterSymbolKicad(_.cloneDeep(component.symbol));
             let kicad_symbol_lib = exporter.export(false, librarieName);
 

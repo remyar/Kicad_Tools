@@ -25,9 +25,11 @@ import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SaveIcon from '@mui/icons-material/Save';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 
 import path from 'path';
 import actions from '../../actions';
+import utils from '../../utils';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -126,7 +128,7 @@ function LibGeneratorPage(props) {
                 <TableBody>
                     {components.map((component, idx) => {
                         return <StyledTableRow key={'_libraire_component_' + idx}>
-                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "Manufacturer"))[2].toString() : component.manufacturer}</StyledTableCell>
+                            <StyledTableCell>{component.isAlreadyLibraire ? component.find(e => (e[0].toString() == "property") && (e[1].toString() == "Manufacturer"))[2]?.toString() : component.manufacturer}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component[1].toString() : component.manufacturerPartnumber}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"))[2].split(":")[1].toString() : component?.footprint?.info?.name ? component?.footprint?.info?.name : component.package}</StyledTableCell>
                             <StyledTableCell>{component.isAlreadyLibraire ? component.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Description"))[2].toString() : component.description}</StyledTableCell>
@@ -229,6 +231,51 @@ function LibGeneratorPage(props) {
             sx={{ position: 'absolute', bottom: 16, right: 16 }}
             icon={<SpeedDialIcon />}
         >
+            <SpeedDialAction
+                key={'Open'}
+                icon={<FileOpenIcon />}
+                tooltipTitle={'Open'}
+                onClick={async () => {
+                    setDisplayLoader(true);
+                    try {
+                        let file = (await actions.electron.getFilenameForOpen('.kicad_sym'))?.getFilenameForOpen;
+                        if (file.canceled == false) {
+
+                            let fileData = (await actions.electron.readFile(file.filePath)).fileData;
+                            let _c = await utils.kicad6.parseKicadLib(fileData);
+
+                            let footprintsPath = file.filePath.replace('.kicad_sym', '.pretty');
+                            let ___c = [...components];
+                            for (let __c of _c) {
+                                __c.hasSymbol = false;
+                                __c.isAlreadyLibraire = true;
+                                let __f = __c.find((e) => e[0] == "property" && (e[1] && e[1].toString() == "Footprint"));
+                                __c.hasFootprint = false;
+                                __c.has3dModel = false;
+                                if (__f) {
+                                    __c.hasSymbol = true;
+                                    let footprint = __f[2].toString().split(':')[1];
+                                    let footprintData = (await actions.electron.readFile(footprintsPath + '/' + footprint + '.kicad_mod')).fileData
+                                    if (footprintData) {
+                                        __c.hasFootprint = true;
+                                        __c.footprintData = footprintData;
+                                        if (footprintData.includes('model')) {
+                                            __c.has3dModel = true;
+                                        }
+                                    }
+                                }
+
+                                ___c.push(__c);
+                            }
+                            setComponents(___c);
+                        }
+                    } catch (err) {
+                        props.snackbar.error(err.message);
+                    }
+                    setDisplayLoader(false);
+                }}>
+            </SpeedDialAction>
+
             <SpeedDialAction
                 key={'Save6'}
                 icon={<SaveIcon />}
