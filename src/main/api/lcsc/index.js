@@ -30,15 +30,34 @@ export default {
     },
     getSymbol: async (component, mainWindow, middleware) => {
         try {
+            let symbol = undefined;
             const cadUrl = `https://easyeda.com/api/products/${component.component.lcscPartNumber}/components?version=6.5.44`;
             let res = await middleware.fetch.Get(cadUrl);
             let js = JSON.parse(res);
             if ( js.success == true )
             {
-
+                let _res = await middleware.easyeda.GetSymbol(js.result);
+                symbol = _res;
             }
+            return symbol;
         } catch (err) {
             throw err;
         }
-    }
+    },
+    getFootprint : async (component, mainWindow, middleware) => { 
+        try {
+            let footprint = undefined;
+            const cadUrl = `https://easyeda.com/api/products/${component.component.lcscPartNumber}/components?version=6.5.44`;
+            let res = await middleware.fetch.Get(cadUrl);
+            let js = JSON.parse(res);
+            if ( js.success == true )
+            {
+                let _res = await middleware.easyeda.GetFootprint(js.result);
+                footprint = _res;
+            }
+            return footprint;
+        } catch (err) {
+            throw err;
+        }
+    },
 }

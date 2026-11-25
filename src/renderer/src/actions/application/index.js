@@ -9,10 +9,33 @@ export default {
         let result = await window.electron.ipcRenderer.invoke("application.setMode", value);
         return { application: { mode: value } };
     },
-    restartApp : async ()=>{
+    restartApp: async () => {
         await window.electron.ipcRenderer.invoke("application.restart");
     },
-  
+    getFilenameForSave: async (extensions) => {
+        if (typeof extensions == 'string') {
+            extensions = [extensions];
+        }
+        let filters = [];
+
+        if (extensions.name != undefined && extensions.extensions != undefined) {
+            extensions = [extensions];
+        }
+
+        for (let _ext of extensions) {
+            filters.push({
+                name: _ext.name || _ext.replace('.', ''),
+                extensions: _ext.extensions || [_ext.replace('.', '')]
+            })
+        }
+
+        try {
+            let response = await window.electron.ipcRenderer.invoke("api.application.getFilenameForSave", filters);
+            return { getFilenameForSave: response };
+        } catch (err) {
+            throw err;
+        }
+    },
     ProcessAction: async (device, action, params) => {
         try {
             let result = await window.electron.ipcRenderer.invoke("api.application.ProcessAction", {
