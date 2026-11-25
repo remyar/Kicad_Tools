@@ -43,6 +43,7 @@ export default defineConfig({
                 "actions": path.resolve(__dirname, "src", "renderer", "src", "actions"),
                 "utils": path.resolve(__dirname, "src", "renderer", "src", "utils"),
                 "routes": path.resolve(__dirname, "src", "renderer", "src", "routes"),
+                "pages": path.resolve(__dirname, "src", "renderer", "src", "pages"),
             },
         },
         build: {
